@@ -13,6 +13,5 @@ export async function polyReply(
   }
 }
 
-export function maskedUrl(text: string, url: string, alt?: string) {
-  return `[${text}](${url}${alt ? ` "${alt}"` : ""})`;
-}
+export const maskedUrl = (text: string, url: string, alt?: string) =>
+  `[${text}](${url}${alt ? ` "${alt}"` : ""})`;

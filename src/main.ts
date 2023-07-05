@@ -4,7 +4,6 @@ import "dotenv/config";
 import { dirname, importx } from "@discordx/importer";
 import { DIService, typeDiDependencyRegistryEngine } from "discordx";
 import { Container, Service } from "typedi";
-import { PrismaClient } from "@prisma/client";
 import { MeiyounaiseDB } from "./db/MeiyounaiseDB.js";
 
 if (!process.env.BOT_TOKEN) {
@@ -16,8 +15,6 @@ if (!process.env.BOT_TOKEN) {
 DIService.engine = typeDiDependencyRegistryEngine
   .setService(Service)
   .setInjector(Container);
-
-const dbClient = new PrismaClient();
 
 // start things
 await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
