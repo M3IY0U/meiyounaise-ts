@@ -1,32 +1,31 @@
 export interface LastTrack {
-  artist:     Artist;
-  mbid?:       string;
-  name:       string;
-  image:      Image[];
+  artist: Artist;
+  mbid?: string;
+  name: string;
+  image: Image[];
   streamable: string;
-  album:      Album;
-  url:        string;
-  date:       Date;
-  "@attr"?:    Object;
-  loved:      string;
+  album: Album;
+  url: string;
+  date: Date;
+  "@attr"?: Object;
+  loved: string;
   nowplaying: boolean;
 }
 
-
 export interface Album {
-  mbid?:    string;
+  mbid?: string;
   name: string;
 }
 
 export interface Artist {
-  url:   string;
-  name:  string;
+  url: string;
+  name: string;
   image: Image[];
-  mbid?:  string;
+  mbid?: string;
 }
 
 export interface Image {
-  size:    string;
+  size: string;
   url: string;
 }
 

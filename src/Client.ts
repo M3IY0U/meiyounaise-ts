@@ -14,8 +14,8 @@ export const Meiyounaise = new Client({
   simpleCommand: {
     prefix: "%",
     responses: {
-      notFound: "Command not found"
-    }
+      notFound: "Command not found",
+    },
   },
   allowedMentions: {
     repliedUser: false,
@@ -43,7 +43,6 @@ Meiyounaise.on("messageCreate", (message) => {
 Meiyounaise.on("interactionCreate", (interaction) => {
   Meiyounaise.executeInteraction(interaction);
 });
-
 
 Meiyounaise.on("messageCreate", (message: Message) => {
   Meiyounaise.executeCommand(message);
