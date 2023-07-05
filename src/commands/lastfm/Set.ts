@@ -1,0 +1,83 @@
+import {
+  ApplicationCommandOptionType,
+  CommandInteraction,
+  GuildMember,
+  Message,
+  User,
+} from "discord.js";
+import {
+  Discord,
+  SimpleCommand,
+  SimpleCommandMessage,
+  SimpleCommandOption,
+  SimpleCommandOptionType,
+  Slash,
+  SlashGroup,
+  SlashOption,
+} from "discordx";
+import { polyReply } from "../util.js";
+import { LastCommand } from "./last-util/LastCommand.js";
+
+@Discord()
+@SlashGroup({ name: "fm", description: "LastFM Commands" })
+export class SetUser extends LastCommand {
+  // slash handler
+  @Slash({ name: "set", description: "Set or show your last.fm username." })
+  async slashSet(
+    @SlashOption({ 
+      name: "username", 
+      description: "The last.fm username to set", 
+      type: ApplicationCommandOptionType.String,
+      required: false
+    }) name: string,
+    interaction: CommandInteraction,
+  ) {
+    await interaction.deferReply();
+    await this.set(interaction.member as GuildMember, name, interaction);
+  }
+
+  // simple handler
+  @SimpleCommand({
+    name: "set",
+    description: "Set or show your current last.fm username.",
+  })
+  async simpleSet(
+    @SimpleCommandOption({name: "username", type: SimpleCommandOptionType.String}) username: string,
+    command: SimpleCommandMessage,
+  ) {
+    await this.set(command.message.author, username, command.message);
+  }
+
+  // command logic
+  async set(
+    user: GuildMember | User,
+    username: string,
+    interaction: CommandInteraction | Message,
+  ) {
+    if (!username) {
+      const lastfm = (await this.db.userById(user.id))?.lastfm;
+      return await polyReply(
+        {
+          content: lastfm
+            ? `Your last.fm username is currently set to \`${lastfm}\`.`
+            : "No last.fm username set.",
+        },
+        interaction,
+      );
+    }
+
+    if (username.match(/[^A-z0-9_-]/))
+      return await polyReply({ content: "Invalid username" }, interaction);
+    await this.db
+      .setLast(user.id, username)
+      .then(async () => {
+        await polyReply(
+          { content: `Set last.fm username to \`${username}\`` },
+          interaction,
+        );
+      })
+      .catch(async (e) => {
+        await polyReply({ content: `Error: ${e}` }, interaction);
+      });
+  }
+}

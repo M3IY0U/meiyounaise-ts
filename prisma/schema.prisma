@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model boards {
+  id              Int     @id @default(autoincrement())
+  guild_id        Decimal
+  channel_id      Decimal
+  threshold       Int
+  banned_channels String?
+}
+
+model guilds {
+  id         Decimal @id
+  join_msg   String?
+  leave_msg  String?
+  join_chn   String?
+  leave_chn  String?
+  repeat_msg Int?
+}
+
+model users {
+  id     Decimal @id
+  lastfm String?
+}
