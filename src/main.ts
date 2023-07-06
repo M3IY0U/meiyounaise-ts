@@ -7,6 +7,7 @@ import { Container, Service } from "typedi";
 import { MeiyounaiseDB } from "./db/MeiyounaiseDB.js";
 import { LastRepo } from "./db/LastRepo.js";
 import { BoardRepo } from "./db/BoardRepo.js";
+import { GuildRepo } from "./db/GuildRepo.js";
 
 if (!process.env.BOT_TOKEN) {
   console.log("Please set the BOT_TOKEN environment variable");
@@ -19,6 +20,7 @@ DIService.engine = typeDiDependencyRegistryEngine
   .setInjector(Container);
 Container.set("lastRepo", new LastRepo());
 Container.set("boardRepo", new BoardRepo());
+Container.set("guildRepo", new GuildRepo());
 
 // start things
 await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
