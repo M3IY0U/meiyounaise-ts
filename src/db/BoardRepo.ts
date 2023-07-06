@@ -43,4 +43,55 @@ export class BoardRepo extends MeiyounaiseDB {
       },
     });
   }
+
+  async addBannedChannel(guildId: string, channelId: string) {
+    const board = await this.getBoard(guildId);
+    if (!board) throw new Error("There is no board in this server.");
+
+    const banned = JSON.parse(board.banned_channels || "[]");
+    if (banned.includes(channelId))
+      throw new Error("Channel is already banned.");
+
+    await this.client.boards.update({
+      where: {
+        guild_id: guildId,
+      },
+      data: {
+        banned_channels: JSON.stringify([...banned, channelId]),
+      },
+    });
+  }
+
+  async removeBannedChannel(guildId: string, channelId: string) {
+    const board = await this.getBoard(guildId);
+    if (!board) throw new Error("There is no board in this server.");
+
+    const banned = JSON.parse(board.banned_channels || "[]");
+    if (!banned.includes(channelId)) throw new Error("Channel is not banned.");
+
+    await this.client.boards.update({
+      where: {
+        guild_id: guildId,
+      },
+      data: {
+        banned_channels: JSON.stringify(
+          banned.filter((c: string) => c !== channelId),
+        ),
+      },
+    });
+  }
+
+  async clearBannedChannels(guildId: string) {
+    const board = await this.getBoard(guildId);
+    if (!board) throw new Error("There is no board in this server.");
+
+    await this.client.boards.update({
+      where: {
+        guild_id: guildId,
+      },
+      data: {
+        banned_channels: JSON.stringify([]),
+      },
+    });
+  }
 }

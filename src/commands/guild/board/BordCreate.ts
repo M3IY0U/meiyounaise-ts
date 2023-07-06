@@ -73,11 +73,27 @@ export class BoardCreate {
 
     if (created) {
       interaction.editReply({
-        content: `Created board in ${channel.toString()} with threshold ${threshold}`,
+        embeds: [
+          new EmbedBuilder()
+            .setTitle("✅ Board Created")
+            .setDescription(
+              `The board was created in ${channel} with ${threshold} reactions`,
+            )
+            .setColor("Green")
+            .toJSON(),
+        ],
       });
     } else {
       interaction.editReply({
-        content: `The board in this server was updated to: ${channel} with ${threshold} reactions`,
+        embeds: [
+          new EmbedBuilder()
+            .setTitle("✅ Board updated")
+            .setDescription(
+              `The board in this server was updated to: ${channel} with ${threshold} reactions`,
+            )
+            .setColor("Green")
+            .toJSON(),
+        ],
       });
     }
   }
