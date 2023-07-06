@@ -1,4 +1,4 @@
-import { IntentsBitField, Message } from "discord.js";
+import { IntentsBitField, Message, Partials } from "discord.js";
 import { Client } from "discordx";
 
 export const Meiyounaise = new Client({
@@ -21,13 +21,14 @@ export const Meiyounaise = new Client({
     repliedUser: false,
   },
   botGuilds: ["328353999508209678"],
+  partials: [Partials.Reaction, Partials.Message, Partials.Channel],
 });
 
 Meiyounaise.once("ready", async () => {
   console.log("Clearing commands...");
-  //await Meiyounaise.clearApplicationCommands("328353999508209678");
+  await Meiyounaise.clearApplicationCommands("328353999508209678");
   console.log("Registering commands...");
-  //await Meiyounaise.initApplicationCommands();
+  await Meiyounaise.initApplicationCommands();
 
   console.log(
     `Logged in as ${Meiyounaise.user?.username} (${Meiyounaise.user?.id})`,
@@ -41,9 +42,19 @@ Meiyounaise.on("messageCreate", (message) => {
 });
 
 Meiyounaise.on("interactionCreate", (interaction) => {
-  Meiyounaise.executeInteraction(interaction);
+  try{
+    Meiyounaise.executeInteraction(interaction);
+  }
+  catch(e){
+    interaction.channel?.send(`Something went wrong\n${e}`);
+    console.error(e);
+  }
 });
 
 Meiyounaise.on("messageCreate", (message: Message) => {
   Meiyounaise.executeCommand(message);
+});
+
+Meiyounaise.on("messageReactionAdd", (reaction, user) => {
+  Meiyounaise.executeReaction(reaction, user);
 });

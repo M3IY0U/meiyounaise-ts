@@ -1,10 +1,10 @@
 import { LastClient } from "./LastClient";
-import { MeiyounaiseDB } from "../../../db/MeiyounaiseDB";
 import { Inject } from "typedi";
+import { LastRepo } from "../../../db/LastRepo";
 
 export abstract class LastCommand {
-  @Inject("db")
-  protected db!: MeiyounaiseDB;
+  @Inject("lastRepo")
+  protected repo!: LastRepo;
   @Inject("lc")
   protected lastClient!: LastClient;
 }

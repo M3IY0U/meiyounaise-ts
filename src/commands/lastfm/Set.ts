@@ -20,6 +20,7 @@ import { LastCommand } from "./last-util/LastCommand.js";
 
 @Discord()
 @SlashGroup({ name: "fm", description: "LastFM Commands" })
+@SlashGroup("fm")
 export class SetUser extends LastCommand {
   // slash handler
   @Slash({ name: "set", description: "Set or show your last.fm username." })
@@ -55,7 +56,7 @@ export class SetUser extends LastCommand {
     interaction: CommandInteraction | Message,
   ) {
     if (!username) {
-      const lastfm = (await this.db.userById(user.id))?.lastfm;
+      const lastfm = (await this.repo.userById(user.id))?.lastfm;
       return await polyReply(
         {
           content: lastfm
@@ -68,7 +69,7 @@ export class SetUser extends LastCommand {
 
     if (username.match(/[^A-z0-9_-]/))
       return await polyReply({ content: "Invalid username" }, interaction);
-    await this.db
+    await this.repo
       .setLast(user.id, username)
       .then(async () => {
         await polyReply(

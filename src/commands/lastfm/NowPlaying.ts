@@ -52,7 +52,7 @@ class NowPlaying extends LastCommand {
   }
   // command logic
   async nowPlaying(userId: string, interaction: CommandInteraction | Message) {
-    const user = await this.db.userById(userId);
+    const user = await this.repo.userById(userId);
 
     if (!user?.lastfm) {
       polyReply({ content: "No last.fm username set" }, interaction);
