@@ -9,19 +9,19 @@ datasource db {
 
 model boards {
   id              Int     @id @default(autoincrement())
-  guild_id        String     @unique
-  channel_id      String     @unique
+  guild_id        String  @unique
+  channel_id      String  @unique
   threshold       Int
   banned_channels String?
 }
 
 model guilds {
   id         Decimal @id
-  join_msg   String?
-  leave_msg  String?
-  join_chn   String?
-  leave_chn  String?
-  repeat_msg Int?
+  join_msg   String  @default("")
+  leave_msg  String  @default("")
+  join_chn   String  @default("")
+  leave_chn  String  @default("")
+  repeat_msg Int     @default(0)
 }
 
 model users {
