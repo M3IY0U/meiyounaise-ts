@@ -1,34 +1,35 @@
-import {
-  ButtonComponent,
-  Discord,
-  Guard,
-  Slash,
-  SlashGroup,
-  SlashOption,
-} from "discordx";
+import { ButtonComponent, Discord, Guard, Slash, SlashGroup } from "discordx";
 import { PermissionGuard } from "@discordx/utilities";
 import { Inject } from "typedi";
 import { BoardRepo } from "../../../db/BoardRepo.js";
 import {
   ActionRowBuilder,
-  ApplicationCommandOptionType,
   ButtonBuilder,
   ButtonInteraction,
   ButtonStyle,
-  Channel,
-  ChannelType,
   CommandInteraction,
   EmbedBuilder,
   MessageActionRowComponentBuilder,
 } from "discord.js";
-import { polyReply } from "../../util.js";
 
 @Discord()
 @SlashGroup({
   name: "board",
   description: "Manage emoji board related things.",
 })
-@Guard(PermissionGuard(["ManageChannels"]))
+@Guard(
+  PermissionGuard(["ManageChannels"], {
+    embeds: [
+      new EmbedBuilder()
+        .setTitle("⚠️ Insufficient Permissions")
+        .setDescription(
+          "You need the `ManageChannels` permission to execute this command",
+        )
+        .setColor("Yellow")
+        .toJSON(),
+    ],
+  }),
+)
 export class BoardDelete {
   @Inject("boardrepo")
   protected repo!: BoardRepo;

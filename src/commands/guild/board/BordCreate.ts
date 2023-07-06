@@ -7,6 +7,7 @@ import {
   Channel,
   ChannelType,
   CommandInteraction,
+  EmbedBuilder,
 } from "discord.js";
 
 @Discord()
@@ -14,7 +15,19 @@ import {
   name: "board",
   description: "Manage emoji board related things.",
 })
-@Guard(PermissionGuard(["ManageChannels"]))
+@Guard(
+  PermissionGuard(["ManageChannels"], {
+    embeds: [
+      new EmbedBuilder()
+        .setTitle("⚠️ Insufficient Permissions")
+        .setDescription(
+          "You need the `ManageChannels` permission to execute this command",
+        )
+        .setColor("Yellow")
+        .toJSON(),
+    ],
+  }),
+)
 export class BoardCreate {
   @Inject("boardrepo")
   protected repo!: BoardRepo;
