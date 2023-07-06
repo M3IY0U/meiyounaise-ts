@@ -16,23 +16,34 @@ export async function polyReply(
     | MessageComponentInteraction
     | ModalSubmitInteraction,
 ) {
-  // things i hate: this
   if (interaction instanceof Message) {
     await interaction.reply(toSend);
   } else {
-    if (interaction.deferred) {
-      await interaction.editReply(toSend);
-    } else if (interaction.replied) {
+    if (!interaction.replied)
       await interaction.followUp({
         content: toSend.content,
         embeds: toSend.embeds,
       });
-    } else {
+    else
       await interaction.reply({
         content: toSend.content,
         embeds: toSend.embeds,
       });
-    }
+  }
+}
+
+export async function polyEdit(
+  toSend: MessageReplyOptions,
+  interaction:
+    | CommandInteraction
+    | Message
+    | MessageComponentInteraction
+    | ModalSubmitInteraction,
+) {
+  if (interaction instanceof Message) {
+    await interaction.reply(toSend);
+  } else {
+    await interaction.editReply(toSend);
   }
 }
 
@@ -60,7 +71,7 @@ export async function handleError(
     {
       embeds: [
         new EmbedBuilder()
-          .setTitle("Something went wrong using this command")
+          .setTitle("❌ Something went wrong using this command")
           .setDescription(`\`\`\`${e}\`\`\``)
           .setColor("Red")
           .toJSON(),

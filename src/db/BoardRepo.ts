@@ -27,4 +27,20 @@ export class BoardRepo extends MeiyounaiseDB {
     });
     return exist === null;
   }
+
+  async getBoard(guildId: string) {
+    return await this.client.boards.findUnique({
+      where: {
+        guild_id: guildId,
+      },
+    });
+  }
+
+  async deleteBoard(guildId: string) {
+    await this.client.boards.delete({
+      where: {
+        guild_id: guildId,
+      },
+    });
+  }
 }

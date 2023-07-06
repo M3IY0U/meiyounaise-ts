@@ -15,7 +15,7 @@ import {
   description: "Manage emoji board related things.",
 })
 @Guard(PermissionGuard(["ManageChannels"]))
-export class BoardSetup {
+export class BoardCreate {
   @Inject("boardrepo")
   protected repo!: BoardRepo;
 

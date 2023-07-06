@@ -1,6 +1,7 @@
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
+  EmbedBuilder,
   GuildMember,
   Message,
   User,
@@ -59,9 +60,17 @@ export class SetUser extends LastCommand {
       const lastfm = (await this.repo.userById(user.id))?.lastfm;
       return await polyReply(
         {
-          content: lastfm
-            ? `Your last.fm username is currently set to \`${lastfm}\`.`
-            : "No last.fm username set.",
+          embeds: [
+            new EmbedBuilder()
+              .setTitle("🔷 last.fm Username")
+              .setDescription(
+                lastfm
+                  ? `Your last.fm username is currently set to \`${lastfm}\`.`
+                  : "No last.fm username set.",
+              )
+              .setColor("Blue")
+              .toJSON(),
+          ],
         },
         interaction,
       );
@@ -69,16 +78,21 @@ export class SetUser extends LastCommand {
 
     if (username.match(/[^A-z0-9_-]/))
       return await polyReply({ content: "Invalid username" }, interaction);
-    await this.repo
-      .setLast(user.id, username)
-      .then(async () => {
-        await polyReply(
-          { content: `Set last.fm username to \`${username}\`` },
-          interaction,
-        );
-      })
-      .catch(async (e) => {
-        await polyReply({ content: `Error: ${e}` }, interaction);
-      });
+    await this.repo.setLast(user.id, username).then(async () => {
+      await polyReply(
+        {
+          embeds: [
+            new EmbedBuilder()
+              .setTitle("✅ last.fm Username Set")
+              .setDescription(
+                `Your last.fm username has been set to \`${username}\`.`,
+              )
+              .setColor("Green")
+              .toJSON(),
+          ],
+        },
+        interaction,
+      );
+    });
   }
 }

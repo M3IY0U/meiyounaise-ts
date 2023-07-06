@@ -54,10 +54,7 @@ class NowPlaying extends LastCommand {
   async nowPlaying(userId: string, interaction: CommandInteraction | Message) {
     const user = await this.repo.userById(userId);
 
-    if (!user?.lastfm) {
-      polyReply({ content: "No last.fm username set" }, interaction);
-      return;
-    }
+    if (!user?.lastfm) throw new Error("No last.fm username set");
 
     const res = await this.lastClient.getRecentScrobbles(user.lastfm, 1);
 
