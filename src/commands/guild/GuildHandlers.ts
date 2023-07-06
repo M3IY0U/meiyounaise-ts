@@ -16,6 +16,4 @@ class GuildHandlers {
   onMemberRemove() {
     console.log("member left");
   }
-
-
 }

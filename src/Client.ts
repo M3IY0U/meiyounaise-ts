@@ -42,10 +42,9 @@ Meiyounaise.on("messageCreate", (message) => {
 });
 
 Meiyounaise.on("interactionCreate", (interaction) => {
-  try{
+  try {
     Meiyounaise.executeInteraction(interaction);
-  }
-  catch(e){
+  } catch (e) {
     interaction.channel?.send(`Something went wrong\n${e}`);
     console.error(e);
   }

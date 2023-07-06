@@ -20,7 +20,7 @@ export class BoardSetup {
 
   @Slash({
     name: "create",
-    description: "Create a new emoji board."
+    description: "Create a new emoji board.",
   })
   @SlashGroup("board")
   async createSlash(
