@@ -1,5 +1,6 @@
 import {
   AutocompleteInteraction,
+  ColorResolvable,
   CommandInteraction,
   EmbedBuilder,
   Message,
@@ -69,14 +70,46 @@ export async function handleError(
 
   await polyReply(
     {
-      embeds: [
-        new EmbedBuilder()
-          .setTitle("❌ Something went wrong using this command")
-          .setDescription(`\`\`\`${e}\`\`\``)
-          .setColor("Red")
-          .toJSON(),
-      ],
+      embeds: responseEmbed(ResponseType.Error, `\`\`\`${e}\`\`\``),
     },
     interaction,
   );
+}
+
+export enum ResponseType {
+  Info = 0,
+  Success = 1,
+  Permission = 2,
+  Error = 3,
+}
+
+export function responseEmbed(type: ResponseType, content: string) {
+  let color: ColorResolvable;
+  let title: string;
+  switch (type) {
+    case ResponseType.Info:
+      title = "🔷 Info";
+      color = "Blue";
+      break;
+    case ResponseType.Success:
+      title = "✅ Success";
+      color = "Green";
+      break;
+    case ResponseType.Permission:
+      title = "⚠️ Insufficient Permissions";
+      color = "Yellow";
+      break;
+    case ResponseType.Error:
+      title = "❌ Error";
+      color = "Red";
+      break;
+  }
+
+  return [
+    new EmbedBuilder()
+      .setTitle(title)
+      .setDescription(content)
+      .setColor(color)
+      .toJSON(),
+  ];
 }

@@ -1,7 +1,7 @@
 import { Service } from "typedi";
 import { MeiyounaiseDB } from "./MeiyounaiseDB.js";
 
-@Service("boardrepo")
+@Service("boardRepo")
 export class BoardRepo extends MeiyounaiseDB {
   async upsertBoard(guildId: string, channelId: string, threshold: number) {
     const exist = await this.client.boards.findUnique({

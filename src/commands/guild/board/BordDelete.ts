@@ -11,6 +11,7 @@ import {
   EmbedBuilder,
   MessageActionRowComponentBuilder,
 } from "discord.js";
+import { ResponseType, responseEmbed } from "../../util.js";
 
 @Discord()
 @SlashGroup({
@@ -19,15 +20,10 @@ import {
 })
 @Guard(
   PermissionGuard(["ManageChannels"], {
-    embeds: [
-      new EmbedBuilder()
-        .setTitle("⚠️ Insufficient Permissions")
-        .setDescription(
-          "You need the `ManageChannels` permission to execute this command",
-        )
-        .setColor("Yellow")
-        .toJSON(),
-    ],
+    embeds: responseEmbed(
+      ResponseType.Permission,
+      "You need the `ManageChannels` permission to execute this command",
+    ),
   }),
 )
 export class BoardDelete {
@@ -58,15 +54,10 @@ export class BoardDelete {
       ]);
 
     interaction.editReply({
-      embeds: [
-        new EmbedBuilder()
-          .setTitle("❓ Confirm Deletion")
-          .setColor("Red")
-          .setDescription(
-            `Are you sure you want to delete the board in <#${board.channel_id}>?`,
-          )
-          .toJSON(),
-      ],
+      embeds: responseEmbed(
+        ResponseType.Info,
+        `Are you sure you want to delete the board in <#${board.channel_id}>?`,
+      ),
       components: [btnRow],
     });
   }
@@ -76,13 +67,10 @@ export class BoardDelete {
     await this.repo.deleteBoard(interaction.guildId || "");
 
     interaction.update({
-      embeds: [
-        new EmbedBuilder()
-          .setTitle("🗑 Deleted")
-          .setDescription("Board has been deleted successfully")
-          .setColor("Green")
-          .toJSON(),
-      ],
+      embeds: responseEmbed(
+        ResponseType.Success,
+        "Board has been deleted successfully",
+      ),
       components: [],
     });
   }
@@ -90,13 +78,7 @@ export class BoardDelete {
   @ButtonComponent({ id: "board_cancel" })
   async cancelButton(interaction: ButtonInteraction) {
     interaction.update({
-      embeds: [
-        new EmbedBuilder()
-          .setTitle("🔷 Cancelled")
-          .setDescription("No changes made")
-          .setColor("Blue")
-          .toJSON(),
-      ],
+      embeds: responseEmbed(ResponseType.Info, "Cancelled, no changes made"),
       components: [],
     });
   }

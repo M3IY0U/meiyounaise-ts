@@ -16,7 +16,7 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import { polyReply } from "../util.js";
+import { ResponseType, polyReply, responseEmbed } from "../util.js";
 import { LastCommand } from "./last-util/LastCommand.js";
 
 @Discord()
@@ -60,17 +60,12 @@ export class SetUser extends LastCommand {
       const lastfm = (await this.repo.userById(user.id))?.lastfm;
       return await polyReply(
         {
-          embeds: [
-            new EmbedBuilder()
-              .setTitle("🔷 last.fm Username")
-              .setDescription(
-                lastfm
-                  ? `Your last.fm username is currently set to \`${lastfm}\`.`
-                  : "No last.fm username set.",
-              )
-              .setColor("Blue")
-              .toJSON(),
-          ],
+          embeds: responseEmbed(
+            ResponseType.Info,
+            lastfm
+              ? `Your last.fm username is currently set to \`${lastfm}\`.`
+              : "No last.fm username set.",
+          ),
         },
         interaction,
       );
@@ -81,15 +76,10 @@ export class SetUser extends LastCommand {
     await this.repo.setLast(user.id, username).then(async () => {
       await polyReply(
         {
-          embeds: [
-            new EmbedBuilder()
-              .setTitle("✅ last.fm Username Set")
-              .setDescription(
-                `Your last.fm username has been set to \`${username}\`.`,
-              )
-              .setColor("Green")
-              .toJSON(),
-          ],
+          embeds: responseEmbed(
+            ResponseType.Success,
+            `Your last.fm username has been set to \`${username}\`.`,
+          ),
         },
         interaction,
       );

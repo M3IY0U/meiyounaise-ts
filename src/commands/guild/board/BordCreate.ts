@@ -9,6 +9,7 @@ import {
   CommandInteraction,
   EmbedBuilder,
 } from "discord.js";
+import { ResponseType, responseEmbed } from "../../util.js";
 
 @Discord()
 @SlashGroup({
@@ -17,15 +18,10 @@ import {
 })
 @Guard(
   PermissionGuard(["ManageChannels"], {
-    embeds: [
-      new EmbedBuilder()
-        .setTitle("⚠️ Insufficient Permissions")
-        .setDescription(
-          "You need the `ManageChannels` permission to execute this command",
-        )
-        .setColor("Yellow")
-        .toJSON(),
-    ],
+    embeds: responseEmbed(
+      ResponseType.Permission,
+      "You need the `ManageChannels` permission to execute this command",
+    ),
   }),
 )
 export class BoardCreate {
@@ -73,27 +69,17 @@ export class BoardCreate {
 
     if (created) {
       interaction.editReply({
-        embeds: [
-          new EmbedBuilder()
-            .setTitle("✅ Board Created")
-            .setDescription(
-              `The board was created in ${channel} with ${threshold} reactions`,
-            )
-            .setColor("Green")
-            .toJSON(),
-        ],
+        embeds: responseEmbed(
+          ResponseType.Success,
+          `The board was created in ${channel} with ${threshold} reactions`,
+        ),
       });
     } else {
       interaction.editReply({
-        embeds: [
-          new EmbedBuilder()
-            .setTitle("✅ Board updated")
-            .setDescription(
-              `The board in this server was updated to: ${channel} with ${threshold} reactions`,
-            )
-            .setColor("Green")
-            .toJSON(),
-        ],
+        embeds: responseEmbed(
+          ResponseType.Success,
+          `The board in this server was updated to: ${channel} with ${threshold} reactions`,
+        ),
       });
     }
   }

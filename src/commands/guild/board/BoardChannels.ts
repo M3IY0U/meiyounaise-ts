@@ -12,9 +12,9 @@ import { BoardRepo } from "../../../db/BoardRepo.js";
 import {
   ApplicationCommandOptionType,
   Channel,
-  CommandInteraction,
-  EmbedBuilder,
+  CommandInteraction
 } from "discord.js";
+import { ResponseType, responseEmbed } from "../../util.js";
 
 enum Actions {
   add = "0",
@@ -30,15 +30,10 @@ enum Actions {
 })
 @Guard(
   PermissionGuard(["ManageChannels"], {
-    embeds: [
-      new EmbedBuilder()
-        .setTitle("⚠️ Insufficient Permissions")
-        .setDescription(
-          "You need the `ManageChannels` permission to execute this command",
-        )
-        .setColor("Yellow")
-        .toJSON(),
-    ],
+    embeds: responseEmbed(
+      ResponseType.Permission,
+      "You need the `ManageChannels` permission to execute this command",
+    ),
   }),
 )
 export class BoardChannels {
@@ -80,15 +75,10 @@ export class BoardChannels {
 
         this.repo.addBannedChannel(interaction.guildId || "", channel.id);
         interaction.editReply({
-          embeds: [
-            new EmbedBuilder()
-              .setTitle("✅ Channel Added")
-              .setDescription(
-                `Added <#${channel.id}> to the banlist for the board.`,
-              )
-              .setColor("Green")
-              .toJSON(),
-          ],
+          embeds: responseEmbed(
+            ResponseType.Success,
+            `Added <#${channel.id}> to the banlist for the board.`,
+          ),
         });
         break;
       case Actions.remove:
@@ -96,44 +86,31 @@ export class BoardChannels {
 
         this.repo.removeBannedChannel(interaction.guildId || "", channel.id);
         interaction.editReply({
-          embeds: [
-            new EmbedBuilder()
-              .setTitle("✅ Channel Removed")
-              .setDescription(
-                `Removed <#${channel.id}> from the banlist for the board.`,
-              )
-              .setColor("Green")
-              .toJSON(),
-          ],
+          embeds: responseEmbed(
+            ResponseType.Success,
+            `Removed <#${channel.id}> from the banlist for the board.`,
+          ),
         });
         break;
       case Actions.list:
         interaction.editReply({
-          embeds: [
-            new EmbedBuilder()
-              .setTitle(`🔷 Banned Channels in ${interaction.guild?.name}`)
-              .setDescription(
-                currentList.length
-                  ? currentList.map((id) => `<#${id}>`).join(", ")
-                  : "There are no banned channels for this board.",
-              )
-              .setColor("Blue")
-              .toJSON(),
-          ],
+          embeds: responseEmbed(
+            ResponseType.Info,
+            currentList.length
+              ? `Currently banned channels:\n${currentList
+                  .map((id) => `<#${id}>`)
+                  .join(", ")}`
+              : "There are no banned channels for this board.",
+          ),
         });
         break;
       case Actions.clear:
         this.repo.clearBannedChannels(interaction.guildId || "");
         interaction.editReply({
-          embeds: [
-            new EmbedBuilder()
-              .setTitle("✅ Banlist Cleared")
-              .setDescription(
-                "Cleared the banlist for the board. All channels are now allowed.",
-              )
-              .setColor("Green")
-              .toJSON(),
-          ],
+          embeds: responseEmbed(
+            ResponseType.Success,
+            "Cleared the banlist for the board. All channels are now allowed.",
+          ),
         });
         break;
     }
