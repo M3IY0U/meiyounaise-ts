@@ -5,6 +5,7 @@ import { BoardRepo } from "../../../db/BoardRepo.js";
 import {
   ApplicationCommandOptionType,
   Channel,
+  ChannelType,
   CommandInteraction,
 } from "discord.js";
 
@@ -38,20 +39,18 @@ export class BoardSetup {
   ) {
     await interaction.deferReply();
 
+    const chn = await channel.fetch();
     let err: [rip: boolean, msg: string] = [false, ""];
 
     if (interaction.channel?.isDMBased())
       err = [true, "Cannot create a board in a DM channel."];
 
-    if (!channel.isTextBased())
+    if (chn.type !== ChannelType.GuildText)
       err = [true, "Cannot create a board in a non-text channel."];
 
     if (threshold < 1) err = [true, "Threshold must be at least 1."];
 
-    if (err[0]) {
-      interaction.editReply({ content: err[1] });
-      return;
-    }
+    if (err[0]) throw new Error(err[1]);
 
     const created = await this.repo.upsertBoard(
       interaction.guildId || "",

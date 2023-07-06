@@ -1,5 +1,6 @@
 import { IntentsBitField, Message, Partials } from "discord.js";
 import { Client } from "discordx";
+import { handleError } from "./commands/util.js";
 
 export const Meiyounaise = new Client({
   intents: [
@@ -35,25 +36,22 @@ Meiyounaise.once("ready", async () => {
   );
 });
 
-Meiyounaise.on("messageCreate", (message) => {
-  if (message.content.startsWith("echo")) {
-    message.reply(message.content.split(" ").slice(1).join(" "));
-  }
-});
-
-Meiyounaise.on("interactionCreate", (interaction) => {
+Meiyounaise.on("interactionCreate", async (interaction) => {
   try {
-    Meiyounaise.executeInteraction(interaction);
+    await Meiyounaise.executeInteraction(interaction);
   } catch (e) {
-    interaction.channel?.send(`Something went wrong\n${e}`);
-    console.error(e);
+    handleError(interaction, e);
   }
 });
 
-Meiyounaise.on("messageCreate", (message: Message) => {
-  Meiyounaise.executeCommand(message);
+Meiyounaise.on("messageCreate", async (message: Message) => {
+  try {
+    await Meiyounaise.executeCommand(message);
+  } catch (e) {
+    handleError(message, e);
+  }
 });
 
-Meiyounaise.on("messageReactionAdd", (reaction, user) => {
-  Meiyounaise.executeReaction(reaction, user);
+Meiyounaise.on("messageReactionAdd", async (reaction, user) => {
+  await Meiyounaise.executeReaction(reaction, user);
 });

@@ -61,6 +61,9 @@ class NowPlaying extends LastCommand {
 
     const res = await this.lastClient.getRecentScrobbles(user.lastfm, 1);
 
+    if (!res.tracks.length || res.total === 0)
+      throw new Error(`No tracks found for user '${res.user}'`);
+
     const embed = makeEmbed(
       user.lastfm,
       res.tracks[0],
