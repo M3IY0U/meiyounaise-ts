@@ -40,7 +40,7 @@ Meiyounaise.on("interactionCreate", async (interaction) => {
   try {
     await Meiyounaise.executeInteraction(interaction);
   } catch (e) {
-    handleError(interaction, e);
+    await handleError(interaction, e);
   }
 });
 
@@ -48,7 +48,7 @@ Meiyounaise.on("messageCreate", async (message: Message) => {
   try {
     await Meiyounaise.executeCommand(message);
   } catch (e) {
-    handleError(message, e);
+    await handleError(message, e);
   }
 });
 
