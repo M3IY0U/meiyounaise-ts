@@ -1,14 +1,14 @@
 import { ArgsOf, Discord, On } from "discordx";
 import { Inject } from "typedi";
-import { MeiyounaiseDB } from "../../../db/MeiyounaiseDB";
 import { Client } from "discord.js";
+import { BoardRepo } from "../db/BoardRepo.js";
 
 @Discord()
 class GuildHandlers {
   @Inject("db")
-  protected db!: MeiyounaiseDB;
+  protected repo!: BoardRepo;
 
-  /* @On({ event: "messageReactionAdd" })
+  @On({ event: "messageReactionAdd" })
   async onReactionAdd([event]: ArgsOf<"messageReactionAdd">) {
     const thing = await event.fetch();
     console.log(thing);
@@ -18,5 +18,5 @@ class GuildHandlers {
   async onReactionRm([event]: ArgsOf<"messageReactionRemove">) {
     const thing = await event.fetch();
     console.log(thing);
-  } */
+  }
 }

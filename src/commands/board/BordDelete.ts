@@ -1,7 +1,7 @@
 import { ButtonComponent, Discord, Guard, Slash, SlashGroup } from "discordx";
 import { PermissionGuard } from "@discordx/utilities";
 import { Inject } from "typedi";
-import { BoardRepo } from "../../../db/BoardRepo.js";
+import { BoardRepo } from "../../db/BoardRepo.js";
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -11,7 +11,7 @@ import {
   EmbedBuilder,
   MessageActionRowComponentBuilder,
 } from "discord.js";
-import { ResponseType, responseEmbed } from "../../util.js";
+import { ResponseType, responseEmbed } from "../util.js";
 
 @Discord()
 @SlashGroup({
@@ -27,7 +27,7 @@ import { ResponseType, responseEmbed } from "../../util.js";
   }),
 )
 export class BoardDelete {
-  @Inject("boardrepo")
+  @Inject("boardRepo")
   protected repo!: BoardRepo;
 
   @Slash({

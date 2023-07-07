@@ -1,7 +1,7 @@
 import { Discord, Guard, Slash, SlashGroup, SlashOption } from "discordx";
 import { PermissionGuard } from "@discordx/utilities";
 import { Inject } from "typedi";
-import { BoardRepo } from "../../../db/BoardRepo.js";
+import { BoardRepo } from "../../db/BoardRepo.js";
 import {
   ApplicationCommandOptionType,
   Channel,
@@ -9,7 +9,7 @@ import {
   CommandInteraction,
   EmbedBuilder,
 } from "discord.js";
-import { ResponseType, responseEmbed } from "../../util.js";
+import { ResponseType, responseEmbed } from "../util.js";
 
 @Discord()
 @SlashGroup({
@@ -25,7 +25,7 @@ import { ResponseType, responseEmbed } from "../../util.js";
   }),
 )
 export class BoardCreate {
-  @Inject("boardrepo")
+  @Inject("boardRepo")
   protected repo!: BoardRepo;
 
   @Slash({

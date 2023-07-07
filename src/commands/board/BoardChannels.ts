@@ -8,13 +8,13 @@ import {
 } from "discordx";
 import { EnumChoice, PermissionGuard } from "@discordx/utilities";
 import { Inject } from "typedi";
-import { BoardRepo } from "../../../db/BoardRepo.js";
+import { BoardRepo } from "../../db/BoardRepo.js";
 import {
   ApplicationCommandOptionType,
   Channel,
   CommandInteraction,
 } from "discord.js";
-import { ResponseType, responseEmbed } from "../../util.js";
+import { ResponseType, responseEmbed } from "../util.js";
 
 enum Actions {
   add = "0",
@@ -37,7 +37,7 @@ enum Actions {
   }),
 )
 export class BoardChannels {
-  @Inject("boardrepo")
+  @Inject("boardRepo")
   protected repo!: BoardRepo;
 
   @Slash({

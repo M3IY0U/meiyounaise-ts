@@ -1,7 +1,7 @@
 import { ArgsOf, Discord, On } from "discordx";
 import { Inject } from "typedi";
 import { Message } from "discord.js";
-import { GuildRepo } from "../../db/GuildRepo.js";
+import { GuildRepo } from "../db/GuildRepo.js";
 
 @Discord()
 class GuildHandlers {
