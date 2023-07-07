@@ -12,7 +12,7 @@ import { BoardRepo } from "../../../db/BoardRepo.js";
 import {
   ApplicationCommandOptionType,
   Channel,
-  CommandInteraction
+  CommandInteraction,
 } from "discord.js";
 import { ResponseType, responseEmbed } from "../../util.js";
 

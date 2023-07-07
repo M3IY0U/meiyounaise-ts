@@ -57,4 +57,71 @@ export class GuildRepo extends MeiyounaiseDB {
       },
     });
   }
+
+  async setLeaveChannel(guildId: string, id: string) {
+    await this.client.guilds.update({
+      where: {
+        id: guildId,
+      },
+      data: {
+        leave_chn: id,
+      },
+    });
+  }
+
+  async setLeaveMsg(guildId: string, msg: string) {
+    await this.client.guilds.update({
+      where: {
+        id: guildId,
+      },
+      data: {
+        leave_msg: msg,
+      },
+    });
+  }
+
+  async disableFeature(guildId: string, feature: Feature) {
+    switch (feature) {
+      case Feature.JoinMessage:
+        await this.client.guilds.update({
+          where: {
+            id: guildId,
+          },
+          data: {
+            join_chn: "",
+            join_msg: "",
+          },
+        });
+
+        break;
+      case Feature.LeaveMessage:
+        await this.client.guilds.update({
+          where: {
+            id: guildId,
+          },
+          data: {
+            leave_chn: "",
+            leave_msg: "",
+          },
+        });
+        break;
+      case Feature.RepeatMessages:
+        await this.client.guilds.update({
+          where: {
+            id: guildId,
+          },
+          data: {
+            repeat_msg: 0,
+          },
+        });
+
+        break;
+    }
+  }
+}
+
+export enum Feature {
+  JoinMessage = "joinmessage",
+  LeaveMessage = "leavemessage",
+  RepeatMessages = "repeatmessages",
 }

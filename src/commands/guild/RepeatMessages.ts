@@ -2,8 +2,8 @@ import { PermissionGuard } from "@discordx/utilities";
 import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
 import { Discord, SlashGroup, Guard, SlashOption, Slash } from "discordx";
 import { Inject } from "typedi";
-import { GuildRepo } from "../../db/GuildRepo";
-import { ResponseType, responseEmbed } from "../util";
+import { GuildRepo } from "../../db/GuildRepo.js";
+import { ResponseType, responseEmbed } from "../util.js";
 
 @Discord()
 @SlashGroup({ name: "guild", description: "Manage guild related things." })
@@ -15,7 +15,7 @@ import { ResponseType, responseEmbed } from "../util";
     ),
   }),
 )
-export class GuildConfig {
+export class RepeatMessages {
   @Inject("guildRepo")
   private repo!: GuildRepo;
 
@@ -33,7 +33,7 @@ export class GuildConfig {
     amount: number,
     interaction: CommandInteraction,
   ) {
-    interaction.deferReply();
+    await interaction.deferReply();
 
     const guild = await this.repo.guildById(interaction.guildId || "");
     if (!guild) throw new Error("Guild not found");

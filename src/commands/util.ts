@@ -20,7 +20,7 @@ export async function polyReply(
   if (interaction instanceof Message) {
     await interaction.reply(toSend);
   } else {
-    if (!interaction.replied)
+    if (interaction.replied)
       await interaction.followUp({
         content: toSend.content,
         embeds: toSend.embeds,
@@ -68,12 +68,18 @@ export async function handleError(
 
   if (interaction instanceof AutocompleteInteraction) return;
 
-  await polyReply(
-    {
-      embeds: responseEmbed(ResponseType.Error, `\`\`\`${e}\`\`\``),
-    },
-    interaction,
-  );
+  if (interaction instanceof Message) {
+    // do nothing
+  } else if (interaction.replied || interaction.deferred)
+    try {
+      await interaction.deleteReply();
+    } catch (e) {
+      console.error(e);
+    }
+
+  interaction.channel?.send({
+    embeds: responseEmbed(ResponseType.Error, `\`\`\`${e}\`\`\``),
+  });
 }
 
 export enum ResponseType {

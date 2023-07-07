@@ -31,19 +31,19 @@ import { ResponseType, responseEmbed } from "../util.js";
     ),
   }),
 )
-export class JoinMessage {
+export class LeaveMessage {
   @Inject("guildRepo")
   private repo!: GuildRepo;
 
   @Slash({
-    name: "joinchannel",
-    description: "Set the channel the bot posts join messages in.",
+    name: "leavechannel",
+    description: "Set the channel the bot posts leave messages in.",
   })
   @SlashGroup("guild")
-  async joinChannel(
+  async leaveChannel(
     @SlashOption({
       name: "channel",
-      description: "The channel to post join messages in.",
+      description: "The channel to post leave messages in.",
       type: ApplicationCommandOptionType.Channel
     })
     channel: Channel,
@@ -58,39 +58,39 @@ export class JoinMessage {
       await interaction.editReply({
         embeds: responseEmbed(
           ResponseType.Info,
-          `Currently posting join messages in <#${guild?.join_msg}>.`,
+          `Currently posting leave messages in <#${guild?.leave_msg}>.`,
         ),
       });
     } else {
-      await this.repo.setJoinChannel(interaction.guildId || "", channel.id);
+      await this.repo.setLeaveChannel(interaction.guildId || "", channel.id);
       await interaction.editReply({
         embeds: responseEmbed(
           ResponseType.Success,
-          `Set the channel to post join messages in to <#${channel.id}>.`,
+          `Set the channel to post leave messages in to <#${channel.id}>.`,
         ),
       });
     }
   }
 
   @Slash({
-    name: "joinmsg",
-    description: "Set the message the bot posts when a user joins.",
+    name: "leavemsg",
+    description: "Set the message the bot posts when a user leaves.",
   })
   @SlashGroup("guild")
-  async joinMsg(interaction: CommandInteraction) {
+  async leaveMsg(interaction: CommandInteraction) {
     const guild = await this.repo.guildById(interaction.guildId || "");
     if (!guild) throw new Error("Guild not found");
 
     const modal = new ModalBuilder()
-      .setTitle("Join Message")
-      .setCustomId("joinmsg");
+      .setTitle("Leave Message")
+      .setCustomId("leavemsg");
 
     const messageInput = new TextInputBuilder()
-      .setValue(guild.join_msg || "")
-      .setCustomId("joinmsg_text")
+      .setValue(guild.leave_msg || "")
+      .setCustomId("leavemsg_text")
       .setLabel("Message")
       .setPlaceholder(
-        "Enter join message. [user] will be replaced by a mention of the user.",
+        "Enter leave message. [user] will be replaced by a mention of the user.",
       )
       .setStyle(TextInputStyle.Paragraph);
 
@@ -101,10 +101,10 @@ export class JoinMessage {
   }
 
   @ModalComponent({
-    id: "joinmsg",
+    id: "leavemsg",
   })
-  async joinMsgModal(interaction: ModalSubmitInteraction) {
-    const message = interaction.fields.getTextInputValue("joinmsg_text");
+  async leaveMsgModal(interaction: ModalSubmitInteraction) {
+    const message = interaction.fields.getTextInputValue("leavemsg_text");
 
     const guild = await this.repo.guildById(interaction.guildId || "");
 
@@ -112,15 +112,15 @@ export class JoinMessage {
       await interaction.reply({
         embeds: responseEmbed(
           ResponseType.Info,
-          `Current join message: \`${guild?.join_msg}\``,
+          `Current leave message: \`${guild?.leave_msg}\``,
         ),
       });
     } else {
-      await this.repo.setJoinMsg(interaction.guildId || "", message);
+      await this.repo.setLeaveMsg(interaction.guildId || "", message);
       await interaction.reply({
         embeds: responseEmbed(
           ResponseType.Success,
-          `Set the join message to \`${message}\``,
+          `Set the leave message to \`${message}\``,
         ),
       });
     }
