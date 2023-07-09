@@ -1,6 +1,7 @@
 import { IntentsBitField, Message, Partials } from "discord.js";
 import { Client } from "discordx";
 import { handleError } from "./commands/util.js";
+import { BoardHandlers } from "./handlers/BoardHandlers.js";
 
 export const Meiyounaise = new Client({
   intents: [
@@ -27,9 +28,9 @@ export const Meiyounaise = new Client({
 
 Meiyounaise.once("ready", async () => {
   console.log("Clearing commands...");
-  await Meiyounaise.clearApplicationCommands("328353999508209678");
+  //await Meiyounaise.clearApplicationCommands("328353999508209678");
   console.log("Registering commands...");
-  await Meiyounaise.initApplicationCommands();
+  //await Meiyounaise.initApplicationCommands();
 
   console.log(
     `Logged in as ${Meiyounaise.user?.username} (${Meiyounaise.user?.id})`,
@@ -52,6 +53,10 @@ Meiyounaise.on("messageCreate", async (message: Message) => {
   }
 });
 
-Meiyounaise.on("messageReactionAdd", async (reaction, user) => {
-  await Meiyounaise.executeReaction(reaction, user);
+Meiyounaise.on("messageReactionAdd", (reaction, user) => {
+  BoardHandlers.onReactionAdd([reaction, user]);
+});
+
+Meiyounaise.on("messageReactionRemove", (reaction, user) => {
+  BoardHandlers.onReactionRm([reaction, user]);
 });

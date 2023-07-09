@@ -94,4 +94,34 @@ export class BoardRepo extends MeiyounaiseDB {
       },
     });
   }
+
+  async getMessage(id: string) {
+    return await this.client.messages.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async addMessage(id: string) {
+    await this.client.messages.create({
+      data: {
+        id,
+        idInBoard: "0",
+        hasBeenSent: false,
+      },
+    });
+  }
+
+  async updateMessage(id: string, idInBoard: string, hasBeenSent: boolean) {
+    await this.client.messages.update({
+      where: {
+        id,
+      },
+      data: {
+        idInBoard,
+        hasBeenSent,
+      },
+    });
+  }
 }
