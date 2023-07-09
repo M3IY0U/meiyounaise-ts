@@ -1,18 +1,16 @@
-import { ArgsOf, Discord, On } from "discordx";
-import { Inject } from "typedi";
+import { ArgsOf } from "discordx";
+import { Container } from "typedi";
 import { Message } from "discord.js";
 import { GuildRepo } from "../db/GuildRepo.js";
 
-@Discord()
-class GuildHandlers {
-  @Inject("guildRepo")
-  protected repo!: GuildRepo;
+export class GuildHandlers {
+  private static messages: {
+    [id: string]: [msg: Message, count: number];
+  } = {};
 
-  private messages: { [id: string]: [msg: Message, count: number] } = {};
-
-  @On({ event: "guildMemberAdd" })
-  async onMemberAdd([event]: ArgsOf<"guildMemberAdd">) {
-    const guild = await this.repo.guildById(event.guild.id);
+  static async onMemberAdd([event]: ArgsOf<"guildMemberAdd">) {
+    const repo: GuildRepo = Container.get("guildRepo");
+    const guild = await repo.guildById(event.guild.id);
     if (!guild || !guild.join_chn || !guild.join_msg) return;
 
     const channel = await event.guild.channels.fetch(guild.join_chn);
@@ -23,9 +21,9 @@ class GuildHandlers {
     );
   }
 
-  @On({ event: "guildMemberRemove" })
-  async onMemberRemove([event]: ArgsOf<"guildMemberRemove">) {
-    const guild = await this.repo.guildById(event.guild.id);
+  static async onMemberRemove([event]: ArgsOf<"guildMemberRemove">) {
+    const repo: GuildRepo = Container.get("guildRepo");
+    const guild = await repo.guildById(event.guild.id);
     if (!guild || !guild.leave_chn || !guild.leave_msg) return;
 
     const channel = await event.guild.channels.fetch(guild.leave_chn);
@@ -36,11 +34,11 @@ class GuildHandlers {
     );
   }
 
-  @On({ event: "messageCreate" })
-  async repeatMessage([msg]: ArgsOf<"messageCreate">) {
+  static async repeatMessage([msg]: ArgsOf<"messageCreate">) {
     if (msg.author.bot) return;
 
-    const guild = await this.repo.guildById(msg.guildId || "");
+    const repo: GuildRepo = Container.get("guildRepo");
+    const guild = await repo.guildById(msg.guildId || "");
     if (!guild || guild.repeat_msg === 0) return;
 
     // init entry if it doesn't exist
@@ -63,7 +61,7 @@ class GuildHandlers {
     // send the message if the count is reached
     if (this.messages[msg.channelId][1] >= guild.repeat_msg) {
       await msg.channel.send(msg.content);
-      this.messages[msg.channelId] = [msg, 1];
+      this.messages[msg.channelId] = [msg, 0];
     }
   }
 }

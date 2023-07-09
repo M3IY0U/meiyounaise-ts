@@ -7,7 +7,6 @@ import {
   Message,
   MessageReaction,
   TextBasedChannel,
-  User,
 } from "discord.js";
 import { BoardRepo } from "../db/BoardRepo.js";
 import { maskedUrl } from "../commands/util.js";
