@@ -28,3 +28,9 @@ model users {
   id     Decimal @id
   lastfm String?
 }
+
+model messages {
+  id          String  @id @unique
+  idInBoard   String  @unique
+  hasBeenSent Boolean @default(false)
+}
