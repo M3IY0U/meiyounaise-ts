@@ -15,6 +15,7 @@ import {
   SlashOption,
 } from "discordx";
 import { request } from "undici";
+import { respond } from "../../util/general";
 
 enum Voice {
   // ENGLISH VOICES
@@ -66,6 +67,7 @@ export class TextToSpeech {
     voice: Voice,
     interaction: CommandInteraction,
   ) {
+    await interaction.deferReply();
     await this.tts(text, interaction, voice);
   }
 
@@ -106,18 +108,21 @@ export class TextToSpeech {
       method: "POST",
     });
 
-    await r.body.json().then((json) => {
+    await r.body.json().then(async (json) => {
       const vstr = json["data"]["v_str"];
       const decoded = Buffer.from(`data:audio/mpeg;base64,${vstr}`, "base64");
 
-      interaction.reply({
-        files: [
-          {
-            attachment: decoded,
-            name: "tts.mp3",
-          },
-        ],
-      });
+      await respond(
+        {
+          files: [
+            {
+              attachment: decoded,
+              name: "tts.mp3",
+            },
+          ],
+        },
+        interaction,
+      );
     });
   }
 }
