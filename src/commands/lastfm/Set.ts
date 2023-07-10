@@ -16,7 +16,7 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import { ResponseType, polyReply, responseEmbed } from "../../util/general.js";
+import { ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
 
 @Discord()
@@ -58,7 +58,7 @@ export class SetUser extends LastCommand {
   ) {
     if (!username) {
       const lastfm = (await this.repo.userById(user.id))?.lastfm;
-      return await polyReply(
+      return await respond(
         {
           embeds: responseEmbed(
             ResponseType.Info,
@@ -72,9 +72,9 @@ export class SetUser extends LastCommand {
     }
 
     if (username.match(/[^A-z0-9_-]/))
-      return await polyReply({ content: "Invalid username" }, interaction);
+      return await respond({ content: "Invalid username" }, interaction);
     await this.repo.setLast(user.id, username).then(async () => {
-      await polyReply(
+      await respond(
         {
           embeds: responseEmbed(
             ResponseType.Success,

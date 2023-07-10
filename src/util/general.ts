@@ -8,31 +8,7 @@ import {
   ModalSubmitInteraction,
 } from "discord.js";
 
-export async function polyReply(
-  toSend: MessageReplyOptions,
-  interaction:
-    | CommandInteraction
-    | Message
-    | MessageComponentInteraction
-    | ModalSubmitInteraction,
-) {
-  if (interaction instanceof Message) {
-    await interaction.reply(toSend);
-  } else {
-    if (interaction.replied)
-      await interaction.followUp({
-        content: toSend.content,
-        embeds: toSend.embeds,
-      });
-    else
-      await interaction.reply({
-        content: toSend.content,
-        embeds: toSend.embeds,
-      });
-  }
-}
-
-export async function polyEdit(
+export async function respond(
   toSend: MessageReplyOptions,
   interaction:
     | CommandInteraction

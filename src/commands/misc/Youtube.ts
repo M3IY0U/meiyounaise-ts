@@ -17,6 +17,7 @@ import {
 } from "discordx";
 import * as yts from "usetube";
 import { Pagination, PaginationType } from "@discordx/pagination";
+import { stripText } from "../../util/general.js";
 
 @Discord()
 export class YouTube {
@@ -55,7 +56,11 @@ export class YouTube {
   })
   async ytContext(interaction: MessageContextMenuCommandInteraction) {
     await interaction.deferReply();
-    await this.ytSearch(interaction.targetMessage.content, interaction);
+
+    // handle now playing embeds
+    const query = this.buildQuery(interaction.targetMessage);
+
+    await this.ytSearch(query, interaction);
   }
 
   // command logic
@@ -82,5 +87,19 @@ export class YouTube {
     });
 
     await pagination.send();
+  }
+
+  buildQuery(msg: Message) {
+    if (msg.author.id !== msg.client.user.id || msg.embeds.length !== 1)
+      return msg.content;
+
+    const [title, artist] = [
+      msg.embeds[0].description?.split("\n")[0].match(/\[(.+)\]/),
+      msg.embeds[0].fields[0].value.match(/\[(.+)\]/),
+    ];
+
+    if (!title || !artist) return msg.content;
+
+    return `${stripText(artist[0])} - ${stripText(title[0])}`;
   }
 }
