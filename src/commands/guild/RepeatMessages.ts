@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
 import { Discord, SlashGroup, Guard, SlashOption, Slash } from "discordx";
 import { Inject } from "typedi";
 import { GuildRepo } from "../../db/GuildRepo.js";
-import { ResponseType, responseEmbed } from "../util.js";
+import { ResponseType, responseEmbed } from "../../util/general.js";
 
 @Discord()
 @SlashGroup({ name: "guild", description: "Manage guild related things." })

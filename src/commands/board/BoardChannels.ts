@@ -14,7 +14,7 @@ import {
   Channel,
   CommandInteraction,
 } from "discord.js";
-import { ResponseType, responseEmbed } from "../util.js";
+import { ResponseType, responseEmbed } from "../../util/general.js";
 
 enum Actions {
   add = "0",

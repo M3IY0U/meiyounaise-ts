@@ -1,6 +1,6 @@
 import { IntentsBitField, Message, Partials } from "discord.js";
 import { Client } from "discordx";
-import { handleError } from "./commands/util.js";
+import { handleError } from "./handlers/Errors.js";
 import { BoardHandlers } from "./handlers/BoardHandlers.js";
 import { GuildHandlers } from "./handlers/GuildHandlers.js";
 
@@ -39,6 +39,12 @@ Meiyounaise.once("ready", async () => {
 });
 
 Meiyounaise.on("interactionCreate", async (interaction) => {
+  // do not execute interaction, if it's pagination (avoid warning: select-menu/button interaction not found)
+  if (interaction.isButton() || interaction.isStringSelectMenu()) {
+    if (interaction.customId.startsWith("discordx@pagination@")) {
+      return;
+    }
+  }
   try {
     await Meiyounaise.executeInteraction(interaction);
   } catch (e) {

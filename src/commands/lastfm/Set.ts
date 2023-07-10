@@ -16,7 +16,7 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import { ResponseType, polyReply, responseEmbed } from "../util.js";
+import { ResponseType, polyReply, responseEmbed } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
 
 @Discord()

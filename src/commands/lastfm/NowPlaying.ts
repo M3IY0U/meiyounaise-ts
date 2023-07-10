@@ -14,7 +14,7 @@ import {
   Slash,
   SlashOption,
 } from "discordx";
-import { maskedUrl, polyReply } from "../util.js";
+import { maskedUrl, polyReply } from "../../util/general.js";
 import { LastTrack } from "./last-util/LastTypes.js";
 import { UnknownAlbumArt, cleanLastUrl } from "./last-util/LastUtil.js";
 import { LastCommand } from "./last-util/LastCommand.js";

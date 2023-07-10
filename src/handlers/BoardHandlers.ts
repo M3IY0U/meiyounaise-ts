@@ -9,7 +9,7 @@ import {
   TextBasedChannel,
 } from "discord.js";
 import { BoardRepo } from "../db/BoardRepo.js";
-import { maskedUrl } from "../commands/util.js";
+import { maskedUrl } from "../util/general.js";
 
 export class BoardHandlers {
   static async onReactionAdd([reaction, user]: ArgsOf<"messageReactionAdd">) {
@@ -139,7 +139,7 @@ export class BoardHandlers {
     const embed = new EmbedBuilder()
       .setAuthor({
         name: `Message from ${
-          member?.displayName ?? msg.member?.nickname ?? msg.author.username
+          msg.member?.nickname ?? member?.displayName ?? msg.author.username
         }`,
       })
       .setThumbnail(
