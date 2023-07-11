@@ -1,8 +1,8 @@
 import { Service } from "typedi";
-import { MeiyounaiseDB } from "./MeiyounaiseDB.js";
+import MeiyounaiseDB from "./MeiyounaiseDB.js";
 
 @Service("guildRepo")
-export class GuildRepo extends MeiyounaiseDB {
+export default class GuildRepo extends MeiyounaiseDB {
   async guildById(id: string) {
     let guild = await this.client.guilds.findUnique({
       where: {

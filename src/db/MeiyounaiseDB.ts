@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Service } from "typedi";
 
 @Service("db")
-export class MeiyounaiseDB {
+export default class MeiyounaiseDB {
   protected client = new PrismaClient();
 
   async userById(id: string) {

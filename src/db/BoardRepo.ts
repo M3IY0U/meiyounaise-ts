@@ -1,8 +1,8 @@
 import { Service } from "typedi";
-import { MeiyounaiseDB } from "./MeiyounaiseDB.js";
+import MeiyounaiseDB from "./MeiyounaiseDB.js";
 
 @Service("boardRepo")
-export class BoardRepo extends MeiyounaiseDB {
+export default class BoardRepo extends MeiyounaiseDB {
   async upsertBoard(guildId: string, channelId: string, threshold: number) {
     const exist = await this.client.boards.findUnique({
       where: {
