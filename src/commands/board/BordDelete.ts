@@ -1,7 +1,7 @@
 import { ButtonComponent, Discord, Guard, Slash, SlashGroup } from "discordx";
 import { PermissionGuard } from "@discordx/utilities";
 import { Inject } from "typedi";
-import { BoardRepo } from "../../db/BoardRepo.js";
+import BoardRepo from "../../db/BoardRepo.js";
 import {
   ActionRowBuilder,
   ButtonBuilder,

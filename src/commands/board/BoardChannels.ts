@@ -8,7 +8,7 @@ import {
 } from "discordx";
 import { EnumChoice, PermissionGuard } from "@discordx/utilities";
 import { Inject } from "typedi";
-import { BoardRepo } from "../../db/BoardRepo.js";
+import BoardRepo from "../../db/BoardRepo.js";
 import {
   ApplicationCommandOptionType,
   Channel,

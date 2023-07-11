@@ -1,5 +1,6 @@
 import { Service } from "typedi";
 import MeiyounaiseDB from "./MeiyounaiseDB.js";
+import { Feature } from "../util/Feature.js";
 
 @Service("guildRepo")
 export default class GuildRepo extends MeiyounaiseDB {
@@ -118,10 +119,4 @@ export default class GuildRepo extends MeiyounaiseDB {
         break;
     }
   }
-}
-
-export enum Feature {
-  JoinMessage = "joinmessage",
-  LeaveMessage = "leavemessage",
-  RepeatMessages = "repeatmessages",
 }

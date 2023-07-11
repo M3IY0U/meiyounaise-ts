@@ -18,7 +18,7 @@ import {
   ModalComponent,
 } from "discordx";
 import { Inject } from "typedi";
-import { GuildRepo } from "../../db/GuildRepo.js";
+import GuildRepo from "../../db/GuildRepo.js";
 import { ResponseType, responseEmbed } from "../../util/general.js";
 
 @Discord()

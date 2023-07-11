@@ -5,7 +5,7 @@ import {
   AutocompleteInteraction,
   ModalSubmitInteraction,
 } from "discord.js";
-import { responseEmbed, ResponseType } from "../util/general";
+import { responseEmbed, ResponseType } from "../util/general.js";
 
 export async function handleError(
   interaction:

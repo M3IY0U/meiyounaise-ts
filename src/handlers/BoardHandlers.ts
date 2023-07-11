@@ -8,7 +8,7 @@ import {
   MessageReaction,
   TextBasedChannel,
 } from "discord.js";
-import { BoardRepo } from "../db/BoardRepo.js";
+import BoardRepo from "../db/BoardRepo.js";
 import { maskedUrl } from "../util/general.js";
 
 export class BoardHandlers {

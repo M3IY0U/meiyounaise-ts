@@ -1,7 +1,7 @@
 import { ArgsOf } from "discordx";
 import { Container } from "typedi";
 import { Message } from "discord.js";
-import { GuildRepo } from "../db/GuildRepo.js";
+import GuildRepo from "../db/GuildRepo.js";
 
 export class GuildHandlers {
   private static messages: {

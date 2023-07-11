@@ -9,8 +9,9 @@ import {
   SlashChoice,
 } from "discordx";
 import { Inject } from "typedi";
-import { Feature, GuildRepo } from "../../db/GuildRepo.js";
+import GuildRepo from "../../db/GuildRepo.js";
 import { ResponseType, responseEmbed } from "../../util/general.js";
+import { Feature } from "../../util/Feature.js";
 
 @Discord()
 @SlashGroup({ name: "guild", description: "Manage guild related things." })

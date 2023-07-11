@@ -2,7 +2,7 @@ import { PermissionGuard } from "@discordx/utilities";
 import { CommandInteraction, EmbedBuilder } from "discord.js";
 import { Discord, SlashGroup, Guard, Slash } from "discordx";
 import { Inject } from "typedi";
-import { GuildRepo } from "../../db/GuildRepo.js";
+import GuildRepo from "../../db/GuildRepo.js";
 import { ResponseType, responseEmbed } from "../../util/general.js";
 
 @Discord()
