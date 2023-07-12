@@ -17,7 +17,7 @@ import {
 } from "discordx";
 import * as yts from "usetube";
 import { Pagination, PaginationType } from "@discordx/pagination";
-import { stripText } from "../../util/general.js";
+import { silently, stripText } from "../../util/general.js";
 
 @Discord()
 export class YouTube {
@@ -65,8 +65,8 @@ export class YouTube {
 
   // command logic
   async ytSearch(query: string, interaction: CommandInteraction | Message) {
-    const res = await yts.searchVideo(query);
-    if (res.videos.length === 0) {
+    const res = await silently(yts.searchVideo(query));
+    if (!res || res.videos.length === 0) {
       interaction.reply("No videos found!");
       return;
     }

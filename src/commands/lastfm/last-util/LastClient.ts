@@ -1,6 +1,8 @@
 import { Service } from "typedi";
 import { request } from "undici";
-import { LastTrack, RecentResponse } from "./LastTypes.js";
+import { LastTrack, RecentResponse } from "./types/RecentResponse.js";
+import { Album, AlbumResponse } from "./types/AlbumResponse.js";
+import { TimeSpan } from "./types/general.js";
 
 @Service("lc")
 export class LastClient {
@@ -46,6 +48,29 @@ export class LastClient {
       }),
       total: json.recenttracks["@attr"].total,
       user: json.recenttracks["@attr"].user,
+    };
+  }
+
+  async getTopAlbums(user: string, timespan: TimeSpan): Promise<AlbumResponse> {
+    const res = await request(
+      `http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${user}&api_key=${process.env.LAST_KEY}&format=json&limit=10&period=${timespan}`,
+    );
+
+    const json = await res.body.json();
+
+    return {
+      // rome-ignore lint/suspicious/noExplicitAny: <explanation>
+      albums: json.topalbums.album.map((album: any) => {
+        // fix rank
+        album.rank = parseInt(album["@attr"].rank);
+        // fix image
+        album.image = album.image[3]["#text"];
+        return album as Album;
+      }),
+      meta: {
+        user: json.topalbums["@attr"].user,
+        total: json.topalbums["@attr"].total,
+      },
     };
   }
 }

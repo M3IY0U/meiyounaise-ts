@@ -15,7 +15,7 @@ import {
   SlashOption,
 } from "discordx";
 import { maskedUrl, respond } from "../../util/general.js";
-import { LastTrack } from "./last-util/LastTypes.js";
+import { LastTrack } from "./last-util/types/RecentResponse.js";
 import { UnknownAlbumArt, cleanLastUrl } from "./last-util/LastUtil.js";
 import { LastCommand } from "./last-util/LastCommand.js";
 
@@ -52,17 +52,15 @@ class NowPlaying extends LastCommand {
   }
   // command logic
   async nowPlaying(userId: string, interaction: CommandInteraction | Message) {
-    const user = await this.repo.userById(userId);
+    const lastfm = await this.tryGetLast(userId);
 
-    if (!user?.lastfm) throw new Error("No last.fm username set");
-
-    const res = await this.lastClient.getRecentScrobbles(user.lastfm, 1);
+    const res = await this.lastClient.getRecentScrobbles(lastfm, 1);
 
     if (!res.tracks.length || res.total === 0)
       throw new Error(`No tracks found for user '${res.user}'`);
 
     const embed = makeEmbed(
-      user.lastfm,
+      lastfm,
       res.tracks[0],
       res.total,
       interaction instanceof CommandInteraction

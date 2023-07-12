@@ -7,4 +7,10 @@ export abstract class LastCommand {
   protected repo!: LastRepo;
   @Inject("lc")
   protected lastClient!: LastClient;
+
+  protected async tryGetLast(userId: string) {
+    const user = await this.repo.userById(userId);
+    if (!user?.lastfm) throw new Error("No last.fm username set");
+    return user.lastfm;
+  }
 }

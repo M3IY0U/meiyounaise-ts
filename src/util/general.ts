@@ -69,3 +69,9 @@ export function responseEmbed(type: ResponseType, content: string) {
       .toJSON(),
   ];
 }
+
+export async function silently<T>(p?: Promise<T>) {
+  try {
+      return await p;
+  } catch { }
+}

@@ -15,7 +15,7 @@ import {
   SlashOption,
 } from "discordx";
 import { request } from "undici";
-import { respond } from "../../util/general";
+import { respond } from "../../util/general.js";
 
 enum Voice {
   // ENGLISH VOICES
