@@ -1,44 +1,19 @@
 import { Album } from "../last-util/types/AlbumResponse.js";
 import { createCanvas, loadImage, registerFont } from "canvas";
+import { drawStrokedText, fitString } from "./chart-util.js";
+
 export class AlbumChartService {
-  static albumSize = 300;
+  private static albumSize = 300;
+
   static async renderChart(albums: Album[]) {
-    function fitString(str: string, maxWidth: number) {
-      let { width } = ctx.measureText(str);
-      const ellipsis = "…";
-      const ellipsisWidth = ctx.measureText(ellipsis).width;
-      if (width <= maxWidth || width <= ellipsisWidth) {
-        return str;
-      } else {
-        let len = str.length;
-        while (width >= maxWidth - ellipsisWidth && len-- > 0) {
-          // rome-ignore lint/style/noParameterAssign: no it's not confusing mr rome
-          str = str.substring(0, len);
-          ({ width } = ctx.measureText(str));
-        }
-        return str + ellipsis;
-      }
-    }
-
-    function drawStrokedText(text: string, x: number, y: number) {
-      ctx.save();
-      ctx.strokeStyle = "black";
-      ctx.lineWidth = 5;
-      ctx.lineJoin = "round";
-      ctx.miterLimit = 2;
-      ctx.strokeText(text, x, y);
-      ctx.fillText(text, x, y);
-      ctx.restore();
-    }
-
-    registerFont("./assets/Baloo2.ttf", { family: "Baloo 2", weight: "bold" });
+    registerFont("./assets/BalooThambi2.ttf", { family: "Baloo Thambi 2" })
     const canvas = createCanvas(
       Math.min(albums.length * this.albumSize, 1500),
       Math.ceil((albums.length / 5) * this.albumSize),
     );
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "#000000";
-    ctx.font = "bold 25px Baloo 2";
+    ctx.font = "30px Baloo Thambi 2";
 
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -49,25 +24,35 @@ export class AlbumChartService {
     ctx.fillStyle = "white";
 
     for (const album of albums) {
+      // draw cover art
       const image = await loadImage(album.image);
       ctx.drawImage(image, x, y, this.albumSize, this.albumSize);
 
+      // draw album name
       drawStrokedText(
-        fitString(album.name, this.albumSize - 10),
+        fitString(album.name, this.albumSize - 10, ctx),
         x + 5,
         y + 20,
-      );
-      drawStrokedText(
-        fitString(album.artist.name, this.albumSize - 10),
-        x + 5,
-        y + 45,
-      );
-      drawStrokedText(
-        fitString(`${album.playcount} Plays`, this.albumSize - 10),
-        x + 5,
-        y + 70,
+        ctx,
       );
 
+      // draw artist name
+      drawStrokedText(
+        fitString(album.artist.name, this.albumSize - 10, ctx),
+        x + 5,
+        y + 45,
+        ctx,
+      );
+
+      // draw playcount
+      drawStrokedText(
+        fitString(`${album.playcount} Plays`, this.albumSize - 10, ctx),
+        x + 5,
+        y + 70,
+        ctx,
+      );
+
+      // move coordinates
       x += this.albumSize;
       if (x >= 1500) {
         x = 0;
@@ -75,8 +60,6 @@ export class AlbumChartService {
       }
     }
 
-    ctx.stroke();
-    ctx.fill();
     return canvas.toBuffer("image/png");
   }
 }

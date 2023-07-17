@@ -21,14 +21,15 @@
     "discord.js": "^14.11.0",
     "discordx": "^11.7.6",
     "dotenv": "^16.3.1",
+    "got": "^12.6.1",
     "markov-catena": "^1.0.0",
     "reflect-metadata": "^0.1.13",
+    "sharp": "^0.32.3",
     "typedi": "^0.10.0",
-    "undici": "^5.22.1",
     "usetube": "^2.2.7"
   },
   "devDependencies": {
-    "@types/node": "^20.3.3",
+    "@types/node": "^20.4.2",
     "@types/usetube": "^2.1.0",
     "nodemon": "^2.0.22",
     "prisma": "^4.16.2",

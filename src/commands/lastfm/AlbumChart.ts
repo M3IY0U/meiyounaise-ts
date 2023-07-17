@@ -49,6 +49,7 @@ class AlbumChart extends LastCommand {
     description: "Get your last.fm album chart.",
   })
   async simpleAlbumChart(command: SimpleCommandMessage) {
+    await command.message.channel.sendTyping();
     await this.albumChart(
       command.message.author.id,
       TimeSpan.Week,

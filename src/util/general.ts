@@ -72,6 +72,11 @@ export function responseEmbed(type: ResponseType, content: string) {
 
 export async function silently<T>(p?: Promise<T>) {
   try {
-      return await p;
-  } catch { }
+    return await p;
+  } catch {}
+}
+
+export interface gr {
+  // rome-ignore lint/suspicious/noExplicitAny: mfs really typed their shit as unknown so i gotta use some goofy ass interface
+  [x: string]: unknown | any;
 }

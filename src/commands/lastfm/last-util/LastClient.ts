@@ -1,8 +1,9 @@
 import { Service } from "typedi";
-import { request } from "undici";
 import { LastTrack, RecentResponse } from "./types/RecentResponse.js";
 import { Album, AlbumResponse } from "./types/AlbumResponse.js";
 import { TimeSpan } from "./types/general.js";
+import got from "got";
+import { gr } from "../../../util/general.js";
 
 @Service("lc")
 export class LastClient {
@@ -16,11 +17,9 @@ export class LastClient {
     const fromUnix = from ? Math.floor(from.getTime() / 1000) : undefined;
     const toUnix = to ? Math.floor(to.getTime() / 1000) : undefined;
 
-    const res = await request(
+    const json = await got(
       `http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${user}&extended=1&api_key=${process.env.LAST_KEY}&format=json&limit=${limit}&page=${page}&from=${fromUnix}&to=${toUnix}`,
-    );
-
-    const json = await res.body.json();
+    ).json<gr>();
 
     return {
       // rome-ignore lint/suspicious/noExplicitAny: this mf definitely is an any
@@ -52,11 +51,9 @@ export class LastClient {
   }
 
   async getTopAlbums(user: string, timespan: TimeSpan): Promise<AlbumResponse> {
-    const res = await request(
-      `http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${user}&api_key=${process.env.LAST_KEY}&format=json&limit=10&period=${timespan}`,
-    );
-
-    const json = await res.body.json();
+    const json = await got(
+      `http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${user}&api_key=${process.env.LAST_KEY}&format=json&limit=25&period=${timespan}`,
+    ).json<gr>();
 
     return {
       // rome-ignore lint/suspicious/noExplicitAny: <explanation>
