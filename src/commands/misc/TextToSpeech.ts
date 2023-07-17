@@ -14,9 +14,8 @@ import {
   SlashChoice,
   SlashOption,
 } from "discordx";
+import { request } from "undici";
 import { respond } from "../../util/general.js";
-import got from "got";
-import { gr } from "../../util/general.js";
 
 enum Voice {
   // ENGLISH VOICES
@@ -100,31 +99,30 @@ export class TextToSpeech {
       .replaceAll("+", "plus")
       .replaceAll(" ", "+")
       .replaceAll("&", "and")}&speaker_map_type=0&aid=1233`;
+    const r = await request(url, {
+      headers: {
+        "User-Agent":
+          "com.zhiliaoapp.musically/2022600030 (Linux; U; Android 7.1.2; es_ES; SM-G988N; Build/NRD90M;tt-ok/3.12.13.1)",
+        Cookie: `sessionid=${process.env.TIKTOK_SESSION};`,
+      },
+      method: "POST",
+    });
 
-    await got
-      .post(url, {
-        headers: {
-          "User-Agent":
-            "com.zhiliaoapp.musically/2022600030 (Linux; U; Android 7.1.2; es_ES; SM-G988N; Build/NRD90M;tt-ok/3.12.13.1)",
-          Cookie: `sessionid=${process.env.TIKTOK_SESSION};`,
+    await r.body.json().then(async (json) => {
+      const vstr = json["data"]["v_str"];
+      const decoded = Buffer.from(`data:audio/mpeg;base64,${vstr}`, "base64");
+
+      await respond(
+        {
+          files: [
+            {
+              attachment: decoded,
+              name: "tts.mp3",
+            },
+          ],
         },
-      })
-      .json<gr>()
-      .then(async (json) => {
-        const vstr = json["data"]["v_str"];
-        const decoded = Buffer.from(`data:audio/mpeg;base64,${vstr}`, "base64");
-
-        await respond(
-          {
-            files: [
-              {
-                attachment: decoded,
-                name: "tts.mp3",
-              },
-            ],
-          },
-          interaction,
-        );
-      });
+        interaction,
+      );
+    });
   }
 }
