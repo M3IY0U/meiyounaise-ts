@@ -66,7 +66,7 @@ class AlbumChart extends LastCommand {
 
     const res = await this.lastClient.getTopAlbums(user, timespan);
 
-    respond(
+    await respond(
       {
         files: [await AlbumChartService.renderChart(res.albums)],
       },

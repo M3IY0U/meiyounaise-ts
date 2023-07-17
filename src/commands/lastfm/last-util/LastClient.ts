@@ -53,7 +53,7 @@ export class LastClient {
 
   async getTopAlbums(user: string, timespan: TimeSpan): Promise<AlbumResponse> {
     const res = await request(
-      `http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${user}&api_key=${process.env.LAST_KEY}&format=json&limit=10&period=${timespan}`,
+      `http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${user}&api_key=${process.env.LAST_KEY}&format=json&limit=25&period=${timespan}`,
     );
 
     const json = await res.body.json();
