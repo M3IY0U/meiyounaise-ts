@@ -1,0 +1,162 @@
+import {
+  ApplicationCommandOptionType,
+  CommandInteraction,
+  EmbedBuilder,
+  Message,
+  User,
+} from "discord.js";
+import {
+  Discord,
+  SimpleCommand,
+  SimpleCommandMessage,
+  SimpleCommandOption,
+  SimpleCommandOptionType,
+  Slash,
+  SlashOption,
+} from "discordx";
+import { LastCommand } from "./last-util/LastCommand.js";
+import {
+  getUserAvatar,
+  getUserName,
+  maskedUrl,
+  respond,
+} from "../../util/general.js";
+import { UnknownAlbumArt, getArtistImage } from "./last-util/LastUtil.js";
+
+@Discord()
+class Streak extends LastCommand {
+  // slash handler
+  @Slash({
+    name: "streak",
+    description: "Get your current last.fm streak.",
+  })
+  async slashStreak(
+    @SlashOption({
+      name: "user", 
+      description: "Whose streaks to check", 
+      type: ApplicationCommandOptionType.User,
+      required: false}) user: User,
+    interaction: CommandInteraction,
+  ) {
+    await interaction.deferReply();
+    await this.streak(user.id ?? interaction.user.id, interaction);
+  }
+  // simple handler
+  @SimpleCommand({
+    name: "streak",
+    description: "Get your current last.fm streak.",
+  })
+  async simpleStreak(
+    @SimpleCommandOption({name: "user", type: SimpleCommandOptionType.User}) user:
+      | User
+      | undefined,
+    command: SimpleCommandMessage,
+  ) {
+    await command.message.channel.sendTyping();
+
+    await this.streak(user?.id ?? command.message.author.id, command.message);
+  }
+  // command logic
+  async streak(userId: string, interaction: CommandInteraction | Message) {
+    const last = await this.tryGetLast(userId);
+
+    const streaks = await this.getStreaks(last);
+
+    if (!streaks) {
+      await respond(
+        {
+          content: `No streaks found for <@${userId}>`,
+        },
+        interaction,
+      );
+    } else {
+      await respond(
+        {
+          embeds: [
+            new EmbedBuilder()
+              .setAuthor({
+                name: `Streaks for ${getUserName(interaction)} (${last})`,
+                url: encodeURI(`https://www.last.fm/user/${last}`),
+                iconURL: getUserAvatar(interaction),
+              })
+              .setDescription(streaks.description)
+              .setThumbnail(streaks.image)
+              .setColor("Random")
+              .toJSON(),
+          ],
+        },
+        interaction,
+      );
+    }
+  }
+
+  private async getStreaks(last: string) {
+    // rome-ignore lint/style/useSingleVarDeclarator: <explanation>
+    let cTrack = true,
+      cAlbum = true,
+      cArtist = true,
+      trackCount = 1,
+      albumCount = 1,
+      artistCount = 1;
+
+    const { tracks } = await this.lastClient.getRecentScrobbles(last, 1000);
+
+    const first = tracks[0];
+    let current = first;
+
+    for (const track of tracks.slice(1)) {
+      if (track.name === current.name && cTrack) trackCount++;
+      else cTrack = false;
+
+      if (track.artist.name === current.artist.name && cArtist) artistCount++;
+      else cArtist = false;
+
+      if (track.album.name === current.album.name && cAlbum) albumCount++;
+      else cAlbum = false;
+
+      if (!cAlbum && !cArtist && !cTrack) break;
+
+      current = track;
+    }
+
+    if (cTrack) trackCount = -1;
+    if (cArtist) artistCount = -1;
+    if (cAlbum) albumCount = -1;
+
+    if (trackCount === 1 && albumCount === 1 && artistCount === 1) return null;
+
+    const content = `${
+      trackCount === -1 || albumCount === -1 || artistCount === -1
+        ? `Stopped calculating the streak <t:${current.date.getTime()}:f>`
+        : `Streak started <t:${current.date.getTime()}:R>`
+    }\n${
+      trackCount !== 1
+        ? `**Track**: ${maskedUrl(first.name, first.url)} - ${
+            trackCount === -1 ? "1000+" : trackCount
+          } Plays\n`
+        : ""
+    }${
+      albumCount !== 1
+        ? `**Album**: ${maskedUrl(
+            first.album.name,
+            encodeURI(`${first.artist.url}/${first.album.name}`),
+          )} - ${albumCount === -1 ? "1000+" : albumCount} Plays\n`
+        : ""
+    }${
+      artistCount !== 1
+        ? `**Artist**: ${maskedUrl(first.artist.name, first.artist.url)} - ${
+            artistCount === -1 ? "1000+" : artistCount
+          } Plays`
+        : ""
+    }`;
+
+    const image =
+      artistCount > albumCount && artistCount > trackCount
+        ? await getArtistImage(first.artist.name)
+        : first.image ?? UnknownAlbumArt;
+    return {
+      description: content,
+      image: image,
+    };
+  }
+}

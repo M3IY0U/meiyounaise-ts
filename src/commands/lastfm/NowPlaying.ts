@@ -14,9 +14,9 @@ import {
   Slash,
   SlashOption,
 } from "discordx";
-import { maskedUrl, respond } from "../../util/general.js";
+import { getUserAvatar, maskedUrl, respond } from "../../util/general.js";
 import { LastTrack } from "./last-util/types/RecentResponse.js";
-import { UnknownAlbumArt, cleanLastUrl } from "./last-util/LastUtil.js";
+import { UnknownAlbumArt } from "./last-util/LastUtil.js";
 import { LastCommand } from "./last-util/LastCommand.js";
 
 @Discord()
@@ -63,9 +63,7 @@ class NowPlaying extends LastCommand {
       lastfm,
       res.tracks[0],
       res.total,
-      interaction instanceof CommandInteraction
-        ? interaction.user.displayAvatarURL()
-        : interaction.author.displayAvatarURL(),
+      getUserAvatar(interaction),
     );
 
     await respond({ embeds: [embed] }, interaction);
@@ -85,9 +83,7 @@ function makeEmbed(
       url: `https://www.last.fm/user/${name}`,
     })
     .setColor("Random")
-    .setThumbnail(
-      track.image.find((i) => i.size === "large")?.url ?? UnknownAlbumArt,
-    )
+    .setThumbnail(track.image ?? UnknownAlbumArt)
     .setDescription(
       `**${maskedUrl(
         track.name,
@@ -99,7 +95,7 @@ function makeEmbed(
         name: "Artist",
         value: maskedUrl(
           `**${track.artist.name}**`,
-          cleanLastUrl(track.artist.url),
+          encodeURI(track.artist.url),
         ),
         inline: true,
       },
@@ -107,7 +103,7 @@ function makeEmbed(
         name: "Album",
         value: maskedUrl(
           `**${track.album.name}**`,
-          cleanLastUrl(`${track.artist.url}/${track.album.name}`),
+          encodeURI(`${track.artist.url}/${track.album.name}`),
         ),
         inline: true,
       },

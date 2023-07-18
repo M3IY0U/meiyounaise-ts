@@ -72,6 +72,18 @@ export function responseEmbed(type: ResponseType, content: string) {
 
 export async function silently<T>(p?: Promise<T>) {
   try {
-      return await p;
-  } catch { }
+    return await p;
+  } catch {}
 }
+
+export const getUserAvatar = (interaction: Message | CommandInteraction) =>
+  interaction instanceof Message
+    ? interaction.author.displayAvatarURL()
+    : interaction.user.displayAvatarURL();
+
+export const getUserName = (interaction: Message | CommandInteraction) =>
+  interaction instanceof Message
+    ? interaction.member?.nickname ??
+      interaction.member?.displayName ??
+      interaction.author.username
+    : interaction.user.username;

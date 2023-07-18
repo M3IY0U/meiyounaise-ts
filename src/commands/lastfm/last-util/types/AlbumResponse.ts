@@ -27,9 +27,3 @@ export interface Artist {
   mbid: string;
 }
 
-export interface Image {
-  size: Size;
-  "#text": string;
-}
-
-export type Size = "small" | "medium" | "large" | "extralarge";

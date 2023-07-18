@@ -44,7 +44,11 @@ class AlbumChart extends LastCommand {
   ) {
     await interaction.deferReply();
 
-    await this.albumChart(user.id, timespan, interaction);
+    await this.albumChart(
+      user.id ?? interaction.user.id,
+      timespan,
+      interaction,
+    );
   }
 
   @SimpleCommand({

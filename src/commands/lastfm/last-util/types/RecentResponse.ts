@@ -2,7 +2,7 @@ export interface LastTrack {
   artist: Artist;
   mbid?: string;
   name: string;
-  image: Image[];
+  image: string;
   streamable: string;
   album: Album;
   url: string;

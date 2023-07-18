@@ -1,14 +1,11 @@
 import { TimeSpan } from "./types/general.js";
+import ogs from "open-graph-scraper";
 
 export const UnknownAlbumArt =
   "https://lastfm.freetls.fastly.net/i/u/c6f59c1e5e7240a4c0d427abd71f3dbb";
 
-export const cleanLastUrl = (url: string) =>
-  url
-    .replaceAll(" ", "+")
-    .replaceAll("(", "%28")
-    .replaceAll(")", "%29")
-    .replaceAll("　", "%E3%80%80");
+export const UnknownArtistArt =
+  "https://lastfm.freetls.fastly.net/i/u/2a96cbd8b46e442fc41c2b86b821562f.jpg";
 
 export const parseTimeSpan = (timespan: string | undefined) => {
   switch (timespan) {
@@ -39,4 +36,12 @@ export const parseTimeSpan = (timespan: string | undefined) => {
         "Invalid timespan.\nAvailable timespans: week, month, quarter, half(year), year, (over)all",
       );
   }
+};
+
+export const getArtistImage = async (artist: string) => {
+  const { result } = await ogs({
+    url: encodeURI(`https://www.last.fm/music/${artist}`),
+  });
+  if (!result?.ogImage) return UnknownArtistArt;
+  return result.ogImage[0].url ?? UnknownArtistArt;
 };

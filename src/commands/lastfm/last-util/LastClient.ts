@@ -35,14 +35,7 @@ export class LastClient {
           name: track.album?.["#text"],
         };
         // fix image
-        track.image = track.image.map(
-          (image: { size: string; "#text": string }) => {
-            return {
-              size: image.size,
-              url: image["#text"],
-            };
-          },
-        );
+        track.image = track.image.at(-1)["#text"];
 
         return track as LastTrack;
       }),
@@ -64,7 +57,7 @@ export class LastClient {
         // fix rank
         album.rank = parseInt(album["@attr"].rank);
         // fix image
-        album.image = album.image[3]["#text"];
+        album.image = album.image.at(-1)["#text"];
         return album as Album;
       }),
       meta: {
