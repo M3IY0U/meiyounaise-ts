@@ -10,10 +10,7 @@ export class AlbumChartService {
       Math.ceil((albums.length / 5) * this.albumSize),
     );
     const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#000000";
     ctx.font = "bold 23px Baloo 2, Sans";
-
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     let x = 0;
     let y = 0;

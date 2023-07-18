@@ -8,6 +8,8 @@ import {
   Discord,
   SimpleCommand,
   SimpleCommandMessage,
+  SimpleCommandOption,
+  SimpleCommandOptionType,
   Slash,
   SlashChoice,
   SlashOption,
@@ -17,6 +19,7 @@ import { EnumChoice } from "@discordx/utilities";
 import { LastCommand } from "./last-util/LastCommand.js";
 import { respond } from "../../util/general.js";
 import { AlbumChartService } from "./charts/AlbumChartService.js";
+import { parseTimeSpan } from "./last-util/LastUtil.js";
 
 @Discord()
 class AlbumChart extends LastCommand {
@@ -25,18 +28,18 @@ class AlbumChart extends LastCommand {
     description: "Get your last.fm album chart.",
   })
   async slashAlbumChart(
-    @SlashOption({
-    name: "user",
-    description: "The user to get the album chart for.",
-    required: false,
-    type: ApplicationCommandOptionType.String,
-  }) user: User,
     @SlashChoice(...EnumChoice(TimeSpan))
   @SlashOption({
     name: "timespan",
     description: "The timespan to get the album chart for.",
     type: ApplicationCommandOptionType.String
   }) timespan: TimeSpan,
+    @SlashOption({
+    name: "user",
+    description: "The user to get the album chart for.",
+    required: false,
+    type: ApplicationCommandOptionType.User,
+  }) user: User,
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
@@ -48,11 +51,22 @@ class AlbumChart extends LastCommand {
     name: "albumchart",
     description: "Get your last.fm album chart.",
   })
-  async simpleAlbumChart(command: SimpleCommandMessage) {
+  async simpleAlbumChart(
+    @SimpleCommandOption({
+    name: "timespan",
+    description: "The timespan to get the album chart for.",
+    type: SimpleCommandOptionType.String,
+  }) timespan: string | undefined,
+    @SimpleCommandOption({name: "user", type: SimpleCommandOptionType.User}) user:
+      | User
+      | undefined,
+    command: SimpleCommandMessage,
+  ) {
     await command.message.channel.sendTyping();
+
     await this.albumChart(
-      command.message.author.id,
-      TimeSpan.Week,
+      user?.id ?? command.message.author.id,
+      parseTimeSpan(timespan),
       command.message,
     );
   }
