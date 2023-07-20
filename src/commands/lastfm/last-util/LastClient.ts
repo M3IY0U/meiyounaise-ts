@@ -35,7 +35,7 @@ export class LastClient {
           name: track.album?.["#text"],
         };
         // fix image
-        track.image = track.image.at(-1)["#text"];
+        track.image = track.image.at(-1)["#text"].replace("300x300/", "");
 
         return track as LastTrack;
       }),
@@ -57,7 +57,7 @@ export class LastClient {
         // fix rank
         album.rank = parseInt(album["@attr"].rank);
         // fix image
-        album.image = album.image.at(-1)["#text"];
+        album.image = album.image.at(-1)["#text"].replace("300x300/", "");
         return album as Album;
       }),
       meta: {
