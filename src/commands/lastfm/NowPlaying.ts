@@ -87,7 +87,7 @@ function makeEmbed(
     .setDescription(
       `**${maskedUrl(
         track.name,
-        track.url,
+        encodeURI(track.url),
       )}**\nScrobbled <t:${track.date.getTime()}:R>`,
     )
     .addFields([

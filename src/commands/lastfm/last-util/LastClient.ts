@@ -57,7 +57,7 @@ export class LastClient {
         // fix rank
         album.rank = parseInt(album["@attr"].rank);
         // fix image
-        album.image = album.image.at(-1)["#text"].replace("300x300/", "");
+        album.image = album.image.at(-1)["#text"];
         return album as Album;
       }),
       meta: {

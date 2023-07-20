@@ -131,7 +131,7 @@ class Streak extends LastCommand {
         : `Streak started <t:${current.date.getTime()}:R>`
     }\n${
       trackCount !== 1
-        ? `**Track**: ${maskedUrl(first.name, first.url)} - ${
+        ? `**Track**: ${maskedUrl(first.name, encodeURI(first.url))} - ${
             trackCount === -1 ? "1000+" : trackCount
           } Plays\n`
         : ""
@@ -144,7 +144,7 @@ class Streak extends LastCommand {
         : ""
     }${
       artistCount !== 1
-        ? `**Artist**: ${maskedUrl(first.artist.name, first.artist.url)} - ${
+        ? `**Artist**: ${maskedUrl(first.artist.name, encodeURI(first.artist.url))} - ${
             artistCount === -1 ? "1000+" : artistCount
           } Plays`
         : ""
