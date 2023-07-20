@@ -11,7 +11,7 @@ import {
 import { Inject } from "typedi";
 import GuildRepo from "../../db/GuildRepo.js";
 import { ResponseType, responseEmbed } from "../../util/general.js";
-import { Feature } from "../../util/Feature.js";
+import { Feature } from "./Feature.js";
 
 @Discord()
 @SlashGroup({ name: "guild", description: "Manage guild related things." })
