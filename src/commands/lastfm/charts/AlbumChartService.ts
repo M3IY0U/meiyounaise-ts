@@ -53,7 +53,7 @@ export class AlbumChartService {
         y += this.albumSize;
       }
     }
-    
+
     return canvas.toBuffer("image/png");
   }
 }

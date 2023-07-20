@@ -5,7 +5,7 @@ import {
   AutocompleteInteraction,
   ModalSubmitInteraction,
 } from "discord.js";
-import { responseEmbed, ResponseType } from "../util/general.js";
+import { responseEmbed, ResponseType, InfoError } from "../util/general.js";
 
 export async function handleError(
   interaction:
@@ -33,7 +33,17 @@ export async function handleError(
       console.error(e);
     }
 
-  interaction.channel?.send({
-    embeds: responseEmbed(ResponseType.Error, `\`\`\`${e}\`\`\``),
+  if (e instanceof InfoError) {
+    await interaction.channel?.send({
+      embeds: responseEmbed(ResponseType.Info, e.message),
+    });
+    return;
+  }
+
+  await interaction.channel?.send({
+    embeds: responseEmbed(
+      ResponseType.Error,
+      `\`\`\`${e instanceof Error ? e.message : e}\`\`\``,
+    ),
   });
 }

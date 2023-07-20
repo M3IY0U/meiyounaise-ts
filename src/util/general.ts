@@ -8,6 +8,8 @@ import {
   ModalSubmitInteraction,
 } from "discord.js";
 
+export const UnknownAvatar = "https://cdn.discordapp.com/embed/avatars/0.png";
+
 export async function respond(
   toSend: MessageReplyOptions,
   interaction:
@@ -87,3 +89,13 @@ export const getUserName = (interaction: Message | CommandInteraction) =>
       interaction.member?.displayName ??
       interaction.author.username
     : interaction.user.username;
+
+export const getGuildIcon = (interaction: Message | CommandInteraction) =>
+  interaction.guild?.iconURL() ?? UnknownAvatar;
+
+export class InfoError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "InfoError";
+  }
+}

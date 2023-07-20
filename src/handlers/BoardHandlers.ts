@@ -9,7 +9,7 @@ import {
   TextBasedChannel,
 } from "discord.js";
 import BoardRepo from "../db/BoardRepo.js";
-import { maskedUrl } from "../util/general.js";
+import { UnknownAvatar, maskedUrl } from "../util/general.js";
 
 export class BoardHandlers {
   static async onReactionAdd([reaction, user]: ArgsOf<"messageReactionAdd">) {
@@ -142,10 +142,7 @@ export class BoardHandlers {
           msg.member?.nickname ?? member?.displayName ?? msg.author.username
         }`,
       })
-      .setThumbnail(
-        member?.displayAvatarURL() ??
-          "https://cdn.discordapp.com/embed/avatars/0.png",
-      )
+      .setThumbnail(member?.displayAvatarURL() ?? UnknownAvatar)
       .setColor(member?.displayColor ?? "Random")
       .addFields([
         {

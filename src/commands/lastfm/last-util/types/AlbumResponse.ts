@@ -1,11 +1,10 @@
 export type AlbumResponse = {
   albums: Album[];
   meta: {
-    user: string,
-    total: number,
-  }
-}
-
+    user: string;
+    total: number;
+  };
+};
 
 export interface Album {
   artist: Artist;
@@ -26,4 +25,3 @@ export interface Artist {
   name: string;
   mbid: string;
 }
-
