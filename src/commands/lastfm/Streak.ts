@@ -16,6 +16,7 @@ import {
 } from "discordx";
 import { LastCommand } from "./last-util/LastCommand.js";
 import {
+  InfoError,
   getUserAvatar,
   getUserName,
   maskedUrl,
@@ -62,32 +63,25 @@ class Streak extends LastCommand {
 
     const streaks = await this.getStreaks(last);
 
-    if (!streaks) {
-      await respond(
-        {
-          content: `No streaks found for <@${userId}>`,
-        },
-        interaction,
-      );
-    } else {
-      await respond(
-        {
-          embeds: [
-            new EmbedBuilder()
-              .setAuthor({
-                name: `Streaks for ${getUserName(interaction)} (${last})`,
-                url: encodeURI(`https://www.last.fm/user/${last}`),
-                iconURL: getUserAvatar(interaction),
-              })
-              .setDescription(streaks.description)
-              .setThumbnail(streaks.image)
-              .setColor("Random")
-              .toJSON(),
-          ],
-        },
-        interaction,
-      );
-    }
+    if (!streaks) throw new InfoError(`No streak found for <@${userId}>`);
+
+    await respond(
+      {
+        embeds: [
+          new EmbedBuilder()
+            .setAuthor({
+              name: `Current listening streak for ${getUserName(interaction)}`,
+              url: encodeURI(`https://www.last.fm/user/${last}`),
+              iconURL: getUserAvatar(interaction),
+            })
+            .setDescription(streaks.description)
+            .setThumbnail(streaks.image)
+            .setColor("Random")
+            .toJSON(),
+        ],
+      },
+      interaction,
+    );
   }
 
   private async getStreaks(last: string) {
@@ -144,9 +138,10 @@ class Streak extends LastCommand {
         : ""
     }${
       artistCount !== 1
-        ? `**Artist**: ${maskedUrl(first.artist.name, encodeURI(first.artist.url))} - ${
-            artistCount === -1 ? "1000+" : artistCount
-          } Plays`
+        ? `**Artist**: ${maskedUrl(
+            first.artist.name,
+            encodeURI(first.artist.url),
+          )} - ${artistCount === -1 ? "1000+" : artistCount} Plays`
         : ""
     }`;
 

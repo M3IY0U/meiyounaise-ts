@@ -13,7 +13,7 @@ import { UnknownAvatar, maskedUrl } from "../util/general.js";
 
 export class BoardHandlers {
   static async onReactionAdd([reaction, user]: ArgsOf<"messageReactionAdd">) {
-    if (user.bot) return;
+    if (user.bot || reaction.message.guildId === null) return;
 
     const repo: BoardRepo = Container.get("boardRepo");
     const board = await repo.getBoard(reaction.message.guildId || "");
@@ -64,7 +64,7 @@ export class BoardHandlers {
   }
 
   static async onReactionRm([reaction, user]: ArgsOf<"messageReactionRemove">) {
-    if (user.bot) return;
+    if (user.bot || reaction.message.guildId === null) return;
 
     const repo: BoardRepo = Container.get("boardRepo");
     const board = await repo.getBoard(reaction.message.guildId || "");
