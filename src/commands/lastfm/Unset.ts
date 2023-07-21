@@ -1,9 +1,10 @@
-import { Discord, SimpleCommand, SimpleCommandMessage, Slash } from "discordx";
+import { Discord, SimpleCommand, SimpleCommandMessage, Slash, SlashGroup } from "discordx";
 import { LastCommand } from "./last-util/LastCommand.js";
 import { CommandInteraction, Message } from "discord.js";
 import { ResponseType, respond, responseEmbed } from "../../util/general.js";
 
 @Discord()
+@SlashGroup("fm")
 class Unset extends LastCommand {
   // slash handler
   @Slash({ name: "unset", description: "Unset your last.fm username." })

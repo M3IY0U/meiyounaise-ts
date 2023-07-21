@@ -8,6 +8,14 @@ export class GuildHandlers {
     [id: string]: [msg: Message, count: number];
   } = {};
 
+  static fmLog: {
+    [channel: string]: string;
+  } = {};
+
+  static updateSongInChannel(channel: string, song: string) {
+    this.fmLog[channel] = song;
+  }
+
   static async onMemberAdd([event]: ArgsOf<"guildMemberAdd">) {
     const repo: GuildRepo = Container.get("guildRepo");
     const guild = await repo.guildById(event.guild.id);

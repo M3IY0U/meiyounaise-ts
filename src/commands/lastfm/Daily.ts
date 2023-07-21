@@ -5,6 +5,7 @@ import {
   SimpleCommandOption,
   SimpleCommandOptionType,
   Slash,
+  SlashGroup,
   SlashOption,
 } from "discordx";
 import { LastCommand } from "./last-util/LastCommand.js";
@@ -23,6 +24,7 @@ import {
 } from "../../util/general.js";
 
 @Discord()
+@SlashGroup("fm")
 class Daily extends LastCommand {
   @Slash({
     name: "daily",

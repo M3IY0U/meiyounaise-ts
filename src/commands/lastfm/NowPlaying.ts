@@ -12,6 +12,7 @@ import {
   SimpleCommandOption,
   SimpleCommandOptionType,
   Slash,
+  SlashGroup,
   SlashOption,
 } from "discordx";
 import {
@@ -23,8 +24,10 @@ import {
 import { LastTrack } from "./last-util/types/RecentResponse.js";
 import { UnknownAlbumArt } from "./last-util/LastUtil.js";
 import { LastCommand } from "./last-util/LastCommand.js";
+import { GuildHandlers } from "../../handlers/GuildHandlers.js";
 
 @Discord()
+@SlashGroup("fm")
 class NowPlaying extends LastCommand {
   // slash handler
   @Slash({ name: "np", description: "Show what you're listening to" })
@@ -74,6 +77,11 @@ class NowPlaying extends LastCommand {
     await respond(
       { embeds: [embed.setColor(getUserColor(interaction))] },
       interaction,
+    );
+
+    GuildHandlers.updateSongInChannel(
+      interaction.channelId,
+      `${res.tracks[0].artist.name} ${res.tracks[0].name}`,
     );
   }
 }

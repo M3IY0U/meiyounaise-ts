@@ -12,6 +12,7 @@ import {
   SimpleCommandOption,
   SimpleCommandOptionType,
   Slash,
+  SlashGroup,
   SlashOption,
 } from "discordx";
 import { LastCommand } from "./last-util/LastCommand.js";
@@ -26,6 +27,7 @@ import {
 import { UnknownAlbumArt, getArtistImage } from "./last-util/LastUtil.js";
 
 @Discord()
+@SlashGroup("fm")
 class Streak extends LastCommand {
   // slash handler
   @Slash({

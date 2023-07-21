@@ -12,6 +12,7 @@ import {
   SimpleCommandOptionType,
   Slash,
   SlashChoice,
+  SlashGroup,
   SlashOption,
 } from "discordx";
 import { TimeSpan } from "./last-util/types/general.js";
@@ -22,6 +23,7 @@ import { ArtistChartService } from "./charts/ArtistChartService.js";
 import { parseTimeSpan } from "./last-util/LastUtil.js";
 
 @Discord()
+@SlashGroup("fm")
 class ArtistChart extends LastCommand {
   @Slash({
     name: "artistchart",

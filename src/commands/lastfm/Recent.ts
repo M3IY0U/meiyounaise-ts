@@ -5,6 +5,7 @@ import {
   SimpleCommandOption,
   SimpleCommandOptionType,
   Slash,
+  SlashGroup,
   SlashOption,
 } from "discordx";
 import { LastCommand } from "./last-util/LastCommand.js";
@@ -24,6 +25,7 @@ import {
 import { UnknownAlbumArt } from "./last-util/LastUtil.js";
 
 @Discord()
+@SlashGroup("fm")
 class Recent extends LastCommand {
   // slash handler
   @Slash({ name: "recent", description: "Get your recent tracks." })

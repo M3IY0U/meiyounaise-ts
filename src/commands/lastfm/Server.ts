@@ -1,4 +1,4 @@
-import { Discord, SimpleCommand, SimpleCommandMessage, Slash } from "discordx";
+import { Discord, SimpleCommand, SimpleCommandMessage, Slash, SlashGroup } from "discordx";
 import { LastCommand } from "./last-util/LastCommand.js";
 import {
   InfoError,
@@ -16,6 +16,7 @@ import {
 } from "discord.js";
 
 @Discord()
+@SlashGroup("fm")
 class Server extends LastCommand {
   // slash handler
   @Slash({
