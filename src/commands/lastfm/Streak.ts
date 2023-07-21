@@ -18,6 +18,7 @@ import { LastCommand } from "./last-util/LastCommand.js";
 import {
   InfoError,
   getUserAvatar,
+  getUserColor,
   getUserName,
   maskedUrl,
   respond,
@@ -76,7 +77,7 @@ class Streak extends LastCommand {
             })
             .setDescription(streaks.description)
             .setThumbnail(streaks.image)
-            .setColor("Random")
+            .setColor(getUserColor(interaction))
             .toJSON(),
         ],
       },
@@ -121,8 +122,8 @@ class Streak extends LastCommand {
 
     const content = `${
       trackCount === -1 || albumCount === -1 || artistCount === -1
-        ? `Stopped calculating the streak <t:${current.date.getTime()}:f>`
-        : `Streak started <t:${current.date.getTime()}:R>`
+        ? `Stopped calculating the streak <t:${current.date}:f>`
+        : `Streak started <t:${current.date}:R>`
     }\n${
       trackCount !== 1
         ? `**Track**: ${maskedUrl(first.name, encodeURI(first.url))} - ${

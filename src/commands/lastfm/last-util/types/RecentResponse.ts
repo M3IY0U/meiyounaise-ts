@@ -6,7 +6,7 @@ export interface LastTrack {
   streamable: string;
   album: Album;
   url: string;
-  date: Date;
+  date: number;
   "@attr"?: Object;
   loved: string;
   nowplaying: boolean;

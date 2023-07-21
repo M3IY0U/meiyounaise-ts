@@ -14,7 +14,12 @@ import {
   Slash,
   SlashOption,
 } from "discordx";
-import { getUserAvatar, maskedUrl, respond } from "../../util/general.js";
+import {
+  getUserAvatar,
+  getUserColor,
+  maskedUrl,
+  respond,
+} from "../../util/general.js";
 import { LastTrack } from "./last-util/types/RecentResponse.js";
 import { UnknownAlbumArt } from "./last-util/LastUtil.js";
 import { LastCommand } from "./last-util/LastCommand.js";
@@ -66,7 +71,10 @@ class NowPlaying extends LastCommand {
       getUserAvatar(interaction),
     );
 
-    await respond({ embeds: [embed] }, interaction);
+    await respond(
+      { embeds: [embed.setColor(getUserColor(interaction))] },
+      interaction,
+    );
   }
 }
 
@@ -82,13 +90,11 @@ function makeEmbed(
       iconURL: avatar,
       url: `https://www.last.fm/user/${name}`,
     })
-    .setColor("Random")
     .setThumbnail(track.image ?? UnknownAlbumArt)
     .setDescription(
-      `**${maskedUrl(
-        track.name,
-        encodeURI(track.url),
-      )}**\nScrobbled <t:${track.date.getTime()}:R>`,
+      `**${maskedUrl(track.name, encodeURI(track.url))}**\nScrobbled <t:${
+        track.date
+      }:R>`,
     )
     .addFields([
       {
@@ -110,6 +116,5 @@ function makeEmbed(
     ])
     .setFooter({
       text: `${total} total Scrobbles on last.fm`,
-    })
-    .toJSON();
+    });
 }

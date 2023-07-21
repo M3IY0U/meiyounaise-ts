@@ -2,6 +2,7 @@ import {
   ColorResolvable,
   CommandInteraction,
   EmbedBuilder,
+  GuildMember,
   Message,
   MessageComponentInteraction,
   MessageReplyOptions,
@@ -92,6 +93,13 @@ export const getUserName = (interaction: Message | CommandInteraction) =>
 
 export const getGuildIcon = (interaction: Message | CommandInteraction) =>
   interaction.guild?.iconURL() ?? UnknownAvatar;
+
+export const getUserColor = (
+  interaction: Message | CommandInteraction,
+): ColorResolvable =>
+  interaction instanceof Message
+    ? interaction.member?.displayColor ?? "Random"
+    : (interaction.member as GuildMember).displayColor ?? "Random";
 
 export class InfoError extends Error {
   constructor(message: string) {

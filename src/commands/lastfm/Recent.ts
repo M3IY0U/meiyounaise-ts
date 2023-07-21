@@ -15,7 +15,12 @@ import {
   Message,
   User,
 } from "discord.js";
-import { getUserAvatar, maskedUrl, respond } from "../../util/general.js";
+import {
+  getUserAvatar,
+  getUserColor,
+  maskedUrl,
+  respond,
+} from "../../util/general.js";
 import { UnknownAlbumArt } from "./last-util/LastUtil.js";
 
 @Discord()
@@ -85,12 +90,12 @@ class Recent extends LastCommand {
         url: `https://last.fm/user/${last}`,
         iconURL: getUserAvatar(interaction),
       })
-      .setColor("Random")
+      .setColor(getUserColor(interaction))
       .setThumbnail(recent.tracks[0].image ?? UnknownAlbumArt);
 
     for (const track of recent.tracks) {
       embed.addFields({
-        name: `<t:${track.date.getTime()}:R>`,
+        name: `<t:${track.date}:R>`,
         value: `${maskedUrl(
           track.artist.name,
           encodeURI(track.artist.url),

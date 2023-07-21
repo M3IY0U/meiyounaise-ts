@@ -3,6 +3,7 @@ import { LastCommand } from "./last-util/LastCommand.js";
 import {
   InfoError,
   getGuildIcon,
+  getUserColor,
   maskedUrl,
   respond,
   silently,
@@ -81,7 +82,7 @@ class Server extends LastCommand {
             name: `Currently scrobbling in ${interaction.guild?.name}`,
             iconURL: getGuildIcon(interaction),
           })
-          .setColor("Random")
+          .setColor(getUserColor(interaction))
           .setDescription(toAdd)
           .toJSON(),
       );
