@@ -37,7 +37,7 @@ class Daily extends LastCommand {
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-    await this.daily(user.id ?? interaction.user.id, interaction);
+    await this.daily(user?.id ?? interaction.user.id, interaction);
   }
 
   @SimpleCommand({

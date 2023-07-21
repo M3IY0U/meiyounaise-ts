@@ -40,7 +40,7 @@ export const parseTimeSpan = (timespan: string | undefined) => {
 
 export const getArtistImage = async (artist: string) => {
   const { result } = await ogs({
-    url: encodeURI(`https://www.last.fm/music/${artist}`),
+    url: encodeURI(`https://www.last.fm/music/${encodeURIComponent(artist)}`),
   });
   if (!result?.ogImage) return UnknownArtistArt;
   return result.ogImage[0].url ?? UnknownArtistArt;

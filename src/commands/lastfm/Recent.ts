@@ -43,7 +43,7 @@ class Recent extends LastCommand {
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-    await this.recent(user.id ?? interaction.user.id, amount, interaction);
+    await this.recent(user?.id ?? interaction.user.id, amount, interaction);
   }
 
   // simple handler

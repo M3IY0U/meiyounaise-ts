@@ -16,10 +16,6 @@ export interface Album {
   name: string;
 }
 
-export interface AlbumAttr {
-  rank: string;
-}
-
 export interface Artist {
   url: string;
   name: string;

@@ -45,7 +45,7 @@ class ArtistChart extends LastCommand {
     await interaction.deferReply();
 
     await this.artistChart(
-      user.id ?? interaction.user.id,
+      user?.id ?? interaction.user.id,
       timespan,
       interaction,
     );

@@ -41,7 +41,7 @@ class Streak extends LastCommand {
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-    await this.streak(user.id ?? interaction.user.id, interaction);
+    await this.streak(user?.id ?? interaction.user.id, interaction);
   }
   // simple handler
   @SimpleCommand({
@@ -106,7 +106,7 @@ class Streak extends LastCommand {
       if (track.artist.name === current.artist.name && cArtist) artistCount++;
       else cArtist = false;
 
-      if (track.album.name === current.album.name && cAlbum) albumCount++;
+      if (track.album === current.album && cAlbum) albumCount++;
       else cAlbum = false;
 
       if (!cAlbum && !cArtist && !cTrack) break;
@@ -133,8 +133,8 @@ class Streak extends LastCommand {
     }${
       albumCount !== 1
         ? `**Album**: ${maskedUrl(
-            first.album.name,
-            encodeURI(`${first.artist.url}/${first.album.name}`),
+            first.album,
+            encodeURI(`${first.artist.url}/${first.album}`),
           )} - ${albumCount === -1 ? "1000+" : albumCount} Plays\n`
         : ""
     }${

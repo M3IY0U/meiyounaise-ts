@@ -1,36 +1,20 @@
-export interface LastTrack {
-  artist: Artist;
-  mbid?: string;
-  name: string;
-  image: string;
-  streamable: string;
-  album: Album;
-  url: string;
-  date: number;
-  "@attr"?: Object;
-  loved: string;
-  nowplaying: boolean;
-}
-
-export interface Album {
-  mbid?: string;
-  name: string;
-}
-
-export interface Artist {
-  url: string;
-  name: string;
-  image: Image[];
-  mbid?: string;
-}
-
-export interface Image {
-  size: string;
-  url: string;
-}
-
 export type RecentResponse = {
   tracks: LastTrack[];
   total: number;
   user: string;
 };
+
+export interface LastTrack {
+  artist: Artist;
+  name: string;
+  image: string;
+  album: string;
+  url: string;
+  date: number;
+  nowplaying: boolean;
+}
+
+export interface Artist {
+  url: string;
+  name: string;
+}

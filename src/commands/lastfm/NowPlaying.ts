@@ -108,8 +108,8 @@ function makeEmbed(
       {
         name: "Album",
         value: maskedUrl(
-          `**${track.album.name}**`,
-          encodeURI(`${track.artist.url}/${track.album.name}`),
+          `**${track.album}**`,
+          encodeURI(`${track.artist.url}/${track.album}`),
         ),
         inline: true,
       },

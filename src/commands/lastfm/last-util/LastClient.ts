@@ -18,11 +18,9 @@ export class LastClient {
     const fromUnix = from ? Math.floor(from.getTime() / 1000) : undefined;
     const toUnix = to ? Math.floor(to.getTime() / 1000) : undefined;
 
-    const res = await request(
+    const json = await request(
       `http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${user}&extended=1&api_key=${process.env.LAST_KEY}&format=json&limit=${limit}&page=${page}&from=${fromUnix}&to=${toUnix}`,
-    );
-
-    const json = await res.body.json();
+    ).then((res) => res.body.json());
 
     return {
       // rome-ignore lint/suspicious/noExplicitAny: this mf definitely is an any
@@ -32,10 +30,8 @@ export class LastClient {
           parseInt(track.date?.uts ?? Date.now() / 1000),
         ).getTime();
         // fix album
-        track.album = {
-          mbid: track.album?.mbid,
-          name: track.album?.["#text"],
-        };
+        track.album = track.album?.["#text"];
+
         // fix image
         track.image = track.image.at(-1)["#text"].replace("300x300/", "");
 
@@ -47,11 +43,9 @@ export class LastClient {
   }
 
   async getTopAlbums(user: string, timespan: TimeSpan): Promise<AlbumResponse> {
-    const res = await request(
+    const json = await request(
       `http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${user}&api_key=${process.env.LAST_KEY}&format=json&limit=25&period=${timespan}`,
-    );
-
-    const json = await res.body.json();
+    ).then((res) => res.body.json());
 
     return {
       // rome-ignore lint/suspicious/noExplicitAny: <explanation>
