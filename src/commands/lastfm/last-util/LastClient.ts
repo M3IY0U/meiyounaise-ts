@@ -1,10 +1,11 @@
 import { Service } from "typedi";
 import { request } from "undici";
-import { LastTrack, RecentResponse } from "./types/RecentResponse.js";
+import { RecentTrack, RecentResponse } from "./types/RecentResponse.js";
 import { Album, AlbumResponse } from "./types/AlbumResponse.js";
 import { TimeSpan } from "./types/general.js";
 import { ArtistResponse, Artist } from "./types/ArtistResponse.js";
 import { getArtistImage } from "./LastUtil.js";
+import { TopTrack, TopTracksResponse } from "./types/TopTracksResponse.js";
 
 @Service("lc")
 export class LastClient {
@@ -35,7 +36,7 @@ export class LastClient {
         // fix image
         track.image = track.image.at(-1)["#text"].replace("300x300/", "");
 
-        return track as LastTrack;
+        return track as RecentTrack;
       }),
       total: json.recenttracks["@attr"].total,
       user: json.recenttracks["@attr"].user,
@@ -88,8 +89,50 @@ export class LastClient {
     };
   }
 
-  async getTrackDurations(last: string) {
-    const url = `http://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&user=${last}&api_key=${process.env.LAST_KEY}&format=json&limit=1000&period=7day`;
+  async getTopTracks(
+    last: string,
+    timespan: TimeSpan,
+  ): Promise<TopTracksResponse> {
+    const url = `http://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&user=${last}&api_key=${process.env.LAST_KEY}&format=json&limit=1000&period=${timespan}`;
+
+    let total = 1;
+    let page = 1;
+
+    const tracks: TopTrack[] = [];
+
+    while (page <= total) {
+      let json = await request(`${url}&page=${page}`).then((res) =>
+        res.body.json(),
+      );
+
+      json = json.toptracks;
+
+      if (page === 1) total = json["@attr"].totalPages;
+
+      ++page;
+
+      for (const track of json.track) {
+        track["duration"] = parseInt(
+          track.duration === "0" ? 200 : track.duration,
+        );
+        track["playcount"] = parseInt(track.playcount);
+        track["image"] = track.image.at(-1)["#text"].replace("300x300/", "");
+
+        tracks.push(track as TopTrack);
+      }
+    }
+
+    return {
+      tracks,
+      meta: {
+        user: last,
+        total: tracks.length,
+      },
+    };
+  }
+
+  async getTrackDurations(last: string, timespan: TimeSpan) {
+    const url = `http://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&user=${last}&api_key=${process.env.LAST_KEY}&format=json&limit=1000&period=${timespan}`;
 
     let total = 1;
     let page = 1;
@@ -117,5 +160,50 @@ export class LastClient {
       }
     }
     return durations;
+  }
+
+  async getScrobblesSince(
+    last: string,
+    since: number,
+  ): Promise<RecentResponse> {
+    const url = `http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${last}&api_key=${
+      process.env.LAST_KEY
+    }&extended=1&format=json&limit=1000&from=${Math.floor(since / 1000)}`;
+
+    let total = 1;
+    let page = 1;
+    const tracks: RecentTrack[] = [];
+
+    while (page <= total) {
+      let json = await request(`${url}&page=${page}`).then((res) =>
+        res.body.json(),
+      );
+
+      json = json.recenttracks;
+
+      if (page === 1) total = json["@attr"].totalPages;
+
+      ++page;
+
+      for (const track of json.track) {
+        track["nowplaying"] = (track["@attr"]?.nowplaying as boolean) ?? false;
+        track["date"] = new Date(
+          parseInt(track.date?.uts ?? Date.now() / 1000),
+        ).getTime();
+        // fix album
+        track.album = track.album?.["#text"];
+
+        // fix image
+        track.image = track.image.at(-1)["#text"].replace("300x300/", "");
+
+        tracks.push(track as RecentTrack);
+      }
+    }
+
+    return {
+      tracks,
+      total: tracks.length,
+      user: last,
+    };
   }
 }

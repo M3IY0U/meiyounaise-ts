@@ -22,6 +22,7 @@ import {
   getUserName,
   respond,
 } from "../../util/general.js";
+import { TimeSpan } from "./last-util/types/general.js";
 
 @Discord()
 @SlashGroup("fm")
@@ -33,7 +34,7 @@ class Daily extends LastCommand {
   async slashDaily(
     @SlashOption({
     name: "user", 
-    description: "Whose streaks to check", 
+    description: "Which user to check", 
     type: ApplicationCommandOptionType.User,
     required: false}) user: User,
     interaction: CommandInteraction,
@@ -59,7 +60,7 @@ class Daily extends LastCommand {
   async daily(userId: string, interaction: CommandInteraction | Message) {
     const last = await this.tryGetLast(userId);
 
-    const durations = await this.lastClient.getTrackDurations(last);
+    const durations = await this.lastClient.getTrackDurations(last, TimeSpan.Week);
 
     // if you listen to more than 1000 tracks per day https://cdn.discordapp.com/attachments/493557274371948545/1131862099627356210/F1b_l7PXwAAdhsR.jpg
     const recents = await this.lastClient.getRecentScrobbles(last, 1000);

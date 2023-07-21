@@ -21,7 +21,7 @@ import {
   maskedUrl,
   respond,
 } from "../../util/general.js";
-import { LastTrack } from "./last-util/types/RecentResponse.js";
+import { RecentTrack } from "./last-util/types/RecentResponse.js";
 import { UnknownAlbumArt } from "./last-util/LastUtil.js";
 import { LastCommand } from "./last-util/LastCommand.js";
 import { GuildHandlers } from "../../handlers/GuildHandlers.js";
@@ -88,7 +88,7 @@ class NowPlaying extends LastCommand {
 
 function makeEmbed(
   name: string,
-  track: LastTrack,
+  track: RecentTrack,
   total: number,
   avatar: string,
 ) {

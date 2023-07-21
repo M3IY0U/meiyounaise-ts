@@ -13,7 +13,6 @@ export const fitString = (
   } else {
     let len = str.length;
     while (width >= maxWidth - ellipsisWidth && len-- > 0) {
-      // rome-ignore lint/style/noParameterAssign: no it's not confusing mr rome
       str = str.substring(0, len);
       ({ width } = ctx.measureText(str));
     }

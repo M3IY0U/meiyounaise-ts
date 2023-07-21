@@ -1,10 +1,10 @@
 export type RecentResponse = {
-  tracks: LastTrack[];
+  tracks: RecentTrack[];
   total: number;
   user: string;
 };
 
-export interface LastTrack {
+export interface RecentTrack {
   artist: Artist;
   name: string;
   image: string;
