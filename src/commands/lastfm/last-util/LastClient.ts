@@ -3,6 +3,8 @@ import { request } from "undici";
 import { LastTrack, RecentResponse } from "./types/RecentResponse.js";
 import { Album, AlbumResponse } from "./types/AlbumResponse.js";
 import { TimeSpan } from "./types/general.js";
+import { ArtistResponse, Artist } from "./types/ArtistResponse.js";
+import { getArtistImage } from "./LastUtil.js";
 
 @Service("lc")
 export class LastClient {
@@ -63,6 +65,31 @@ export class LastClient {
       meta: {
         user: json.topalbums["@attr"].user,
         total: json.topalbums["@attr"].total,
+      },
+    };
+  }
+
+  async getTopArtists(
+    user: string,
+    timespan: TimeSpan,
+  ): Promise<ArtistResponse> {
+    const json = await request(
+      `http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=${user}&api_key=${process.env.LAST_KEY}&format=json&limit=25&period=${timespan}`,
+    ).then((res) => res.body.json());
+
+    return {
+      artists: await Promise.all(
+        // rome-ignore lint/suspicious/noExplicitAny: <explanation>
+        json.topartists.artist.map(async (artist: any) => {
+          artist.rank = parseInt(artist["@attr"].rank);
+          artist.image = await getArtistImage(artist.name);
+
+          return artist as Artist;
+        }),
+      ),
+      meta: {
+        user: json.topartists["@attr"].user,
+        total: json.topartists["@attr"].total,
       },
     };
   }
