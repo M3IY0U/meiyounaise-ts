@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.3.3",
+    "@types/request-promise": "^4.1.48",
     "@types/usetube": "^2.1.0",
     "nodemon": "^2.0.22",
     "prisma": "^4.16.2",

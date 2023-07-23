@@ -11,20 +11,24 @@ import {
   SimpleCommandOption,
   SimpleCommandOptionType,
   Slash,
+  SlashGroup,
   SlashOption,
 } from "discordx";
-import { AotyScraper } from "./util/AotyScraper.js";
+
 import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { maskedUrl, paginateStrings } from "../../util/general.js";
 import { Pagination, PaginationType } from "@discordx/pagination";
+import { ArtistDiscography } from "./scraper/ArtistDiscography.js";
+import { Scores } from "./scraper/AOTY.types.js";
 
 @Discord()
-class AotyArtist {
+@SlashGroup("aoty")
+class Discography {
   @Slash({
-    name: "aotyartist",
-    description: "Get Info about an artist on AOTY.",
+    name: "discography",
+    description: "Get an artist's discography from AOTY.",
   })
-  async slashAotyArtist(
+  async slashAotyDiscography(
     @SlashOption({
     name: "artist",
     description: "The artist to get info about.",
@@ -35,15 +39,15 @@ class AotyArtist {
   ) {
     await interaction.deferReply();
 
-    await this.getAotyArtist(artist, interaction);
+    await this.getAotyDiscography(artist, interaction);
   }
 
   @SimpleCommand({
-    name: "aotyartist",
-    description: "Get Info about an artist on AOTY.",
+    name: "discography",
+    description: "Get an artist's discography from AOTY.",
     argSplitter: /^\b$/,
   })
-  async simpleAotyArtist(
+  async simpleAotyDiscography(
     @SimpleCommandOption({
     name: "artist",
     description: "The artist to get info about.",
@@ -52,14 +56,14 @@ class AotyArtist {
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
-    await this.getAotyArtist(artist, command.message);
+    await this.getAotyDiscography(artist, command.message);
   }
 
-  async getAotyArtist(
+  async getAotyDiscography(
     artist: string,
     interaction: CommandInteraction | Message,
   ) {
-    const res = await AotyScraper.getAotyArtist(artist);
+    const res = await ArtistDiscography.getDiscography(artist);
 
     const albumsByType = res.albums.reduce((acc, album) => {
       if (!acc[album.type]) acc[album.type] = [];
@@ -67,27 +71,27 @@ class AotyArtist {
       return acc;
     }, {} as Record<string, typeof res.albums>);
 
-    const pages = Object.entries(albumsByType)
+    const pages: string[] = [];
+
+    for (const [type, entries] of Object.entries(albumsByType)
       .filter(([type]) => !type.includes("Single"))
-      .sort(([a], [_]) => (a.includes("LP") ? -1 : 1))
-      .map(([type, albums]) => {
-        return `**${type}**\n${albums
-          .map(
-            (album) =>
-              `${type.includes("LP") ? "💿" : "💽"} ${maskedUrl(
-                album.albumName,
-                album.albumUrl,
-              )} (${album.albumYear})
-          ${
+      .sort(([a], [_]) => (a.includes("LP") ? -1 : 1))) {
+      pages.push(`**${type}**`);
+      for (const album of entries) {
+        pages.push(
+          `${type.includes("LP") ? "💿" : "💽"} ${maskedUrl(
+            album.albumName,
+            album.albumUrl,
+          )} (${album.albumYear})\n${
             album.albumRating.map((r) => `　 ${r}`).join("\n") ||
             "　❔ No ratings"
-          }`,
-          )
-          .join("\n")}`;
-      });
+          }${album === entries.at(-1) ? "\n" : ""}`,
+        );
+      }
+    }
 
     const ePages = await Promise.all(
-      paginateStrings(pages, "\n\n", 2048).map(async (s) => {
+      paginateStrings(pages, "\n", 1000).map(async (s) => {
         return {
           embeds: [
             new EmbedBuilder()
@@ -97,7 +101,7 @@ class AotyArtist {
               })
               .setThumbnail(await getArtistImage(res.artist.name))
               .setDescription(s)
-              .setFooter({ text: res.artist.scores || "Artist has no scores" }),
+              .setFooter({ text: this.scoresToText(res.artist.scores) }),
           ],
         };
       }),
@@ -110,4 +114,19 @@ class AotyArtist {
 
     await pagination.send();
   }
+
+  private scoresToText = (scores: Scores) => {
+    const texts = [];
+    if (scores.critic.score !== "NR") {
+      texts.push(
+        `Critic Score: ${scores.critic.score} (${scores.critic.ratings} ratings)`,
+      );
+    }
+    if (scores.user.score !== "NR") {
+      texts.push(
+        `User Score: ${scores.user.score} (${scores.user.ratings} ratings)`,
+      );
+    }
+    return texts.join(" | ");
+  };
 }
