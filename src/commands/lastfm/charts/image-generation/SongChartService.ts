@@ -1,5 +1,5 @@
 import { createCanvas } from "canvas";
-import { TopTrack } from "../last-util/types/TopTracksResponse";
+import { TopTrack } from "../../last-util/types/TopTracksResponse";
 
 export class SongChartService {
   static width = 1024;

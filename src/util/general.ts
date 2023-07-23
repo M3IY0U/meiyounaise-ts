@@ -107,3 +107,23 @@ export class InfoError extends Error {
     this.name = "InfoError";
   }
 }
+
+export function paginateStrings(
+  texts: string[],
+  separator: string,
+  maxLength: number,
+) {
+  const pages = [];
+  let toAdd = "";
+
+  for (let i = 0; i < texts.length; i++) {
+    toAdd += texts[i];
+    if (i + 1 !== texts.length) toAdd += separator;
+
+    if (toAdd.length <= maxLength && texts.length > i + 1) continue;
+    pages.push(toAdd);
+    toAdd = "";
+  }
+
+  return pages;
+}

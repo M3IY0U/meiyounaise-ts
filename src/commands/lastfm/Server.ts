@@ -1,4 +1,10 @@
-import { Discord, SimpleCommand, SimpleCommandMessage, Slash, SlashGroup } from "discordx";
+import {
+  Discord,
+  SimpleCommand,
+  SimpleCommandMessage,
+  Slash,
+  SlashGroup,
+} from "discordx";
 import { LastCommand } from "./last-util/LastCommand.js";
 import {
   InfoError,
@@ -7,6 +13,7 @@ import {
   maskedUrl,
   respond,
   silently,
+  paginateStrings,
 } from "../../util/general.js";
 import {
   APIEmbed,
@@ -68,27 +75,21 @@ class Server extends LastCommand {
     if (texts.length === 0)
       throw new InfoError("Nobody is listening to anything right now.");
 
-    const embeds: APIEmbed[] = [];
 
-    let toAdd = "";
-
-    for (let i = 0; i < texts.length; i++) {
-      toAdd += texts[i];
-      if (i + 1 !== texts.length) toAdd += "\n⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤\n";
-
-      if (toAdd.length <= 1800 && texts.length > i + 1) continue;
-      embeds.push(
-        new EmbedBuilder()
-          .setAuthor({
-            name: `Currently scrobbling in ${interaction.guild?.name}`,
-            iconURL: getGuildIcon(interaction),
-          })
-          .setColor(getUserColor(interaction))
-          .setDescription(toAdd)
-          .toJSON(),
-      );
-      toAdd = "";
-    }
+    const embeds = paginateStrings(
+      texts,
+      "\n⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤\n",
+      1800,
+    ).map((p: string) => {
+      return new EmbedBuilder()
+        .setAuthor({
+          name: `Currently scrobbling in ${interaction.guild?.name}`,
+          iconURL: getGuildIcon(interaction),
+        })
+        .setColor(getUserColor(interaction))
+        .setDescription(p)
+        .toJSON();
+    });
 
     await respond({ embeds: embeds }, interaction);
   }

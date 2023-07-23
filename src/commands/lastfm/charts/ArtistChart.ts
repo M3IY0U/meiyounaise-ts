@@ -15,12 +15,12 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import { TimeSpan } from "./last-util/types/general.js";
+import { TimeSpan } from "../last-util/types/general.js";
 import { EnumChoice } from "@discordx/utilities";
-import { LastCommand } from "./last-util/LastCommand.js";
-import { respond } from "../../util/general.js";
-import { ArtistChartService } from "./charts/ArtistChartService.js";
-import { parseTimeSpan } from "./last-util/LastUtil.js";
+import { LastCommand } from "../last-util/LastCommand.js";
+import { respond } from "../../../util/general.js";
+import { ArtistChartService } from "../charts/image-generation/ArtistChartService.js";
+import { parseTimeSpan } from "../last-util/LastUtil.js";
 
 @Discord()
 @SlashGroup("fm")

@@ -9,18 +9,18 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import { LastCommand } from "./last-util/LastCommand.js";
+import { LastCommand } from "../last-util/LastCommand.js";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
   Message,
   User,
 } from "discord.js";
-import { TimeSpan } from "./last-util/types/general.js";
-import { respond } from "../../util/general.js";
-import { SongChartService } from "./charts/SongChartService.js";
+import { TimeSpan } from "../last-util/types/general.js";
+import { respond } from "../../../util/general.js";
+import { SongChartService } from "../charts/image-generation/SongChartService.js";
 import { EnumChoice } from "@discordx/utilities";
-import { parseTimeSpan } from "./last-util/LastUtil.js";
+import { parseTimeSpan } from "../last-util/LastUtil.js";
 
 @Discord()
 @SlashGroup("fm")
