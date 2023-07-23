@@ -92,6 +92,7 @@ export class LastClient {
   async getTopTracks(
     last: string,
     timespan: TimeSpan,
+    paginate = false,
   ): Promise<TopTracksResponse> {
     const url = `http://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&user=${last}&api_key=${process.env.LAST_KEY}&format=json&limit=1000&period=${timespan}`;
 
@@ -120,6 +121,8 @@ export class LastClient {
 
         tracks.push(track as TopTrack);
       }
+
+      if (!paginate) break;
     }
 
     return {
@@ -131,7 +134,7 @@ export class LastClient {
     };
   }
 
-  async getTrackDurations(last: string, timespan: TimeSpan) {
+  async getTrackDurations(last: string, timespan: TimeSpan, paginate: boolean) {
     const url = `http://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&user=${last}&api_key=${process.env.LAST_KEY}&format=json&limit=1000&period=${timespan}`;
 
     let total = 1;
@@ -158,6 +161,8 @@ export class LastClient {
 
         durations.set(`${artist}-${name}`, duration);
       }
+
+      if (!paginate) break;
     }
     return durations;
   }

@@ -5,10 +5,12 @@ import {
   getUserAvatar,
   getUserColor,
   getUserName,
+  maskedUrl,
   respond,
 } from "../../util/general.js";
 import { RecentTrack } from "./last-util/types/RecentResponse.js";
 import { TimeSpan } from "./last-util/types/general.js";
+import { getArtistImage } from "./last-util/LastUtil.js";
 
 @Discord()
 class Weekly extends LastCommand {
@@ -37,6 +39,7 @@ class Weekly extends LastCommand {
     const durations = await this.lastClient.getTrackDurations(
       last,
       TimeSpan.Month, // use month just to be sure
+      true,
     );
     const recent = await this.lastClient.getScrobblesSince(
       last,
@@ -77,6 +80,32 @@ class Weekly extends LastCommand {
     // calculate average scrobbles per day
     const average = Math.round(total / dayDurations.size);
 
+    // get most listened track
+    const mostListened = Object.entries(
+      recent.tracks.reduce((acc, curr) => {
+        const idx = `${curr.artist.name}-${curr.name}`;
+        acc[idx] = (acc[idx] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+    )
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3);
+
+    const mlTracks = mostListened.map((ml) => {
+      return [
+        recent.tracks.find((t) => ml[0] === `${t.artist.name}-${t.name}`),
+        ml[1],
+      ] as [RecentTrack, number];
+    });
+
+    // get most listened artist
+    const mostListenedArtist = Object.entries(
+      recent.tracks.reduce((acc, curr) => {
+        acc[curr.artist.name] = (acc[curr.artist.name] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+    ).sort((a, b) => b[1] - a[1])[0];
+
     const embed = new EmbedBuilder()
       .setTitle(`${getUserName(interaction)}'s Weekly Report`)
       .setThumbnail(getUserAvatar(interaction))
@@ -86,7 +115,7 @@ class Weekly extends LastCommand {
         [...dayDurations.entries()]
           .map(
             ([day, duration]) =>
-              `**${day}** - ${Math.round(duration / 60)} minutes on ${
+              `\`${day}\` - ${Math.round(duration / 60)} minutes on ${
                 days.get(day)?.length
               } tracks`,
           )
@@ -113,7 +142,27 @@ class Weekly extends LastCommand {
           value: Math.round(average / 60).toString(),
           inline: true,
         },
-      ]);
+        {
+          name: "Most listened tracks",
+          value: mlTracks
+            .map((ml) => {
+              return `${maskedUrl(
+                ml[0].name,
+                ml[0]?.url,
+              )} - ${
+                ml[1]
+              } plays (${Math.round(
+                (ml[1] / recent.tracks.length) * 100,
+              )}% of total)`;
+            })
+            .join("\n"),
+          inline: true,
+        },
+      ])
+      .setFooter({
+        text: `#1 Artist: ${mostListenedArtist[0]} with ${mostListenedArtist[1]} plays`,
+        iconURL: await getArtistImage(mostListenedArtist[0]),
+      });
 
     await respond({ embeds: [embed] }, interaction);
   }
