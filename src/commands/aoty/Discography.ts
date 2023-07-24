@@ -15,7 +15,13 @@ import {
   SlashOption,
 } from "discordx";
 
-import { maskedUrl, paginateStrings } from "../../util/general.js";
+import {
+  ResponseType,
+  maskedUrl,
+  paginateStrings,
+  respond,
+  responseEmbed,
+} from "../../util/general.js";
 import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { Scores } from "./scraper/AOTY.types.js";
 import { ArtistDiscography } from "./scraper/ArtistDiscography.js";
@@ -64,6 +70,12 @@ class Discography {
     interaction: CommandInteraction | Message,
   ) {
     const res = await ArtistDiscography.getDiscography(artist);
+
+    if (!res)
+      return await respond(
+        { embeds: responseEmbed(ResponseType.Error, "Artist not found") },
+        interaction,
+      );
 
     const albumsByType = res.albums.reduce((acc, album) => {
       if (!acc[album.type]) acc[album.type] = [];

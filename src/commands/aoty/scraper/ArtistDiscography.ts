@@ -4,8 +4,12 @@ import { ScrapeSearch, SearchType } from "../scraper/Search.js";
 import { Discography, Scores } from "./AOTY.types.js";
 
 export class ArtistDiscography extends BaseScraper {
-  static async getDiscography(artist: string): Promise<Discography> {
+  static async getDiscography(artist: string): Promise<Discography | null> {
     const res = await ScrapeSearch.search(artist, SearchType.Artist);
+
+    if (res.length === 0) {
+      return null;
+    }
 
     const [artistUrl, artistName] = [res[0].url, res[0].name];
 
@@ -19,7 +23,8 @@ export class ArtistDiscography extends BaseScraper {
         ratings: parseInt(
           artistDom
             .querySelector(".artistCriticScoreBox")
-            ?.querySelector(".text strong")?.textContent ?? "0",
+            ?.querySelector(".text strong")
+            ?.textContent.replace(/[.,\s]/g, "") ?? "0",
         ),
       },
       user: {
@@ -29,7 +34,8 @@ export class ArtistDiscography extends BaseScraper {
         ratings: parseInt(
           artistDom
             .querySelector(".artistUserScoreBox")
-            ?.querySelector(".text strong")?.textContent ?? "0",
+            ?.querySelector(".text strong")
+            ?.textContent.replace(/[.,\s]/g, "") ?? "0",
         ),
       },
     };

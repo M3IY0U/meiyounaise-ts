@@ -15,7 +15,7 @@ import {
   SlashOption,
 } from "discordx";
 
-import { respond } from "../../util/general.js";
+import { ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { ArtistInfo } from "./scraper/ArtistInfo.js";
 
@@ -60,6 +60,12 @@ class Info {
   async getAotyInfo(artist: string, interaction: CommandInteraction | Message) {
     const res = await ArtistInfo.getArtistInfo(artist);
 
+    if (!res)
+      return await respond(
+        { embeds: responseEmbed(ResponseType.Error, "Artist not found") },
+        interaction,
+      );
+
     const embed = new EmbedBuilder()
       .setAuthor({
         name: res.artist.name,
@@ -93,13 +99,13 @@ class Info {
     }
 
     if (res.details)
-      embed.addFields([
-        ...res.details.map((d) => ({
+      embed.addFields(
+        res.details.map((d) => ({
           name: d.title,
           value: d.content,
-          inline: res.tags.length > 0,
+          inline: (embed.data.fields?.length ?? 3) > 2,
         })),
-      ]);
+      );
 
     await respond(
       {

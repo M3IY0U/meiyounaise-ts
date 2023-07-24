@@ -31,3 +31,15 @@ export interface Artist {
   details?: { title: string; content: string }[];
   tags: string[];
 }
+
+export interface Album {
+  name: string;
+  url: string;
+  artist: string;
+  cover: string;
+  details?: { title: string; content: string }[];
+  tags: string[];
+
+  scores: Scores;
+  tracks?: string[];
+}

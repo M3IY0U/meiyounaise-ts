@@ -20,7 +20,7 @@ export abstract class BaseScraper {
     });
 
   protected static scoreToEmoji = (score: number) => {
-    if (Number.isNaN(score)) return `❔ ${score}`;
+    if (Number.isNaN(score)) return "❔";
 
     if (score >= 70) return `🟩 ${score}`;
     else if (score >= 50) return `🟨 ${score}`;

@@ -3,8 +3,12 @@ import { BaseScraper } from "./BaseScraper.js";
 import { ScrapeSearch, SearchType } from "./Search.js";
 
 export class ArtistInfo extends BaseScraper {
-  static async getArtistInfo(artist: string): Promise<Artist> {
+  static async getArtistInfo(artist: string): Promise<Artist | null> {
     const res = await ScrapeSearch.search(artist, SearchType.Artist);
+
+    if (res.length === 0) {
+      return null;
+    }
 
     const [artistUrl, artistName] = [res[0].url, res[0].name];
 
@@ -21,7 +25,8 @@ export class ArtistInfo extends BaseScraper {
         ratings: parseInt(
           artistDom
             .querySelector(".artistCriticScoreBox")
-            ?.querySelector(".text strong")?.textContent ?? "0",
+            ?.querySelector(".text strong")
+            ?.textContent.replace(/[.,\s]/g, "") ?? "0",
         ),
       },
       user: {
@@ -34,7 +39,8 @@ export class ArtistInfo extends BaseScraper {
         ratings: parseInt(
           artistDom
             .querySelector(".artistUserScoreBox")
-            ?.querySelector(".text strong")?.textContent ?? "0",
+            ?.querySelector(".text strong")
+            ?.textContent.replace(/[.,\s]/g, "") ?? "0",
         ),
       },
     };
