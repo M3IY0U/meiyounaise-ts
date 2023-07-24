@@ -1,5 +1,5 @@
-import { ArgsOf } from "discordx";
-import { Container } from "typedi";
+import BoardRepo from "../db/BoardRepo.js";
+import { UnknownAvatar, maskedUrl } from "../util/general.js";
 import {
   ChannelType,
   Collection,
@@ -8,8 +8,8 @@ import {
   MessageReaction,
   TextBasedChannel,
 } from "discord.js";
-import BoardRepo from "../db/BoardRepo.js";
-import { UnknownAvatar, maskedUrl } from "../util/general.js";
+import { ArgsOf } from "discordx";
+import { Container } from "typedi";
 
 export class BoardHandlers {
   static async onReactionAdd([reaction, user]: ArgsOf<"messageReactionAdd">) {

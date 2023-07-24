@@ -15,11 +15,11 @@ import {
   SlashOption,
 } from "discordx";
 
-import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { maskedUrl, paginateStrings } from "../../util/general.js";
-import { Pagination, PaginationType } from "@discordx/pagination";
-import { ArtistDiscography } from "./scraper/ArtistDiscography.js";
+import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { Scores } from "./scraper/AOTY.types.js";
+import { ArtistDiscography } from "./scraper/ArtistDiscography.js";
+import { Pagination, PaginationType } from "@discordx/pagination";
 
 @Discord()
 @SlashGroup("aoty")

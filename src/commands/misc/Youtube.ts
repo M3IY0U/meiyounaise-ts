@@ -1,3 +1,7 @@
+import { GuildHandlers } from "../../handlers/GuildHandlers.js";
+import { silently, stripText } from "../../util/general.js";
+import { LastCommand } from "../lastfm/last-util/LastCommand.js";
+import { Pagination, PaginationType } from "@discordx/pagination";
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
@@ -17,10 +21,6 @@ import {
   SlashOption,
 } from "discordx";
 import * as yts from "usetube";
-import { Pagination, PaginationType } from "@discordx/pagination";
-import { silently, stripText } from "../../util/general.js";
-import { GuildHandlers } from "../../handlers/GuildHandlers.js";
-import { LastCommand } from "../lastfm/last-util/LastCommand.js";
 
 @Discord()
 class YouTube extends LastCommand {

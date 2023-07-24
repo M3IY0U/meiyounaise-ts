@@ -1,9 +1,9 @@
-import { PermissionGuard } from "@discordx/utilities";
-import { CommandInteraction, EmbedBuilder } from "discord.js";
-import { Discord, SlashGroup, Guard, Slash } from "discordx";
-import { Inject } from "typedi";
 import GuildRepo from "../../db/GuildRepo.js";
 import { ResponseType, responseEmbed } from "../../util/general.js";
+import { PermissionGuard } from "@discordx/utilities";
+import { CommandInteraction, EmbedBuilder } from "discord.js";
+import { Discord, Guard, Slash, SlashGroup } from "discordx";
+import { Inject } from "typedi";
 
 @Discord()
 @SlashGroup({ name: "guild", description: "Manage guild related things." })

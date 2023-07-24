@@ -15,9 +15,9 @@ import {
   SlashOption,
 } from "discordx";
 
-import { ArtistInfo } from "./scraper/ArtistInfo.js";
-import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { respond } from "../../util/general.js";
+import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
+import { ArtistInfo } from "./scraper/ArtistInfo.js";
 
 @Discord()
 @SlashGroup("aoty")
@@ -80,19 +80,24 @@ class Info {
           value: `${res.artist.scores.user.score} (${res.artist.scores.user.ratings} ratings)`,
           inline: true,
         },
+      ]);
+
+    if (res.tags.length > 0) {
+      embed.addFields([
         {
           name: "Tags",
-          value: res.tags?.join(", ") || "None provided",
+          value: res.tags.join(", "),
           inline: false,
         },
       ]);
+    }
 
     if (res.details)
       embed.addFields([
         ...res.details.map((d) => ({
           name: d.title,
           value: d.content,
-          inline: true,
+          inline: res.tags.length > 0,
         })),
       ]);
 

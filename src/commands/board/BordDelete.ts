@@ -1,7 +1,6 @@
-import { ButtonComponent, Discord, Guard, Slash, SlashGroup } from "discordx";
-import { PermissionGuard } from "@discordx/utilities";
-import { Inject } from "typedi";
 import BoardRepo from "../../db/BoardRepo.js";
+import { ResponseType, responseEmbed } from "../../util/general.js";
+import { PermissionGuard } from "@discordx/utilities";
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -11,7 +10,8 @@ import {
   EmbedBuilder,
   MessageActionRowComponentBuilder,
 } from "discord.js";
-import { ResponseType, responseEmbed } from "../../util/general.js";
+import { ButtonComponent, Discord, Guard, Slash, SlashGroup } from "discordx";
+import { Inject } from "typedi";
 
 @Discord()
 @SlashGroup({

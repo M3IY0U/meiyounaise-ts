@@ -1,7 +1,7 @@
 import { UnknownAlbumArt } from "../../last-util/LastUtil.js";
 import { Album } from "../../last-util/types/AlbumResponse.js";
-import { createCanvas, loadImage, registerFont } from "canvas";
 import { drawStrokedText, fitString } from "../chart-util.js";
+import { createCanvas, loadImage, registerFont } from "canvas";
 export class AlbumChartService {
   static albumSize = 300;
   static async renderChart(albums: Album[]) {

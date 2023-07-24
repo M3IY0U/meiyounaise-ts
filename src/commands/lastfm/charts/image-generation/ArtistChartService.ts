@@ -1,7 +1,7 @@
 import { UnknownArtistArt } from "../../last-util/LastUtil.js";
 import { Artist } from "../../last-util/types/ArtistResponse.js";
-import { createCanvas, loadImage, registerFont } from "canvas";
 import { drawImageProp, drawStrokedText, fitString } from "../chart-util.js";
+import { createCanvas, loadImage, registerFont } from "canvas";
 export class ArtistChartService {
   static artistSize = 300;
   static async renderChart(artists: Artist[]) {

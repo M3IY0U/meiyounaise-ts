@@ -1,4 +1,4 @@
-import { Scores, Artist } from "./AOTY.types.js";
+import { Artist, Scores } from "./AOTY.types.js";
 import { BaseScraper } from "./BaseScraper.js";
 import { ScrapeSearch, SearchType } from "./Search.js";
 

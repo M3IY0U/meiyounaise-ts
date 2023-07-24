@@ -1,3 +1,5 @@
+import { ResponseType, respond, responseEmbed } from "../../util/general.js";
+import { LastCommand } from "./last-util/LastCommand.js";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
@@ -16,8 +18,6 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import { ResponseType, respond, responseEmbed } from "../../util/general.js";
-import { LastCommand } from "./last-util/LastCommand.js";
 
 @Discord()
 @SlashGroup({ name: "fm", description: "LastFM Commands" })

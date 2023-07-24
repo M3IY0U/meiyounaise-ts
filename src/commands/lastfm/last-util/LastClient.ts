@@ -1,11 +1,11 @@
+import { getArtistImage } from "./LastUtil.js";
+import { Album, AlbumResponse } from "./types/AlbumResponse.js";
+import { Artist, ArtistResponse } from "./types/ArtistResponse.js";
+import { RecentResponse, RecentTrack } from "./types/RecentResponse.js";
+import { TopTrack, TopTracksResponse } from "./types/TopTracksResponse.js";
+import { TimeSpan } from "./types/general.js";
 import { Service } from "typedi";
 import { request } from "undici";
-import { RecentTrack, RecentResponse } from "./types/RecentResponse.js";
-import { Album, AlbumResponse } from "./types/AlbumResponse.js";
-import { TimeSpan } from "./types/general.js";
-import { ArtistResponse, Artist } from "./types/ArtistResponse.js";
-import { getArtistImage } from "./LastUtil.js";
-import { TopTrack, TopTracksResponse } from "./types/TopTracksResponse.js";
 
 @Service("lc")
 export class LastClient {

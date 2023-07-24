@@ -1,3 +1,11 @@
+import BoardRepo from "../../db/BoardRepo.js";
+import { ResponseType, responseEmbed } from "../../util/general.js";
+import { EnumChoice, PermissionGuard } from "@discordx/utilities";
+import {
+  ApplicationCommandOptionType,
+  Channel,
+  CommandInteraction,
+} from "discord.js";
 import {
   Discord,
   Guard,
@@ -6,15 +14,7 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import { EnumChoice, PermissionGuard } from "@discordx/utilities";
 import { Inject } from "typedi";
-import BoardRepo from "../../db/BoardRepo.js";
-import {
-  ApplicationCommandOptionType,
-  Channel,
-  CommandInteraction,
-} from "discord.js";
-import { ResponseType, responseEmbed } from "../../util/general.js";
 
 enum Actions {
   add = "0",

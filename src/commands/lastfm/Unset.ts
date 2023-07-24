@@ -1,7 +1,13 @@
-import { Discord, SimpleCommand, SimpleCommandMessage, Slash, SlashGroup } from "discordx";
+import { ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
 import { CommandInteraction, Message } from "discord.js";
-import { ResponseType, respond, responseEmbed } from "../../util/general.js";
+import {
+  Discord,
+  SimpleCommand,
+  SimpleCommandMessage,
+  Slash,
+  SlashGroup,
+} from "discordx";
 
 @Discord()
 @SlashGroup("fm")

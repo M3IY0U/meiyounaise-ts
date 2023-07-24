@@ -1,4 +1,19 @@
 import {
+  getUserAvatar,
+  getUserColor,
+  maskedUrl,
+  respond,
+} from "../../util/general.js";
+import { LastCommand } from "./last-util/LastCommand.js";
+import { UnknownAlbumArt } from "./last-util/LastUtil.js";
+import {
+  ApplicationCommandOptionType,
+  CommandInteraction,
+  EmbedBuilder,
+  Message,
+  User,
+} from "discord.js";
+import {
   Discord,
   SimpleCommand,
   SimpleCommandMessage,
@@ -8,21 +23,6 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import { LastCommand } from "./last-util/LastCommand.js";
-import {
-  ApplicationCommandOptionType,
-  CommandInteraction,
-  EmbedBuilder,
-  Message,
-  User,
-} from "discord.js";
-import {
-  getUserAvatar,
-  getUserColor,
-  maskedUrl,
-  respond,
-} from "../../util/general.js";
-import { UnknownAlbumArt } from "./last-util/LastUtil.js";
 
 @Discord()
 @SlashGroup("fm")

@@ -1,17 +1,17 @@
+import GuildRepo from "../../db/GuildRepo.js";
+import { ResponseType, responseEmbed } from "../../util/general.js";
+import { Feature } from "./Feature.js";
 import { EnumChoice, PermissionGuard } from "@discordx/utilities";
 import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
 import {
   Discord,
-  SlashGroup,
   Guard,
-  SlashOption,
   Slash,
   SlashChoice,
+  SlashGroup,
+  SlashOption,
 } from "discordx";
 import { Inject } from "typedi";
-import GuildRepo from "../../db/GuildRepo.js";
-import { ResponseType, responseEmbed } from "../../util/general.js";
-import { Feature } from "./Feature.js";
 
 @Discord()
 @SlashGroup({ name: "guild", description: "Manage guild related things." })

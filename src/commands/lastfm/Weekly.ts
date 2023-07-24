@@ -1,6 +1,3 @@
-import { Discord, SimpleCommand, SimpleCommandMessage, Slash } from "discordx";
-import { LastCommand } from "./last-util/LastCommand.js";
-import { CommandInteraction, EmbedBuilder, Message } from "discord.js";
 import {
   getUserAvatar,
   getUserColor,
@@ -8,9 +5,12 @@ import {
   maskedUrl,
   respond,
 } from "../../util/general.js";
+import { LastCommand } from "./last-util/LastCommand.js";
+import { getArtistImage } from "./last-util/LastUtil.js";
 import { RecentTrack } from "./last-util/types/RecentResponse.js";
 import { TimeSpan } from "./last-util/types/general.js";
-import { getArtistImage } from "./last-util/LastUtil.js";
+import { CommandInteraction, EmbedBuilder, Message } from "discord.js";
+import { Discord, SimpleCommand, SimpleCommandMessage, Slash } from "discordx";
 
 @Discord()
 class Weekly extends LastCommand {

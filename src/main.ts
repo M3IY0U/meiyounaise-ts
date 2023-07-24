@@ -1,13 +1,13 @@
-import "reflect-metadata";
 import { Meiyounaise } from "./Client.js";
-import "dotenv/config";
-import { dirname, importx } from "@discordx/importer";
-import { DIService, typeDiDependencyRegistryEngine } from "discordx";
-import { Container, Service } from "typedi";
-import MeiyounaiseDB from "./db/MeiyounaiseDB.js";
-import LastRepo from "./db/LastRepo.js";
 import BoardRepo from "./db/BoardRepo.js";
 import GuildRepo from "./db/GuildRepo.js";
+import LastRepo from "./db/LastRepo.js";
+import MeiyounaiseDB from "./db/MeiyounaiseDB.js";
+import { dirname, importx } from "@discordx/importer";
+import { DIService, typeDiDependencyRegistryEngine } from "discordx";
+import "dotenv/config";
+import "reflect-metadata";
+import { Container, Service } from "typedi";
 
 if (!process.env.BOT_TOKEN) {
   console.log("Please set the BOT_TOKEN environment variable");

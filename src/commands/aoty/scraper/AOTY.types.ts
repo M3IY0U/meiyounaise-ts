@@ -28,6 +28,6 @@ export interface Artist {
     scores: Scores;
   };
   followers: number;
-  details?: {title: string, content: string}[];
-  tags?: string[];
+  details?: { title: string; content: string }[];
+  tags: string[];
 }

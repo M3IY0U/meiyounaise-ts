@@ -1,3 +1,9 @@
+import { respond } from "../../../util/general.js";
+import { LastCommand } from "../last-util/LastCommand.js";
+import { parseTimeSpan } from "../last-util/LastUtil.js";
+import { TimeSpan } from "../last-util/types/general.js";
+import { AlbumChartService } from "./image-generation/AlbumChartService.js";
+import { EnumChoice } from "@discordx/utilities";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
@@ -15,12 +21,6 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import { TimeSpan } from "../last-util/types/general.js";
-import { EnumChoice } from "@discordx/utilities";
-import { LastCommand } from "../last-util/LastCommand.js";
-import { respond } from "../../../util/general.js";
-import { AlbumChartService } from "./image-generation/AlbumChartService.js";
-import { parseTimeSpan } from "../last-util/LastUtil.js";
 
 @Discord()
 @SlashGroup("fm")

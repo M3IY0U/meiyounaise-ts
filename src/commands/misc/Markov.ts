@@ -1,3 +1,4 @@
+import { respond } from "../../util/general.js";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
@@ -13,7 +14,6 @@ import {
   Slash,
   SlashOption,
 } from "discordx";
-import { respond } from "../../util/general.js";
 import { StringGenerator, formatters, validators } from "markov-catena";
 
 @Discord()

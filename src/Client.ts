@@ -1,8 +1,8 @@
+import { BoardHandlers } from "./handlers/BoardHandlers.js";
+import { handleError } from "./handlers/Errors.js";
+import { GuildHandlers } from "./handlers/GuildHandlers.js";
 import { IntentsBitField, Message, Partials } from "discord.js";
 import { Client } from "discordx";
-import { handleError } from "./handlers/Errors.js";
-import { BoardHandlers } from "./handlers/BoardHandlers.js";
-import { GuildHandlers } from "./handlers/GuildHandlers.js";
 
 export const Meiyounaise = new Client({
   intents: [

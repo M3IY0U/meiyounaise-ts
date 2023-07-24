@@ -1,3 +1,4 @@
+import { respond } from "../../util/general.js";
 import { EnumChoice } from "@discordx/utilities";
 import {
   ApplicationCommandOptionType,
@@ -15,7 +16,6 @@ import {
   SlashOption,
 } from "discordx";
 import { request } from "undici";
-import { respond } from "../../util/general.js";
 
 enum Voice {
   // ENGLISH VOICES

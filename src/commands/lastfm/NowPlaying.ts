@@ -1,3 +1,13 @@
+import { GuildHandlers } from "../../handlers/GuildHandlers.js";
+import {
+  getUserAvatar,
+  getUserColor,
+  maskedUrl,
+  respond,
+} from "../../util/general.js";
+import { LastCommand } from "./last-util/LastCommand.js";
+import { UnknownAlbumArt } from "./last-util/LastUtil.js";
+import { RecentTrack } from "./last-util/types/RecentResponse.js";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
@@ -15,16 +25,6 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import {
-  getUserAvatar,
-  getUserColor,
-  maskedUrl,
-  respond,
-} from "../../util/general.js";
-import { RecentTrack } from "./last-util/types/RecentResponse.js";
-import { UnknownAlbumArt } from "./last-util/LastUtil.js";
-import { LastCommand } from "./last-util/LastCommand.js";
-import { GuildHandlers } from "../../handlers/GuildHandlers.js";
 
 @Discord()
 @SlashGroup("fm")

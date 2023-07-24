@@ -1,6 +1,6 @@
-import { Service } from "typedi";
-import MeiyounaiseDB from "./MeiyounaiseDB.js";
 import { Feature } from "../commands/guild/Feature.js";
+import MeiyounaiseDB from "./MeiyounaiseDB.js";
+import { Service } from "typedi";
 
 @Service("guildRepo")
 export default class GuildRepo extends MeiyounaiseDB {

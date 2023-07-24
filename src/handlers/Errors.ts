@@ -1,11 +1,11 @@
+import { InfoError, ResponseType, responseEmbed } from "../util/general.js";
 import {
+  AutocompleteInteraction,
   CommandInteraction,
   Message,
   MessageComponentInteraction,
-  AutocompleteInteraction,
   ModalSubmitInteraction,
 } from "discord.js";
-import { responseEmbed, ResponseType, InfoError } from "../util/general.js";
 
 export async function handleError(
   interaction:

@@ -1,6 +1,6 @@
+import LastRepo from "../../../db/LastRepo";
 import { LastClient } from "./LastClient";
 import { Inject } from "typedi";
-import LastRepo from "../../../db/LastRepo";
 
 export abstract class LastCommand {
   @Inject("lastRepo")

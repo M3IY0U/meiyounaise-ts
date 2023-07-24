@@ -1,4 +1,19 @@
 import {
+  getUserAvatar,
+  getUserColor,
+  getUserName,
+  respond,
+} from "../../util/general.js";
+import { LastCommand } from "./last-util/LastCommand.js";
+import { TimeSpan } from "./last-util/types/general.js";
+import {
+  ApplicationCommandOptionType,
+  CommandInteraction,
+  EmbedBuilder,
+  Message,
+  User,
+} from "discord.js";
+import {
   Discord,
   SimpleCommand,
   SimpleCommandMessage,
@@ -8,21 +23,6 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import { LastCommand } from "./last-util/LastCommand.js";
-import {
-  ApplicationCommandOptionType,
-  CommandInteraction,
-  EmbedBuilder,
-  Message,
-  User,
-} from "discord.js";
-import {
-  getUserAvatar,
-  getUserColor,
-  getUserName,
-  respond,
-} from "../../util/general.js";
-import { TimeSpan } from "./last-util/types/general.js";
 
 @Discord()
 @SlashGroup("fm")
@@ -60,7 +60,11 @@ class Daily extends LastCommand {
   async daily(userId: string, interaction: CommandInteraction | Message) {
     const last = await this.tryGetLast(userId);
 
-    const durations = await this.lastClient.getTrackDurations(last, TimeSpan.Week, true);
+    const durations = await this.lastClient.getTrackDurations(
+      last,
+      TimeSpan.Week,
+      true,
+    );
 
     // if you listen to more than 1000 tracks per day https://cdn.discordapp.com/attachments/493557274371948545/1131862099627356210/F1b_l7PXwAAdhsR.jpg
     const recents = await this.lastClient.getRecentScrobbles(last, 1000);

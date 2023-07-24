@@ -1,5 +1,5 @@
-import { createCanvas } from "canvas";
 import { TopTrack } from "../../last-util/types/TopTracksResponse";
+import { createCanvas } from "canvas";
 
 export class SongChartService {
   static width = 1024;
@@ -32,7 +32,8 @@ export class SongChartService {
       ctx.fillRect(
         x,
         y + 10,
-        (canvas.width - 20) * Math.max((parseInt(track.playcount) / maxPlayCount), 0.01),
+        (canvas.width - 20) *
+          Math.max(parseInt(track.playcount) / maxPlayCount, 0.01),
         10,
       );
 

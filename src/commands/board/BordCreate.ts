@@ -1,7 +1,6 @@
-import { Discord, Guard, Slash, SlashGroup, SlashOption } from "discordx";
-import { PermissionGuard } from "@discordx/utilities";
-import { Inject } from "typedi";
 import BoardRepo from "../../db/BoardRepo.js";
+import { ResponseType, responseEmbed } from "../../util/general.js";
+import { PermissionGuard } from "@discordx/utilities";
 import {
   ApplicationCommandOptionType,
   Channel,
@@ -9,7 +8,8 @@ import {
   CommandInteraction,
   EmbedBuilder,
 } from "discord.js";
-import { ResponseType, responseEmbed } from "../../util/general.js";
+import { Discord, Guard, Slash, SlashGroup, SlashOption } from "discordx";
+import { Inject } from "typedi";
 
 @Discord()
 @SlashGroup({
