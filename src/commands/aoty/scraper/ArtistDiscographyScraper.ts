@@ -50,8 +50,6 @@ export class ArtistDiscographyScraper extends BaseScraper {
           entry.childNodes[2] as unknown as HTMLElement
         ).getAttribute("href")}` ?? "404";
       const albumYear = entry.firstChild.rawText;
-      const albumCover =
-        entry.querySelector("img")?.getAttribute("data-src") ?? UnknownAlbumArt;
       const albumRating = entry.querySelectorAll(".ratingRow").map(
         (t) =>
           `${this.scoreToEmoji(
@@ -68,7 +66,6 @@ export class ArtistDiscographyScraper extends BaseScraper {
         albumName,
         albumUrl,
         albumYear,
-        albumCover,
         albumRating,
       };
     });

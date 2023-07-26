@@ -1,4 +1,4 @@
-import { getArtistImage } from "./LastUtil.js";
+import { getLastArtistImage } from "./LastUtil.js";
 import { Album, AlbumResponse } from "./types/AlbumResponse.js";
 import { Artist, ArtistResponse } from "./types/ArtistResponse.js";
 import { RecentResponse, RecentTrack } from "./types/RecentResponse.js";
@@ -77,7 +77,7 @@ export class LastClient {
         // rome-ignore lint/suspicious/noExplicitAny: <explanation>
         json.topartists.artist.map(async (artist: any) => {
           artist.rank = parseInt(artist["@attr"].rank);
-          artist.image = await getArtistImage(artist.name);
+          artist.image = await getLastArtistImage(artist.name);
 
           return artist as Artist;
         }),

@@ -1,4 +1,4 @@
-import { SearchResult, SearchType } from "./AOTY.types";
+import { SearchResult, SearchType } from "./AOTY.types.js";
 import cloudscraper from "cloudscraper";
 import { parse } from "node-html-parser";
 

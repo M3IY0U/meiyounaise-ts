@@ -8,6 +8,7 @@ import {
   MessageReplyOptions,
   ModalSubmitInteraction,
 } from "discord.js";
+import ogs from "open-graph-scraper";
 
 export const UnknownAvatar = "https://cdn.discordapp.com/embed/avatars/0.png";
 
@@ -127,3 +128,8 @@ export function paginateStrings(
 
   return pages;
 }
+
+export const getOpenGraphImage = async (url: string) => {
+  const { result } = await ogs({ url });
+  return result.ogImage?.at(0)?.url;
+};

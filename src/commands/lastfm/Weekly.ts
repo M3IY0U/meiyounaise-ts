@@ -6,7 +6,7 @@ import {
   respond,
 } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
-import { getArtistImage } from "./last-util/LastUtil.js";
+import { getLastArtistImage } from "./last-util/LastUtil.js";
 import { RecentTrack } from "./last-util/types/RecentResponse.js";
 import { TimeSpan } from "./last-util/types/general.js";
 import { CommandInteraction, EmbedBuilder, Message } from "discord.js";
@@ -161,7 +161,7 @@ class Weekly extends LastCommand {
       ])
       .setFooter({
         text: `#1 Artist: ${mostListenedArtist[0]} with ${mostListenedArtist[1]} plays`,
-        iconURL: await getArtistImage(mostListenedArtist[0]),
+        iconURL: await getLastArtistImage(mostListenedArtist[0]),
       });
 
     await respond({ embeds: [embed] }, interaction);

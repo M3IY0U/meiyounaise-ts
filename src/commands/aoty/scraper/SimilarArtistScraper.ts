@@ -1,4 +1,4 @@
-import { SearchType, SimilarArtist } from "./AOTY.types";
+import { SearchType, SimilarArtist } from "./AOTY.types.js";
 import { BaseScraper } from "./BaseScraper.js";
 
 export class SimilarArtistScraper extends BaseScraper {

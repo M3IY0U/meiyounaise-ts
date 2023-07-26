@@ -16,8 +16,9 @@ import {
 } from "discordx";
 
 import { ResponseType, respond, responseEmbed } from "../../util/general.js";
-import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
+import { getLastArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { ArtistInfoScraper } from "./scraper/ArtistInfoScraper.js";
+import { getOpenGraphImage } from "../../util/general.js";
 
 @Discord()
 @SlashGroup("aoty")
@@ -71,7 +72,10 @@ class Info {
         name: res.artist.name,
         url: res.artist.url,
       })
-      .setThumbnail(await getArtistImage(res.artist.name))
+      .setThumbnail(
+        (await getOpenGraphImage(res.artist.url)) ??
+          (await getLastArtistImage(res.artist.name)),
+      )
       .setFooter({
         text: `${res.artist.name} has ${res.followers} followers on AOTY`,
       })

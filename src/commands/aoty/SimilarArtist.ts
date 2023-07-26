@@ -22,9 +22,10 @@ import {
   respond,
   responseEmbed,
 } from "../../util/general.js";
-import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
+import { getLastArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { SimilarArtistScraper } from "./scraper/SimilarArtistScraper.js";
 import { Pagination, PaginationType } from "@discordx/pagination";
+import { getOpenGraphImage } from "../../util/general.js";
 
 @Discord()
 @SlashGroup("aoty")
@@ -84,7 +85,9 @@ class SimilarArtist {
         interaction,
       );
 
-    const artistImage = await getArtistImage(res.artist.name);
+    const artistImage =
+      (await getOpenGraphImage(res.artist.url)) ??
+      (await getLastArtistImage(res.artist.name));
     const pages = paginateStrings(
       res.similarArtists.map((a, i) => `${i + 1}. ${maskedUrl(a.name, a.url)}`),
       "\n",

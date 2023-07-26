@@ -7,7 +7,7 @@ import {
   respond,
 } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
-import { UnknownAlbumArt, getArtistImage } from "./last-util/LastUtil.js";
+import { UnknownAlbumArt, getLastArtistImage } from "./last-util/LastUtil.js";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
@@ -150,7 +150,7 @@ class Streak extends LastCommand {
 
     const image =
       artistCount > albumCount && artistCount > trackCount
-        ? await getArtistImage(first.artist.name)
+        ? await getLastArtistImage(first.artist.name)
         : first.image ?? UnknownAlbumArt;
     return {
       description: content,

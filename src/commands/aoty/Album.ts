@@ -16,7 +16,7 @@ import {
 } from "discordx";
 
 import { ResponseType, respond, responseEmbed } from "../../util/general.js";
-import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
+import { getLastArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { AlbumInfoScraper } from "./scraper/AlbumInfoScraper.js";
 
 @Discord()
@@ -75,7 +75,7 @@ class Album {
       .setThumbnail(res.cover)
       .setFooter({
         text: `Album by ${res.artist}`,
-        iconURL: await getArtistImage(res.artist),
+        iconURL: await getLastArtistImage(res.artist),
       })
       .setDescription(
         `**User Score**\n${res.scores.user.score} (${res.scores.user.ratings} ratings)

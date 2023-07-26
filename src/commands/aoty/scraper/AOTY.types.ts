@@ -17,7 +17,6 @@ export interface DiscographyEntry {
   albumName: string;
   albumUrl: string;
   albumYear: string;
-  albumCover: string;
   albumRating: string[];
 }
 
@@ -47,6 +46,12 @@ export interface Album {
 export interface SimilarArtist {
   name: string;
   url: string;
+}
+
+export interface SimilarAlbum {
+  date: string;
+  artist: SimilarArtist;
+  album: SimilarArtist; // i can practically feel my iq raising
 }
 
 export interface SearchResult {

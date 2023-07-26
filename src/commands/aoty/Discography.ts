@@ -22,7 +22,7 @@ import {
   respond,
   responseEmbed,
 } from "../../util/general.js";
-import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
+import { getLastArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { Scores } from "./scraper/AOTY.types.js";
 import { ArtistDiscographyScraper } from "./scraper/ArtistDiscographyScraper.js";
 import { Pagination, PaginationType } from "@discordx/pagination";
@@ -111,7 +111,7 @@ class Discography {
                 name: `${res.artist.name} on AOTY`,
                 url: res.artist.url,
               })
-              .setThumbnail(await getArtistImage(res.artist.name))
+              .setThumbnail(await getLastArtistImage(res.artist.name))
               .setDescription(s)
               .setFooter({ text: this.scoresToText(res.artist.scores) }),
           ],
