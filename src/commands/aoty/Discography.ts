@@ -24,7 +24,7 @@ import {
 } from "../../util/general.js";
 import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { Scores } from "./scraper/AOTY.types.js";
-import { ArtistDiscography } from "./scraper/ArtistDiscography.js";
+import { ArtistDiscography } from "./scraper/ScrapeArtistDiscography.js";
 import { Pagination, PaginationType } from "@discordx/pagination";
 
 @Discord()

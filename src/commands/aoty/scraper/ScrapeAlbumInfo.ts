@@ -1,7 +1,7 @@
 import { UnknownAlbumArt } from "../../lastfm/last-util/LastUtil.js";
 import { Album } from "./AOTY.types.js";
 import { BaseScraper } from "./BaseScraper.js";
-import { ScrapeSearch, SearchType } from "./Search.js";
+import { ScrapeSearch, SearchType } from "./ScrapeSearch.js";
 
 export class AlbumInfo extends BaseScraper {
   static async getAlbumInfo(album: string): Promise<Album | null> {

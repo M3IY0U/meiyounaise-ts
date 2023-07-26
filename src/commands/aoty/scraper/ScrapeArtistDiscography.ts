@@ -1,6 +1,6 @@
 import { UnknownAlbumArt } from "../../lastfm/last-util/LastUtil.js";
-import { BaseScraper } from "../scraper/BaseScraper.js";
-import { ScrapeSearch, SearchType } from "../scraper/Search.js";
+import { BaseScraper } from "./BaseScraper.js";
+import { ScrapeSearch, SearchType } from "./ScrapeSearch.js";
 import { Discography, Scores } from "./AOTY.types.js";
 
 export class ArtistDiscography extends BaseScraper {

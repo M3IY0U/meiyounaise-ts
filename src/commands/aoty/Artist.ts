@@ -17,7 +17,7 @@ import {
 
 import { ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
-import { ArtistInfo } from "./scraper/ArtistInfo.js";
+import { ArtistInfo } from "./scraper/ScrapeArtistInfo.js";
 
 @Discord()
 @SlashGroup("aoty")
