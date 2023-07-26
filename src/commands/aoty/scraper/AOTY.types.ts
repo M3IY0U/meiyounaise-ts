@@ -48,3 +48,15 @@ export interface SimilarArtist {
   name: string;
   url: string;
 }
+
+export interface SearchResult {
+  type: SearchType;
+  name: string;
+  url: string;
+  artist?: string;
+}
+
+export enum SearchType {
+  Artist = "artist",
+  Album = "album",
+}

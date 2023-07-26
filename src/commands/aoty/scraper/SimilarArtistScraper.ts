@@ -1,15 +1,12 @@
-import { SimilarArtist } from "./AOTY.types";
+import { SearchType, SimilarArtist } from "./AOTY.types";
 import { BaseScraper } from "./BaseScraper.js";
-import { SearchScraper, SearchType } from "./SearchScraper.js";
 
 export class SimilarArtistScraper extends BaseScraper {
-  static async getSimilarArtists(
-    artist: string,
-  ): Promise<{
+  static async getSimilarArtists(artist: string): Promise<{
     artist: SimilarArtist;
     similarArtists: SimilarArtist[];
   } | null> {
-    const res = await SearchScraper.search(artist, SearchType.Artist);
+    const res = await this.search(artist, SearchType.Artist);
 
     if (res.length === 0) {
       return null;
