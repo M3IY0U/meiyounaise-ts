@@ -1,6 +1,6 @@
 import { BaseScraper } from "./BaseScraper.js";
 
-export class ScrapeSearch extends BaseScraper {
+export class SearchScraper extends BaseScraper {
   static async search(query: string, type: SearchType) {
     const searchHtml = await this.scrapeAndParse(
       `${this.baseUrl}/search/${type.toString()}s/?q=${query}`,

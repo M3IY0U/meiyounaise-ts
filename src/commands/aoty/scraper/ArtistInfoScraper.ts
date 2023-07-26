@@ -1,10 +1,10 @@
 import { Artist, Scores } from "./AOTY.types.js";
 import { BaseScraper } from "./BaseScraper.js";
-import { ScrapeSearch, SearchType } from "./ScrapeSearch.js";
+import { SearchScraper, SearchType } from "./SearchScraper.js";
 
-export class ArtistInfo extends BaseScraper {
+export class ArtistInfoScraper extends BaseScraper {
   static async getArtistInfo(artist: string): Promise<Artist | null> {
-    const res = await ScrapeSearch.search(artist, SearchType.Artist);
+    const res = await SearchScraper.search(artist, SearchType.Artist);
 
     if (res.length === 0) {
       return null;

@@ -17,7 +17,7 @@ import {
 
 import { ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { getArtistImage } from "../lastfm/last-util/LastUtil.js";
-import { ArtistInfo } from "./scraper/ScrapeArtistInfo.js";
+import { ArtistInfoScraper } from "./scraper/ArtistInfoScraper.js";
 
 @Discord()
 @SlashGroup("aoty")
@@ -58,7 +58,7 @@ class Info {
   }
 
   async getAotyInfo(artist: string, interaction: CommandInteraction | Message) {
-    const res = await ArtistInfo.getArtistInfo(artist);
+    const res = await ArtistInfoScraper.getArtistInfo(artist);
 
     if (!res)
       return await respond(
