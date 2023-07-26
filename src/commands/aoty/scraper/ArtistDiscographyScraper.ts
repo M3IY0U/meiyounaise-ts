@@ -1,7 +1,7 @@
 import { UnknownAlbumArt } from "../../lastfm/last-util/LastUtil.js";
+import { Discography, Scores } from "./AOTY.types.js";
 import { BaseScraper } from "./BaseScraper.js";
 import { SearchScraper, SearchType } from "./SearchScraper.js";
-import { Discography, Scores } from "./AOTY.types.js";
 
 export class ArtistDiscographyScraper extends BaseScraper {
   static async getDiscography(artist: string): Promise<Discography | null> {

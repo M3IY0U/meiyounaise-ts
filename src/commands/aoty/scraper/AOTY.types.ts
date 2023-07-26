@@ -43,3 +43,8 @@ export interface Album {
   scores: Scores;
   tracks?: string[];
 }
+
+export interface SimilarArtist {
+  name: string;
+  url: string;
+}
