@@ -31,6 +31,6 @@ model users {
 
 model messages {
   id          String  @id @unique
-  idInBoard   String  @unique
+  idInBoard   String
   hasBeenSent Boolean @default(false)
 }
