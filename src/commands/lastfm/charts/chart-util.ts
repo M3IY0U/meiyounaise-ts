@@ -40,11 +40,10 @@ export function drawImageProp(
   img: Image,
   x: number,
   y: number,
+  w: number,
+  h: number,
   ctx: CanvasRenderingContext2D,
 ) {
-  const w = 300;
-  const h = 300;
-
   const offsetX = 0.5;
   const offsetY = 0.5;
 

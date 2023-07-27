@@ -26,7 +26,7 @@ export class ArtistChartService {
         image = await loadImage(UnknownArtistArt);
       }
 
-      drawImageProp(image, x, y, ctx);
+      drawImageProp(image, x, y, this.artistSize, this.artistSize, ctx);
 
       drawStrokedText(
         fitString(artist.name, this.artistSize - 10, ctx),
