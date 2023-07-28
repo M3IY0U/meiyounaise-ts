@@ -65,6 +65,10 @@ export class Overview {
               ? "Not set"
               : `Reposting after ${guild.repeat_msg} same messages`,
         },
+        {
+          name: "Spotify Preview",
+          value: guild.embed_spotify ? "Enabled" : "Disabled",
+        },
       ]);
 
     await interaction.editReply({ embeds: [embed] });

@@ -16,12 +16,13 @@ model boards {
 }
 
 model guilds {
-  id         Decimal @id
-  join_msg   String  @default("")
-  leave_msg  String  @default("")
-  join_chn   String  @default("")
-  leave_chn  String  @default("")
-  repeat_msg Int     @default(0)
+  id            Decimal @id
+  join_msg      String  @default("")
+  leave_msg     String  @default("")
+  join_chn      String  @default("")
+  leave_chn     String  @default("")
+  repeat_msg    Int     @default(0)
+  embed_spotify Boolean @default(false)
 }
 
 model users {

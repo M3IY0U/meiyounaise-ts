@@ -20,6 +20,7 @@ export default class GuildRepo extends MeiyounaiseDB {
           repeat_msg: 0,
           join_msg: "",
           leave_msg: "",
+          embed_spotify: false,
         },
       });
     }
@@ -81,6 +82,17 @@ export default class GuildRepo extends MeiyounaiseDB {
     });
   }
 
+  async setSpotifyPreview(guildId: string, value: boolean) {
+    await this.client.guilds.update({
+      where: {
+        id: guildId,
+      },
+      data: {
+        embed_spotify: value,
+      },
+    });
+  }
+
   async disableFeature(guildId: string, feature: Feature) {
     switch (feature) {
       case Feature.JoinMessage:
@@ -115,7 +127,16 @@ export default class GuildRepo extends MeiyounaiseDB {
             repeat_msg: 0,
           },
         });
-
+        break;
+      case Feature.SpotifyPreview:
+        await this.client.guilds.update({
+          where: {
+            id: guildId,
+          },
+          data: {
+            embed_spotify: false,
+          },
+        });
         break;
     }
   }

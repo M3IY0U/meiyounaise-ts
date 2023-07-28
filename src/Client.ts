@@ -61,16 +61,20 @@ Meiyounaise.on("messageCreate", async (message: Message) => {
   }
 });
 
+Meiyounaise.on("messageCreate", async (message: Message) => {
+  await GuildHandlers.spotifyEmbed([message]);
+});
+
+Meiyounaise.on("messageCreate", async (message: Message) => {
+  await GuildHandlers.repeatMessage([message]);
+});
+
 Meiyounaise.on("messageReactionAdd", async (reaction, user) => {
   await BoardHandlers.onReactionAdd([reaction, user]);
 });
 
 Meiyounaise.on("messageReactionRemove", async (reaction, user) => {
   await BoardHandlers.onReactionRm([reaction, user]);
-});
-
-Meiyounaise.on("messageCreate", async (message: Message) => {
-  await GuildHandlers.repeatMessage([message]);
 });
 
 Meiyounaise.on("guildMemberAdd", async (member) => {

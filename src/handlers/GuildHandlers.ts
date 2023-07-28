@@ -2,6 +2,9 @@ import GuildRepo from "../db/GuildRepo.js";
 import { Message } from "discord.js";
 import { ArgsOf } from "discordx";
 import { Container } from "typedi";
+import { request } from "undici";
+import * as spotify from "spotify-info";
+import { respond } from "../util/general.js";
 
 export class GuildHandlers {
   private static messages: {
@@ -71,5 +74,43 @@ export class GuildHandlers {
       await msg.channel.send(msg.content);
       this.messages[msg.channelId] = [msg, 0];
     }
+  }
+
+  static async spotifyEmbed([msg]: ArgsOf<"messageCreate">) {
+    const match = msg.content.match(
+      /https?:\/\/open.spotify.com\/track\/[a-zA-Z0-9]+/,
+    );
+
+    if (!match) return;
+    if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET)
+      return;
+
+    const repo: GuildRepo = Container.get("guildRepo");
+    const guild = await repo.guildById(msg.guildId || "");
+    if (!guild || !guild.embed_spotify) return;
+
+    spotify.setApiCredentials(
+      process.env.SPOTIFY_CLIENT_ID,
+      process.env.SPOTIFY_CLIENT_SECRET,
+    );
+
+    const { previewUrl } = await spotify.getTrack(match[0]);
+    if (!previewUrl) return;
+
+    const res = await request(previewUrl).then((stream) =>
+      stream.body.arrayBuffer(),
+    );
+
+    await respond(
+      {
+        files: [
+          {
+            name: "preview.mp3",
+            attachment: Buffer.from(res),
+          },
+        ],
+      },
+      msg,
+    );
   }
 }
