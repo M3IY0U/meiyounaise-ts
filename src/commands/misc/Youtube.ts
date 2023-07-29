@@ -146,7 +146,7 @@ class YouTube extends LastCommand {
     await pagination.send();
   }
 
-  buildQuery(msg: Message) {
+  private buildQuery(msg: Message) {
     if (msg.author.id !== msg.client.user.id || msg.embeds.length !== 1)
       return msg.content;
 

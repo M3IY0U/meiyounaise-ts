@@ -1,9 +1,12 @@
 import {
   ApplicationCommandOptionType,
+  ApplicationCommandType,
   CommandInteraction,
   Message,
+  MessageContextMenuCommandInteraction,
 } from "discord.js";
 import {
+  ContextMenu,
   Discord,
   SimpleCommand,
   SimpleCommandMessage,
@@ -14,7 +17,7 @@ import {
 } from "discordx";
 import * as spotify from "spotify-info";
 import { GuildHandlers } from "../../handlers/GuildHandlers.js";
-import { respond } from "../../util/general.js";
+import { respond, stripText } from "../../util/general.js";
 import { Pagination, PaginationType } from "@discordx/pagination";
 
 @Discord()
@@ -140,5 +143,41 @@ export class SpotifySearch {
     );
 
     await pagination.send();
+  }
+
+  @ContextMenu({
+    type: ApplicationCommandType.Message,
+    name: "Spotify Search",
+  })
+  async contextSpotify(interaction: MessageContextMenuCommandInteraction) {
+    await interaction.deferReply();
+
+    // cheat because i just want to get the track and not the whole menu
+    const current = GuildHandlers.fmLog[interaction.targetMessage.channelId];
+    GuildHandlers.updateSongInChannel(
+      interaction.targetMessage.channelId,
+      this.buildQuery(interaction.targetMessage),
+    );
+
+    await this.searchSpotify(undefined, interaction);
+
+    GuildHandlers.updateSongInChannel(
+      interaction.targetMessage.channelId,
+      current,
+    );
+  }
+
+  private buildQuery(msg: Message) {
+    if (msg.author.id !== msg.client.user.id || msg.embeds.length !== 1)
+      return msg.content;
+
+    const [title, artist] = [
+      msg.embeds[0].description?.split("\n")[0].match(/\[(.+)\]/),
+      msg.embeds[0].fields[0].value.match(/\[(.+)\]/),
+    ];
+
+    if (!title || !artist) return msg.content;
+
+    return `${stripText(artist[0])} ${stripText(title[0])}`;
   }
 }

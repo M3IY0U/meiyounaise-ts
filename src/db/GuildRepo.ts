@@ -21,6 +21,7 @@ export default class GuildRepo extends MeiyounaiseDB {
           join_msg: "",
           leave_msg: "",
           embed_spotify: false,
+          embed_anilist: false,
         },
       });
     }

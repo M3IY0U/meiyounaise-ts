@@ -69,6 +69,10 @@ Meiyounaise.on("messageCreate", async (message: Message) => {
   await GuildHandlers.repeatMessage([message]);
 });
 
+Meiyounaise.on("messageCreate", async (message: Message) => {
+  await GuildHandlers.anilistEmbed([message]);
+});
+
 Meiyounaise.on("messageReactionAdd", async (reaction, user) => {
   await BoardHandlers.onReactionAdd([reaction, user]);
 });

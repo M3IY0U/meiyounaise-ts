@@ -44,6 +44,7 @@ export class SpotifySimilar {
 
   @SimpleCommand({
     name: "sprelated",
+    aliases: ["sprel", "spsimilar", "spsim"],
     description: "Get related artists",
     argSplitter: /^\b$/,
   })
