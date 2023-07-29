@@ -20,12 +20,12 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import * as yts from "usetube";
+import Youtube from "youtube-sr";
 
 @Discord()
 class YouTube extends LastCommand {
   // slash handler
-  @Slash({ name: "yt", description: "Test Command" })
+  @Slash({ name: "yt", description: "Search YouTube" })
   async slashSearch(
     @SlashOption({
       name: "query",
@@ -122,18 +122,20 @@ class YouTube extends LastCommand {
 
   // command logic
   async ytSearch(query: string, interaction: CommandInteraction | Message) {
-    const res = await silently(yts.searchVideo(query));
-    if (!res || res.videos.length === 0) {
+    const res = await Youtube.search(query);
+    if (!res || res.length === 0) {
       interaction.reply("No videos found!");
       return;
     }
 
-    const pages = res.videos.map((v) => {
-      return {
-        pageText: v.original_title,
-        content: `Query: \`${query}\`\nhttps://www.youtube.com/watch?v=${v.id}`,
-      };
-    });
+    const pages = res
+      .filter((i) => i.type === "video")
+      .map((v) => {
+        return {
+          pageText: v.title ?? "No Title",
+          content: `Query: \`${query}\`\n${v.url}`,
+        };
+      });
 
     const pagination = new Pagination(interaction, pages, {
       type: PaginationType.SelectMenu,
