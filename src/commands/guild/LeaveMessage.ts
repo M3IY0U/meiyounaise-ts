@@ -22,7 +22,7 @@ import {
 import { Inject } from "typedi";
 
 @Discord()
-@SlashGroup({ name: "guild", description: "Manage guild related things" })
+@SlashGroup("guild")
 @Guard(
   PermissionGuard(["ManageGuild"], {
     embeds: responseEmbed(
@@ -98,7 +98,7 @@ export class LeaveMessage {
     modal.addComponents(
       new ActionRowBuilder<TextInputBuilder>().addComponents(messageInput),
     );
-    interaction.showModal(modal);
+    await interaction.showModal(modal);
   }
 
   @ModalComponent({

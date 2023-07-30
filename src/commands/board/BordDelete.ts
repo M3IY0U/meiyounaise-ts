@@ -13,10 +13,7 @@ import { ButtonComponent, Discord, Guard, Slash, SlashGroup } from "discordx";
 import { Inject } from "typedi";
 
 @Discord()
-@SlashGroup({
-  name: "board",
-  description: "Manage emoji board related things",
-})
+@SlashGroup("board")
 @Guard(
   PermissionGuard(["ManageChannels"], {
     embeds: responseEmbed(

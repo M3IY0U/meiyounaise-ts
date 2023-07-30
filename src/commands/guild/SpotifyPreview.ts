@@ -7,6 +7,7 @@ import { Inject } from "typedi";
 
 @Discord()
 @SlashGroup({ name: "guild", description: "Manage guild related things" })
+@SlashGroup("guild")
 @Guard(
   PermissionGuard(["ManageGuild"], {
     embeds: responseEmbed(

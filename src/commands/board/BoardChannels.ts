@@ -24,10 +24,7 @@ enum Actions {
 }
 
 @Discord()
-@SlashGroup({
-  name: "board",
-  description: "Manage emoji board related things",
-})
+@SlashGroup("board")
 @Guard(
   PermissionGuard(["ManageChannels"], {
     embeds: responseEmbed(

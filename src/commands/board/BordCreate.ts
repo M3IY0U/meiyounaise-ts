@@ -16,6 +16,7 @@ import { Inject } from "typedi";
   name: "board",
   description: "Manage emoji board related things",
 })
+@SlashGroup("board")
 @Guard(
   PermissionGuard(["ManageChannels"], {
     embeds: responseEmbed(
