@@ -1,12 +1,12 @@
 import GuildRepo from "../../db/GuildRepo.js";
-import { ResponseType, responseEmbed } from "../../util/general.js";
+import { ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { PermissionGuard } from "@discordx/utilities";
 import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
 import { Discord, Guard, Slash, SlashGroup, SlashOption } from "discordx";
 import { Inject } from "typedi";
 
 @Discord()
-@SlashGroup({ name: "guild", description: "Manage guild related things." })
+@SlashGroup({ name: "guild", description: "Manage guild related things" })
 @Guard(
   PermissionGuard(["ManageGuild"], {
     embeds: responseEmbed(
@@ -22,14 +22,14 @@ export class SpotifyPreview {
   @Slash({
     name: "spotifypreview",
     description:
-      "Set whether the bot should send a preview mp3 for spotify links.",
+      "Set whether the bot should send a preview mp3 for spotify links",
   })
-  @SlashGroup("guild")
   async spotifyPreview(
     @SlashOption({
       name: "amount",
-      description: "The amount of messages that need to be repeated to be sent again.",
-    type: ApplicationCommandOptionType.Boolean})
+      description: "The amount of messages that need to be repeated to be sent again",
+      type: ApplicationCommandOptionType.Boolean
+    })
     enabled: boolean,
     interaction: CommandInteraction,
   ) {
@@ -39,5 +39,15 @@ export class SpotifyPreview {
     if (!guild) throw new Error("Guild not found");
 
     await this.repo.setSpotifyPreview(interaction.guildId || "", enabled);
+
+    await respond(
+      {
+        embeds: responseEmbed(
+          ResponseType.Success,
+          `Spotify preview is now ${enabled ? "enabled" : "disabled"}`,
+        ),
+      },
+      interaction,
+    );
   }
 }

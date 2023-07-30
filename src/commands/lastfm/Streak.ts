@@ -28,42 +28,45 @@ import {
 
 @Discord()
 @SlashGroup("fm")
-class Streak extends LastCommand {
-  // slash handler
+export class Streak extends LastCommand {
+  //#region Command Handlers
   @Slash({
     name: "streak",
-    description: "Get your current last.fm streak.",
+    description: "Get your current last.fm streak",
   })
   async slashStreak(
     @SlashOption({
       name: "user", 
       description: "Whose streaks to check", 
       type: ApplicationCommandOptionType.User,
-      required: false}) user: User,
+      required: false
+    }) user: User,
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
     await this.streak(user?.id ?? interaction.user.id, interaction);
   }
+
   // simple handler
   @SimpleCommand({
-    name: "streak",
-    description: "Get your current last.fm streak.",
+    name: "fm streak",
+    description: "Get your current last.fm streak",
   })
   async simpleStreak(
-    @SimpleCommandOption({name: "user", type: SimpleCommandOptionType.User}) user:
-      | User
-      | undefined,
+    @SimpleCommandOption({
+      name: "user", 
+      description: "Whose streaks to check" ,
+      type: SimpleCommandOptionType.User}) user: User | undefined,
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
-
     await this.streak(user?.id ?? command.message.author.id, command.message);
   }
-  // command logic
+  //#endregion
+
+  //#region Logic
   async streak(userId: string, interaction: CommandInteraction | Message) {
     const last = await this.tryGetLast(userId);
-
     const streaks = await this.getStreaks(last);
 
     if (!streaks) throw new InfoError(`No streak found for <@${userId}>`);
@@ -124,7 +127,7 @@ class Streak extends LastCommand {
 
     const content = `${
       trackCount === -1 || albumCount === -1 || artistCount === -1
-        ? `Stopped calculating the streak <t:${current.date}:f>`
+        ? `Stopped calculating the streak at <t:${current.date}:f>`
         : `Streak started <t:${current.date}:R>`
     }\n${
       trackCount !== 1
@@ -157,4 +160,5 @@ class Streak extends LastCommand {
       image: image,
     };
   }
+  //#endregion
 }

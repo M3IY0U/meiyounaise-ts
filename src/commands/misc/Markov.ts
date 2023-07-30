@@ -16,10 +16,11 @@ import {
 } from "discordx";
 import { StringGenerator, formatters, validators } from "markov-catena";
 
+// reminder if this breaks on deployment: create index.d.ts with `declare module 'markov-catena';` in dist folder
 @Discord()
 export class MarkovCommand {
-  // slash handler
-  @Slash({ name: "markov", description: "bleh" })
+  //#region Command Handlers
+  @Slash({ name: "markov", description: "Generate a sentence" })
   async slashMarkov(
     @SlashOption({
     name: "channel",
@@ -36,6 +37,7 @@ export class MarkovCommand {
     interaction: CommandInteraction,
   ) {
     if (!interaction.channel?.isTextBased()) return;
+
     await interaction.deferReply();
     await this.markov(
       channel ?? interaction.channel,
@@ -51,24 +53,25 @@ export class MarkovCommand {
     name: "channel",
     description: "Optional channel to use",
     type: SimpleCommandOptionType.Channel
-  }) channel: TextBasedChannel,
+  }) channel: TextBasedChannel | undefined,
     @SimpleCommandOption({
       name: "limit",
       description: "Optional limit to use",
       type: SimpleCommandOptionType.Number
-    }) limit: number,
+    }) limit: number | undefined,
     command: SimpleCommandMessage,
   ) {
     if (!command.message.channel.isTextBased()) return;
 
+    await command.message.channel.sendTyping();
     await this.markov(
       channel ?? command.message.channel,
       limit ?? 100,
       command.message,
     );
   }
+  //#endregion
 
-  // command logic
   async markov(
     channel: TextBasedChannel,
     limit: number,

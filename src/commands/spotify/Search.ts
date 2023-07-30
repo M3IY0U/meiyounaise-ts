@@ -1,3 +1,6 @@
+import { GuildHandlers } from "../../handlers/GuildHandlers.js";
+import { remainingArgs, respond, stripText } from "../../util/general.js";
+import { Pagination, PaginationType } from "@discordx/pagination";
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
@@ -13,39 +16,43 @@ import {
   SimpleCommandOption,
   SimpleCommandOptionType,
   Slash,
+  SlashGroup,
   SlashOption,
 } from "discordx";
 import * as spotify from "spotify-info";
-import { GuildHandlers } from "../../handlers/GuildHandlers.js";
-import { respond, stripText } from "../../util/general.js";
-import { Pagination, PaginationType } from "@discordx/pagination";
 
 @Discord()
+@SlashGroup("spotify")
 export class SpotifySearch {
+  //#region Command Handlers
   @Slash({
-    name: "spotify",
-    description: "Get spotify info.",
+    name: "search",
+    description: "Get spotify info",
   })
   async slashSpotify(
     @SlashOption({
-    name: "query",
-    description: "The query to search for.",
-    required: false,type: ApplicationCommandOptionType.String
-  }) query: string | undefined,
+      name: "query",
+      description: "The query to search for",
+      required: false,
+      type: ApplicationCommandOptionType.String
+    }) query: string | undefined,
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
     await this.searchSpotify(query, interaction);
   }
 
+  // simple handler
   @SimpleCommand({
     name: "spotify",
+    description: "Get spotify info",
     aliases: ["sp"],
-    argSplitter: /^\b$/,
+    argSplitter: remainingArgs,
   })
   async simpleSpotify(
     @SimpleCommandOption({
       name: "spotify",
+      description: "Get spotify info",
       type: SimpleCommandOptionType.String}) query: string | undefined,
     command: SimpleCommandMessage,
   ) {
@@ -58,7 +65,7 @@ export class SpotifySearch {
     interaction: CommandInteraction | Message,
   ) {
     if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET)
-      throw new Error("Spotify credentials not found.");
+      throw new Error("Spotify credentials not found");
 
     spotify.setApiCredentials(
       process.env.SPOTIFY_CLIENT_ID,
@@ -68,7 +75,7 @@ export class SpotifySearch {
     if (!query) {
       if (!GuildHandlers.fmLog[interaction.channelId]) {
         throw new Error(
-          "No query provided and no previous now playing commands found.",
+          "No query provided and no previous now playing commands found",
         );
       }
 
@@ -78,7 +85,7 @@ export class SpotifySearch {
       );
 
       if (!searchItems || searchItems.tracks.total === 0)
-        throw new Error("No results found.");
+        throw new Error("No results found");
 
       return await respond(
         {
@@ -96,10 +103,10 @@ export class SpotifySearch {
         search.albums.total === 0 &&
         search.artists.total === 0)
     )
-      throw new Error("No results found.");
+      throw new Error("No results found");
 
     const msg = await interaction.channel?.send(
-      `Found ${search.tracks.items.length} tracks, ${search.albums.items.length} albums, and ${search.artists.items.length} artists.\nPlease reaction with which one you want to view.`,
+      `Found ${search.tracks.items.length} tracks, ${search.albums.items.length} albums, and ${search.artists.items.length} artists.\nPlease react with which one you want to view`,
     );
 
     ["🎵", "💿", "👤"].forEach(async (emoji) => await msg?.react(emoji));
@@ -129,7 +136,7 @@ export class SpotifySearch {
         entries = search.artists.items;
         break;
       default:
-        throw new Error("Invalid reaction.");
+        throw new Error("Invalid reaction");
     }
 
     const pagination = new Pagination(
@@ -145,6 +152,7 @@ export class SpotifySearch {
     await pagination.send();
   }
 
+  // context menu handler
   @ContextMenu({
     type: ApplicationCommandType.Message,
     name: "Spotify Search",
@@ -166,6 +174,7 @@ export class SpotifySearch {
       current,
     );
   }
+  //#endregion
 
   private buildQuery(msg: Message) {
     if (msg.author.id !== msg.client.user.id || msg.embeds.length !== 1)

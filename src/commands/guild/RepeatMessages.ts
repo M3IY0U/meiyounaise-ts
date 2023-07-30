@@ -1,12 +1,12 @@
 import GuildRepo from "../../db/GuildRepo.js";
-import { ResponseType, responseEmbed } from "../../util/general.js";
+import { ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { PermissionGuard } from "@discordx/utilities";
 import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
 import { Discord, Guard, Slash, SlashGroup, SlashOption } from "discordx";
 import { Inject } from "typedi";
 
 @Discord()
-@SlashGroup({ name: "guild", description: "Manage guild related things." })
+@SlashGroup({ name: "guild", description: "Manage guild related things" })
 @Guard(
   PermissionGuard(["ManageGuild"], {
     embeds: responseEmbed(
@@ -22,15 +22,15 @@ export class RepeatMessages {
   @Slash({
     name: "repeatmsg",
     description:
-      "Set the amount of messages that need to be repeated to be sent again.",
+      "Set the amount of messages that need to be repeated to be sent again",
   })
-  @SlashGroup("guild")
   async repeatMsgSlash(
     @SlashOption({
       name: "amount",
-      description: "The amount of messages that need to be repeated to be sent again.",
-    type: ApplicationCommandOptionType.Integer})
-    amount: number,
+      description: "The amount of messages that need to be repeated to be sent again",
+      type: ApplicationCommandOptionType.Integer,
+      required: false,
+    }) amount: number | undefined,
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
@@ -42,17 +42,20 @@ export class RepeatMessages {
       await interaction.editReply({
         embeds: responseEmbed(
           ResponseType.Info,
-          `Currently repeating messages after ${guild?.repeat_msg} identical ones.`,
+          `Currently repeating messages after ${guild?.repeat_msg} identical ones`,
         ),
       });
     } else {
       await this.repo.setRepeatMsg(interaction.guildId || "", amount);
-      await interaction.editReply({
-        embeds: responseEmbed(
-          ResponseType.Success,
-          `Messages will be repeated after ${amount} identical messages.`,
-        ),
-      });
+      await respond(
+        {
+          embeds: responseEmbed(
+            ResponseType.Success,
+            `Messages will be repeated after ${amount} identical messages`,
+          ),
+        },
+        interaction,
+      );
     }
   }
 }

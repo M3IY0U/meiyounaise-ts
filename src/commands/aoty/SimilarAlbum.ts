@@ -18,6 +18,7 @@ import {
 import {
   ResponseType,
   maskedUrl,
+  remainingArgs,
   respond,
   responseEmbed,
 } from "../../util/general.js";
@@ -26,34 +27,34 @@ import { Pagination, PaginationType } from "@discordx/pagination";
 
 @Discord()
 @SlashGroup("aoty")
-class SimilarAlbum {
+export class SimilarAlbum {
+  //#region Command Handlers
   @Slash({
     name: "similaralbum",
-    description: "Get similar albums.",
+    description: "Get similar albums",
   })
   async slashAotyAlbumSimilar(
     @SlashOption({
-    name: "album",
-    description: "yes",
-    type: ApplicationCommandOptionType.String,
-    required: true
-  }) album: string,
+      name: "album",
+      description: "The album to get similar albums for",
+      type: ApplicationCommandOptionType.String,
+      required: true
+    }) album: string,
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-
     await this.getAotyAlbumSimilar(album, interaction);
   }
 
   @SimpleCommand({
     name: "similaralbum",
     description: "Get similar albums",
-    argSplitter: /^\b$/,
+    argSplitter: remainingArgs,
   })
   async simpleAotyAlbumSimilar(
     @SimpleCommandOption({
     name: "similaralbum",
-    description: "Get similar albums.",
+    description: "The album to get similar albums for",
     type: SimpleCommandOptionType.String
   }) album: string,
     command: SimpleCommandMessage,
@@ -61,6 +62,7 @@ class SimilarAlbum {
     await command.message.channel.sendTyping();
     await this.getAotyAlbumSimilar(album, command.message);
   }
+  //#endregion
 
   async getAotyAlbumSimilar(
     album: string,
@@ -70,13 +72,13 @@ class SimilarAlbum {
 
     if (!res)
       return await respond(
-        { embeds: responseEmbed(ResponseType.Error, "No results found.") },
+        { embeds: responseEmbed(ResponseType.Error, "No results found") },
         interaction,
       );
 
     if (res.similar.length === 0)
       return await respond(
-        { embeds: responseEmbed(ResponseType.Error, "No results found.") },
+        { embeds: responseEmbed(ResponseType.Error, "No results found") },
         interaction,
       );
 

@@ -26,9 +26,9 @@ import {
 
 @Discord()
 @SlashGroup("fm")
-class Recent extends LastCommand {
-  // slash handler
-  @Slash({ name: "recent", description: "Get your recent tracks." })
+export class Recent extends LastCommand {
+  //#region Command Handlers
+  @Slash({ name: "recent", description: "Get your recent tracks" })
   async slashRecent(
     @SlashOption({
       name: "user", 
@@ -49,7 +49,7 @@ class Recent extends LastCommand {
   }
 
   // simple handler
-  @SimpleCommand({ name: "recent", description: "Get your recent tracks." })
+  @SimpleCommand({ name: "fm recent", description: "Get your recent tracks" })
   async simpleRecent(
     @SimpleCommandOption(
       { 
@@ -62,18 +62,19 @@ class Recent extends LastCommand {
       {
         name: "amount", 
         type: SimpleCommandOptionType.Number, 
-        description: "Amount fo scrobbles to get"}) amount: number | undefined,
+        description: "Amount fo scrobbles to get"
+      }) amount: number | undefined,
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
-
     await this.recent(
       user?.id ?? command.message.author.id,
       amount,
       command.message,
     );
   }
-  // command logic
+  //#endregion
+
   async recent(
     userId: string,
     amount: number | undefined,

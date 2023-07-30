@@ -27,6 +27,8 @@ export async function respond(
   }
 }
 
+export const remainingArgs = /^\b$/;
+
 export const stripText = (text: string) =>
   text.replaceAll(
     /([`\*_~\[\]\(\)""\|]|<@\!?\d+>|<#\d+>|<@\&\d+>|<:[a-zA-Z0-9_\-]:\d+>)/g,

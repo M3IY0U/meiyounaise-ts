@@ -19,6 +19,7 @@ import {
   ResponseType,
   maskedUrl,
   paginateStrings,
+  remainingArgs,
   respond,
   responseEmbed,
 } from "../../util/general.js";
@@ -29,34 +30,34 @@ import { Pagination, PaginationType } from "@discordx/pagination";
 
 @Discord()
 @SlashGroup("aoty")
-class Discography {
+export class Discography {
+  //#region Command Handlers
   @Slash({
     name: "discography",
-    description: "Get an artist's discography from AOTY.",
+    description: "Get an artist's discography from AOTY",
   })
   async slashAotyDiscography(
     @SlashOption({
-    name: "artist",
-    description: "The artist to get info about.",
-    type: ApplicationCommandOptionType.String,
-    required: true
-  }) artist: string,
+      name: "artist",
+      description: "The artist to get info about",
+      type: ApplicationCommandOptionType.String,
+      required: true
+    }) artist: string,
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-
     await this.getAotyDiscography(artist, interaction);
   }
 
   @SimpleCommand({
     name: "discography",
-    description: "Get an artist's discography from AOTY.",
-    argSplitter: /^\b$/,
+    description: "Get an artist's discography from AOTY",
+    argSplitter: remainingArgs,
   })
   async simpleAotyDiscography(
     @SimpleCommandOption({
     name: "artist",
-    description: "The artist to get info about.",
+    description: "The artist to get info about",
     type: SimpleCommandOptionType.String
   }) artist: string,
     command: SimpleCommandMessage,
@@ -64,7 +65,9 @@ class Discography {
     await command.message.channel.sendTyping();
     await this.getAotyDiscography(artist, command.message);
   }
+  //#endregion
 
+  //#region Logic
   async getAotyDiscography(
     artist: string,
     interaction: CommandInteraction | Message,
@@ -141,4 +144,5 @@ class Discography {
     }
     return texts.join(" | ");
   };
+  //#endregion
 }

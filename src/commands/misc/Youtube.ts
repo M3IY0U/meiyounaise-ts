@@ -1,5 +1,5 @@
 import { GuildHandlers } from "../../handlers/GuildHandlers.js";
-import { silently, stripText } from "../../util/general.js";
+import { remainingArgs, stripText } from "../../util/general.js";
 import { LastCommand } from "../lastfm/last-util/LastCommand.js";
 import { Pagination, PaginationType } from "@discordx/pagination";
 import {
@@ -23,8 +23,10 @@ import {
 import Youtube from "youtube-sr";
 
 @Discord()
-class YouTube extends LastCommand {
-  // slash handler
+export class YouTube extends LastCommand {
+  //#region Command Handlers
+
+  // slash handler - default
   @Slash({ name: "yt", description: "Search YouTube" })
   async slashSearch(
     @SlashOption({
@@ -36,68 +38,114 @@ class YouTube extends LastCommand {
     query: string,
     interaction: CommandInteraction,
   ) {
-    await interaction.deferReply();
-
     if (!query && !GuildHandlers.fmLog[interaction.channelId])
       throw new Error(
-        "No query provided and no previous now playing commands found.",
+        "No query provided and no previous now playing commands found",
       );
 
-    this.ytSearch(
+    await interaction.deferReply();
+    await this.ytSearch(
       query || GuildHandlers.fmLog[interaction.channelId],
       interaction,
     );
   }
 
-  // simple handler
-  @SimpleCommand({ name: "yt" })
+  // slash handler - alias
+  @Slash({ name: "youtube", description: "Search YouTube" })
+  async slashAliasSearch(
+    @SlashOption({
+      name: "query",
+      description: "Search Query",
+      required: false,
+      type: ApplicationCommandOptionType.String,
+    })
+    query: string,
+    interaction: CommandInteraction,
+  ) {
+    if (!query && !GuildHandlers.fmLog[interaction.channelId])
+      throw new Error(
+        "No query provided and no previous now playing commands found",
+      );
+
+    await interaction.deferReply();
+    await this.ytSearch(
+      query || GuildHandlers.fmLog[interaction.channelId],
+      interaction,
+    );
+  }
+
+  // simple handler - default
+  @SimpleCommand({
+    name: "yt",
+    description: "Search YouTube",
+    aliases: ["youtube"],
+    argSplitter: remainingArgs,
+  })
   async simpleSearch(
     @SimpleCommandOption({
       name: "query",
       type: SimpleCommandOptionType.String,
+      description: "Search Query",
     })
     query: string,
     command: SimpleCommandMessage,
   ) {
     if (!query && !GuildHandlers.fmLog[command.message.channelId])
       throw new Error(
-        "No query provided and no previous now playing commands found.",
+        "No query provided and no previous now playing commands found",
       );
+
+    await command.message.channel.sendTyping();
     await this.ytSearch(
       query || GuildHandlers.fmLog[command.message.channelId],
       command.message,
     );
   }
 
+  // slash handler - without query/lastfm search
   @Slash({
     name: "yt",
-    description: "Get the YouTube video for the current song.",
+    description: "Get the YouTube video for the current song",
   })
   @SlashGroup("fm")
   async slashNowPlayingYoutube(interaction: CommandInteraction) {
     await interaction.deferReply();
-
     await this.nowPlayingYoutube(interaction.user.id, interaction);
   }
 
+  // simple handler - without query/lastfm search
   @SimpleCommand({
     name: "np yt",
     aliases: ["fm yt"],
-    description: "Get the YouTube video for the current song.",
+    description: "Get the YouTube video for the current song",
   })
   async simpleNowPlayingYoutube(command: SimpleCommandMessage) {
     await command.message.channel.sendTyping();
-
     await this.nowPlayingYoutube(command.message.author.id, command.message);
   }
 
-  async nowPlayingYoutube(
+  // context menu handler
+  @ContextMenu({
+    type: ApplicationCommandType.Message,
+    name: "YouTube Search",
+  })
+  async ytContext(interaction: MessageContextMenuCommandInteraction) {
+    await interaction.deferReply();
+    await this.ytSearch(
+      this.buildQuery(interaction.targetMessage),
+      interaction,
+    );
+  }
+  //#endregion
+
+  //#region Logic
+  private async nowPlayingYoutube(
     userId: string,
     interaction: CommandInteraction | Message,
   ) {
     const last = await this.tryGetLast(userId);
-
     const res = await this.lastClient.getRecentScrobbles(last, 1);
+
     if (!res.tracks.length || res.total === 0)
       throw new Error(`No tracks found for user '${res.user}'`);
 
@@ -107,21 +155,10 @@ class YouTube extends LastCommand {
     );
   }
 
-  @ContextMenu({
-    type: ApplicationCommandType.Message,
-    name: "YouTube Search",
-  })
-  async ytContext(interaction: MessageContextMenuCommandInteraction) {
-    await interaction.deferReply();
-
-    // handle now playing embeds
-    const query = this.buildQuery(interaction.targetMessage);
-
-    await this.ytSearch(query, interaction);
-  }
-
-  // command logic
-  async ytSearch(query: string, interaction: CommandInteraction | Message) {
+  private async ytSearch(
+    query: string,
+    interaction: CommandInteraction | Message,
+  ) {
     const res = await Youtube.search(query);
     if (!res || res.length === 0) {
       interaction.reply("No videos found!");
@@ -161,4 +198,5 @@ class YouTube extends LastCommand {
 
     return `${stripText(artist[0])} - ${stripText(title[0])}`;
   }
+  //#endregion
 }

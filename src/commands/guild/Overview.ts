@@ -1,12 +1,12 @@
 import GuildRepo from "../../db/GuildRepo.js";
-import { ResponseType, responseEmbed } from "../../util/general.js";
+import { ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { PermissionGuard } from "@discordx/utilities";
 import { CommandInteraction, EmbedBuilder } from "discord.js";
 import { Discord, Guard, Slash, SlashGroup } from "discordx";
 import { Inject } from "typedi";
 
 @Discord()
-@SlashGroup({ name: "guild", description: "Manage guild related things." })
+@SlashGroup({ name: "guild", description: "Manage guild related things" })
 @Guard(
   PermissionGuard(["ManageGuild"], {
     embeds: responseEmbed(
@@ -21,9 +21,8 @@ export class Overview {
 
   @Slash({
     name: "overview",
-    description: "Show all current guild settings.",
+    description: "Show all current guild settings",
   })
-  @SlashGroup("guild")
   async overview(interaction: CommandInteraction) {
     await interaction.deferReply();
 
@@ -69,8 +68,12 @@ export class Overview {
           name: "Spotify Preview",
           value: guild.embed_spotify ? "Enabled" : "Disabled",
         },
+        {
+          name: "Anilist Preview",
+          value: guild.embed_anilist ? "Enabled" : "Disabled",
+        },
       ]);
 
-    await interaction.editReply({ embeds: [embed] });
+    await respond({ embeds: [embed] }, interaction);
   }
 }

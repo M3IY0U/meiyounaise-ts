@@ -1,4 +1,17 @@
 import {
+  maskedUrl,
+  paginateStrings,
+  remainingArgs,
+} from "../../util/general.js";
+import { SpotifyClient } from "./SpotifyClient.js";
+import { Pagination, PaginationType } from "@discordx/pagination";
+import {
+  ApplicationCommandOptionType,
+  CommandInteraction,
+  EmbedBuilder,
+  Message,
+} from "discord.js";
+import {
   Discord,
   SimpleCommand,
   SimpleCommandMessage,
@@ -8,16 +21,7 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import { SpotifyClient } from "./SpotifyClient.js";
 import { Inject } from "typedi";
-import { Pagination, PaginationType } from "@discordx/pagination";
-import {
-  ApplicationCommandOptionType,
-  CommandInteraction,
-  EmbedBuilder,
-  Message,
-} from "discord.js";
-import { maskedUrl, paginateStrings, respond } from "../../util/general.js";
 
 @Discord()
 @SlashGroup("spotify")
@@ -25,9 +29,10 @@ export class SpotifySimilar {
   @Inject("sc")
   private sc!: SpotifyClient;
 
+  //#region Command Handlers
   @Slash({
     name: "related",
-    description: "Get related artists.",
+    description: "Get related artists",
   })
   async slashRelatedArtists(
     @SlashOption({
@@ -38,7 +43,6 @@ export class SpotifySimilar {
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-
     await this.relatedArtists(artist, interaction);
   }
 
@@ -46,20 +50,20 @@ export class SpotifySimilar {
     name: "sprelated",
     aliases: ["sprel", "spsimilar", "spsim"],
     description: "Get related artists",
-    argSplitter: /^\b$/,
+    argSplitter: remainingArgs,
   })
   async simpleRelatedArtists(
     @SimpleCommandOption({
     name: "artist",
-    description: "Get related artists.",
+    description: "Get related artists",
     type: SimpleCommandOptionType.String
   }) artist: string,
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
-
     await this.relatedArtists(artist, command.message);
   }
+  //#endregion
 
   async relatedArtists(
     artist: string,

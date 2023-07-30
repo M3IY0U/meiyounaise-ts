@@ -1,11 +1,11 @@
 import GuildRepo from "../db/GuildRepo.js";
+import { respond } from "../util/general.js";
 import { EmbedBuilder, Message } from "discord.js";
 import { ArgsOf } from "discordx";
+import { request as qrequest } from "graphql-request";
+import * as spotify from "spotify-info";
 import { Container } from "typedi";
 import { request } from "undici";
-import * as spotify from "spotify-info";
-import { respond } from "../util/general.js";
-import { request as qrequest } from "graphql-request";
 
 export class GuildHandlers {
   private static messages: {

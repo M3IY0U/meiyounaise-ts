@@ -19,51 +19,53 @@ import {
   ResponseType,
   maskedUrl,
   paginateStrings,
+  remainingArgs,
   respond,
   responseEmbed,
 } from "../../util/general.js";
+import { getOpenGraphImage } from "../../util/general.js";
 import { getLastArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { SimilarArtistScraper } from "./scraper/SimilarArtistScraper.js";
 import { Pagination, PaginationType } from "@discordx/pagination";
-import { getOpenGraphImage } from "../../util/general.js";
 
 @Discord()
 @SlashGroup("aoty")
-class SimilarArtist {
+export class SimilarArtist {
+  //#region Command Handlers
   @Slash({
     name: "similarartist",
-    description: "Get similar artists.",
+    description: "Get similar artists from AOTY",
   })
   async slashAotyArtistSimilar(
     @SlashOption({
-    name: "artist",
-    description: "yes",
-    type: ApplicationCommandOptionType.String,
-    required: true
-  }) artist: string,
+      name: "artist",
+      description: "The artist to get similar artists for",
+      type: ApplicationCommandOptionType.String,
+      required: true
+    }) artist: string,
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-
     await this.getAotyArtistSimilar(artist, interaction);
   }
 
   @SimpleCommand({
     name: "similar",
-    description: "Get similar artists",
-    argSplitter: /^\b$/,
+    description: "Get similar artists from AOTY",
+    argSplitter: remainingArgs,
   })
   async simpleAotyArtistSimilar(
     @SimpleCommandOption({
-    name: "similarartist",
-    description: "Get similar artists.",
-    type: SimpleCommandOptionType.String
-  }) artist: string,
+      name: "similarartist",
+      description: "The artist to get similar artists for",
+      type: SimpleCommandOptionType.String
+    }) artist: string,
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
     await this.getAotyArtistSimilar(artist, command.message);
   }
+  //#endregion
 
   async getAotyArtistSimilar(
     artist: string,

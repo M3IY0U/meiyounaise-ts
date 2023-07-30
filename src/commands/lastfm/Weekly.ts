@@ -9,25 +9,61 @@ import { LastCommand } from "./last-util/LastCommand.js";
 import { getLastArtistImage } from "./last-util/LastUtil.js";
 import { RecentTrack } from "./last-util/types/RecentResponse.js";
 import { TimeSpan } from "./last-util/types/general.js";
-import { CommandInteraction, EmbedBuilder, Message } from "discord.js";
-import { Discord, SimpleCommand, SimpleCommandMessage, Slash } from "discordx";
+import {
+  ApplicationCommandOptionType,
+  CommandInteraction,
+  EmbedBuilder,
+  Message,
+  User,
+} from "discord.js";
+import {
+  Discord,
+  SimpleCommand,
+  SimpleCommandMessage,
+  SimpleCommandOption,
+  SimpleCommandOptionType,
+  Slash,
+  SlashGroup,
+  SlashOption,
+} from "discordx";
 
 @Discord()
-class Weekly extends LastCommand {
+@SlashGroup("fm")
+export class Weekly extends LastCommand {
+  //#region Command Handlers
   @Slash({
-    name: "weekly",
-    description: "How much you listened to in the past week.",
+    name: "week",
+    description: "How much you listened to in the past week",
   })
-  async slashWeekly(interaction: CommandInteraction) {
+  async slashWeekly(
+    @SlashOption({
+    name: "user",
+    description: "Whose week to check",
+    type: ApplicationCommandOptionType.User,
+    required: false,
+  }) user: User | undefined,
+    interaction: CommandInteraction,
+  ) {
     await interaction.deferReply();
-    await this.weekly(interaction.user.id, interaction);
+    await this.weekly(user?.id ?? interaction.user.id, interaction);
   }
 
-  @SimpleCommand({ name: "weekly" })
-  async simpleWeekly(command: SimpleCommandMessage) {
+  @SimpleCommand({
+    name: "fm week",
+    description: "How much you listened to in the past week",
+  })
+  async simpleWeekly(
+    @SimpleCommandOption({
+    name: "user",
+    description: "Whose week to check",
+    type: SimpleCommandOptionType.User
+  }) user: User | undefined,
+    command: SimpleCommandMessage,
+  ) {
     await command.message.channel.sendTyping();
-    await this.weekly(command.message.author.id, command.message);
+    await this.weekly(user?.id ?? command.message.author.id, command.message);
   }
+  //#endregion
 
   async weekly(userId: string, interaction: CommandInteraction | Message) {
     const last = await this.tryGetLast(userId);

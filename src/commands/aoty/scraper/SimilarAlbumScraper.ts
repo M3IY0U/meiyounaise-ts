@@ -1,7 +1,7 @@
+import { getOpenGraphImage } from "../../../util/general.js";
 import { UnknownAlbumArt } from "../../lastfm/last-util/LastUtil.js";
 import { SearchType, SimilarAlbum } from "./AOTY.types.js";
 import { BaseScraper } from "./BaseScraper.js";
-import { getOpenGraphImage } from "../../../util/general.js";
 
 export class SimilarAlbumScraper extends BaseScraper {
   static async getSimilarAlbums(album: string): Promise<{

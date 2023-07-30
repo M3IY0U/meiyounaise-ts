@@ -3,10 +3,7 @@ import { LastCommand } from "./last-util/LastCommand.js";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
-  EmbedBuilder,
-  GuildMember,
   Message,
-  User,
 } from "discord.js";
 import {
   Discord,
@@ -23,48 +20,53 @@ import {
 @SlashGroup({ name: "fm", description: "LastFM Commands" })
 @SlashGroup("fm")
 export class SetUser extends LastCommand {
-  // slash handler
-  @Slash({ name: "set", description: "Set or show your last.fm username." })
+  //#region Command Handlers
+  @Slash({ name: "set", description: "Set or show your last.fm username" })
   async slashSet(
     @SlashOption({ 
       name: "username", 
       description: "The last.fm username to set", 
       type: ApplicationCommandOptionType.String,
       required: false
-    }) name: string,
+    }) name: string | undefined,
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-    await this.set(interaction.member as GuildMember, name, interaction);
+    await this.set(interaction.user.id, name, interaction);
   }
 
   // simple handler
   @SimpleCommand({
-    name: "set",
-    description: "Set or show your current last.fm username.",
+    name: "fm set",
+    description: "Set or show your current last.fm username",
   })
   async simpleSet(
-    @SimpleCommandOption({name: "username", type: SimpleCommandOptionType.String}) username: string,
+    @SimpleCommandOption({
+      name: "username", 
+      description: "The last.fm username to set", 
+      type: SimpleCommandOptionType.String
+    }) username: string | undefined,
     command: SimpleCommandMessage,
   ) {
-    await this.set(command.message.author, username, command.message);
+    await command.message.channel.sendTyping();
+    await this.set(command.message.author.id, username, command.message);
   }
+  //#endregion
 
-  // command logic
   async set(
-    user: GuildMember | User,
-    username: string,
+    userId: string,
+    username: string | undefined,
     interaction: CommandInteraction | Message,
   ) {
     if (!username) {
-      const lastfm = (await this.repo.userById(user.id))?.lastfm;
+      const lastfm = (await this.repo.userById(userId))?.lastfm;
       return await respond(
         {
           embeds: responseEmbed(
             ResponseType.Info,
             lastfm
-              ? `Your last.fm username is currently set to \`${lastfm}\`.`
-              : "No last.fm username set.",
+              ? `Your last.fm username is currently set to \`${lastfm}\``
+              : "No last.fm username set",
           ),
         },
         interaction,
@@ -72,13 +74,16 @@ export class SetUser extends LastCommand {
     }
 
     if (username.match(/[^A-z0-9_-]/))
-      return await respond({ content: "Invalid username" }, interaction);
-    await this.repo.setLast(user.id, username).then(async () => {
+      return await respond(
+        { embeds: responseEmbed(ResponseType.Error, "Invalid username") },
+        interaction,
+      );
+    await this.repo.setLast(userId, username).then(async () => {
       await respond(
         {
           embeds: responseEmbed(
             ResponseType.Success,
-            `Your last.fm username has been set to \`${username}\`.`,
+            `Your last.fm username has been set to \`${username}\``,
           ),
         },
         interaction,

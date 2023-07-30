@@ -26,36 +26,42 @@ import {
 
 @Discord()
 @SlashGroup("fm")
-class Daily extends LastCommand {
+export class Daily extends LastCommand {
+  //#region Command Handlers
   @Slash({
-    name: "daily",
-    description: "How much you listened to in the past 24 hours.",
+    name: "day",
+    description: "How much you listened to in the past 24 hours",
   })
   async slashDaily(
     @SlashOption({
-    name: "user", 
-    description: "Which user to check", 
-    type: ApplicationCommandOptionType.User,
-    required: false}) user: User,
+      name: "user", 
+      description: "Which user to check", 
+      type: ApplicationCommandOptionType.User,
+      required: false
+    }) user: User | undefined,
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
     await this.daily(user?.id ?? interaction.user.id, interaction);
   }
 
+  // simple handler
   @SimpleCommand({
-    name: "daily",
-    description: "How much you listened to in the past 24 hours.",
+    name: "fm day",
+    description: "How much you listened to in the past 24 hours",
   })
   async simpleDaily(
-    @SimpleCommandOption({name: "user", type: SimpleCommandOptionType.User}) user:
-      | User
-      | undefined,
+    @SimpleCommandOption({
+      name: "user",
+      description: "Which user to check",
+      type: SimpleCommandOptionType.User
+    }) user: User | undefined,
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
     await this.daily(user?.id ?? command.message.author.id, command.message);
   }
+  //#endregion
 
   async daily(userId: string, interaction: CommandInteraction | Message) {
     const last = await this.tryGetLast(userId);

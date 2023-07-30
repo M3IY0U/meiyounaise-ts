@@ -15,47 +15,53 @@ import {
   SlashOption,
 } from "discordx";
 
-import { ResponseType, respond, responseEmbed } from "../../util/general.js";
+import {
+  ResponseType,
+  remainingArgs,
+  respond,
+  responseEmbed,
+} from "../../util/general.js";
 import { getLastArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { AlbumInfoScraper } from "./scraper/AlbumInfoScraper.js";
 
 @Discord()
 @SlashGroup("aoty")
-class Album {
+export class Album {
+  //#region Command Handlers
   @Slash({
     name: "album",
-    description: "Get an album's info from AOTY.",
+    description: "Get an album's info from AOTY",
   })
   async slashAotyInfo(
     @SlashOption({
-    name: "album",
-    description: "The album to get info about.",
-    type: ApplicationCommandOptionType.String,
-    required: true
-  }) album: string,
+      name: "album",
+      description: "The album to get info about",
+      type: ApplicationCommandOptionType.String,
+      required: true
+    }) album: string,
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-
     await this.getAotyInfo(album, interaction);
   }
 
   @SimpleCommand({
     name: "album",
-    description: "Get an album's info from AOTY.",
-    argSplitter: /^\b$/,
+    description: "Get an album's info from AOTY",
+    argSplitter: remainingArgs,
   })
   async simpleAotyInfo(
     @SimpleCommandOption({
-    name: "album",
-    description: "The album to get info about.",
-    type: SimpleCommandOptionType.String
-  }) album: string,
+      name: "album",
+      description: "The album to get info about",
+      type: SimpleCommandOptionType.String
+    }) album: string,
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
     await this.getAotyInfo(album, command.message);
   }
+  //#endregion
 
   async getAotyInfo(album: string, interaction: CommandInteraction | Message) {
     const res = await AlbumInfoScraper.getAlbumInfo(album);

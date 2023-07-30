@@ -1,5 +1,5 @@
 import BoardRepo from "../../db/BoardRepo.js";
-import { ResponseType, responseEmbed } from "../../util/general.js";
+import { ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { PermissionGuard } from "@discordx/utilities";
 import {
   ApplicationCommandOptionType,
@@ -14,7 +14,7 @@ import { Inject } from "typedi";
 @Discord()
 @SlashGroup({
   name: "board",
-  description: "Manage emoji board related things.",
+  description: "Manage emoji board related things",
 })
 @Guard(
   PermissionGuard(["ManageChannels"], {
@@ -30,18 +30,17 @@ export class BoardCreate {
 
   @Slash({
     name: "create",
-    description: "Create a new emoji board.",
+    description: "Create a new emoji board",
   })
-  @SlashGroup("board")
   async createSlash(
     @SlashOption({
       name: "channel", 
-      description: "Channel to create the board in.", 
-      type: ApplicationCommandOptionType.Channel})
-    channel: Channel,
+      description: "Channel to create the board in", 
+      type: ApplicationCommandOptionType.Channel
+    }) channel: Channel,
     @SlashOption({
       name: "threshold",
-      description: "Amount of reactions needed to trigger the board.",
+      description: "Amount of reactions needed to trigger the board",
       type: ApplicationCommandOptionType.Integer,
     }) threshold: number,
     interaction: CommandInteraction,
@@ -52,12 +51,12 @@ export class BoardCreate {
     let err: [rip: boolean, msg: string] = [false, ""];
 
     if (interaction.channel?.isDMBased())
-      err = [true, "Cannot create a board in a DM channel."];
+      err = [true, "Cannot create a board in a DM channel"];
 
     if (chn.type !== ChannelType.GuildText)
-      err = [true, "Cannot create a board in a non-text channel."];
+      err = [true, "Cannot create a board in a non-text channel"];
 
-    if (threshold < 1) err = [true, "Threshold must be at least 1."];
+    if (threshold < 1) err = [true, "Threshold must be at least 1"];
 
     if (err[0]) throw new Error(err[1]);
 
@@ -68,19 +67,25 @@ export class BoardCreate {
     );
 
     if (created) {
-      interaction.editReply({
-        embeds: responseEmbed(
-          ResponseType.Success,
-          `The board was created in ${channel} with ${threshold} reactions`,
-        ),
-      });
+      await respond(
+        {
+          embeds: responseEmbed(
+            ResponseType.Success,
+            `The board was created in ${channel} with ${threshold} reactions`,
+          ),
+        },
+        interaction,
+      );
     } else {
-      interaction.editReply({
-        embeds: responseEmbed(
-          ResponseType.Success,
-          `The board in this server was updated to: ${channel} with ${threshold} reactions`,
-        ),
-      });
+      await respond(
+        {
+          embeds: responseEmbed(
+            ResponseType.Success,
+            `The board in this server was updated to: ${channel} with ${threshold} reactions`,
+          ),
+        },
+        interaction,
+      );
     }
   }
 }

@@ -46,11 +46,11 @@ export default class BoardRepo extends MeiyounaiseDB {
 
   async addBannedChannel(guildId: string, channelId: string) {
     const board = await this.getBoard(guildId);
-    if (!board) throw new Error("There is no board in this server.");
+    if (!board) throw new Error("There is no board in this server");
 
     const banned = JSON.parse(board.banned_channels || "[]");
     if (banned.includes(channelId))
-      throw new Error("Channel is already banned.");
+      throw new Error("Channel is already banned");
 
     await this.client.boards.update({
       where: {
@@ -64,10 +64,10 @@ export default class BoardRepo extends MeiyounaiseDB {
 
   async removeBannedChannel(guildId: string, channelId: string) {
     const board = await this.getBoard(guildId);
-    if (!board) throw new Error("There is no board in this server.");
+    if (!board) throw new Error("There is no board in this server");
 
     const banned = JSON.parse(board.banned_channels || "[]");
-    if (!banned.includes(channelId)) throw new Error("Channel is not banned.");
+    if (!banned.includes(channelId)) throw new Error("Channel is not banned");
 
     await this.client.boards.update({
       where: {
@@ -83,7 +83,7 @@ export default class BoardRepo extends MeiyounaiseDB {
 
   async clearBannedChannels(guildId: string) {
     const board = await this.getBoard(guildId);
-    if (!board) throw new Error("There is no board in this server.");
+    if (!board) throw new Error("There is no board in this server");
 
     await this.client.boards.update({
       where: {

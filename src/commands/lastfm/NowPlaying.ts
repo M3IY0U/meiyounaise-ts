@@ -28,8 +28,8 @@ import {
 
 @Discord()
 @SlashGroup("fm")
-class NowPlaying extends LastCommand {
-  // slash handler
+export class NowPlaying extends LastCommand {
+  //#region Command Handlers
   @Slash({ name: "np", description: "Show what you're listening to" })
   async slashNowPlaying(
     @SlashOption({
@@ -43,8 +43,9 @@ class NowPlaying extends LastCommand {
     await interaction.deferReply();
     await this.nowPlaying(user?.id ?? interaction.user.id, interaction);
   }
+
   // simple handler
-  @SimpleCommand({ name: "np", aliases: ["fm"] })
+  @SimpleCommand({ name: "fm", aliases: ["np"] })
   async simpleNowPlaying(
     @SimpleCommandOption({
     name: "user",
@@ -53,12 +54,15 @@ class NowPlaying extends LastCommand {
   }) user: User,
     command: SimpleCommandMessage,
   ) {
+    await command.message.channel.sendTyping();
     await this.nowPlaying(
       user?.id ?? command.message.author.id,
       command.message,
     );
   }
-  // command logic
+  //#endregion
+
+  //#region Logic
   async nowPlaying(userId: string, interaction: CommandInteraction | Message) {
     const lastfm = await this.tryGetLast(userId);
 
@@ -67,7 +71,7 @@ class NowPlaying extends LastCommand {
     if (!res.tracks.length || res.total === 0)
       throw new Error(`No tracks found for user '${res.user}'`);
 
-    const embed = makeEmbed(
+    const embed = this.makeEmbed(
       lastfm,
       res.tracks[0],
       res.total,
@@ -84,45 +88,46 @@ class NowPlaying extends LastCommand {
       `${res.tracks[0].artist.name} ${res.tracks[0].name}`,
     );
   }
-}
 
-function makeEmbed(
-  name: string,
-  track: RecentTrack,
-  total: number,
-  avatar: string,
-) {
-  return new EmbedBuilder()
-    .setAuthor({
-      name: `${name} - ${track.nowplaying ? "Now Playing" : "Last Track"}`,
-      iconURL: avatar,
-      url: `https://www.last.fm/user/${name}`,
-    })
-    .setThumbnail(track.image ?? UnknownAlbumArt)
-    .setDescription(
-      `**${maskedUrl(track.name, encodeURI(track.url))}**\nScrobbled <t:${
-        track.date
-      }:R>`,
-    )
-    .addFields([
-      {
-        name: "Artist",
-        value: maskedUrl(
-          `**${track.artist.name}**`,
-          encodeURI(track.artist.url),
-        ),
-        inline: true,
-      },
-      {
-        name: "Album",
-        value: maskedUrl(
-          `**${track.album}**`,
-          encodeURI(`${track.artist.url}/${track.album}`),
-        ),
-        inline: true,
-      },
-    ])
-    .setFooter({
-      text: `${total} total Scrobbles on last.fm`,
-    });
+  private makeEmbed(
+    name: string,
+    track: RecentTrack,
+    total: number,
+    avatar: string,
+  ) {
+    return new EmbedBuilder()
+      .setAuthor({
+        name: `${name} - ${track.nowplaying ? "Now Playing" : "Last Track"}`,
+        iconURL: avatar,
+        url: `https://www.last.fm/user/${name}`,
+      })
+      .setThumbnail(track.image ?? UnknownAlbumArt)
+      .setDescription(
+        `**${maskedUrl(track.name, encodeURI(track.url))}**\nScrobbled <t:${
+          track.date
+        }:R>`,
+      )
+      .addFields([
+        {
+          name: "Artist",
+          value: maskedUrl(
+            `**${track.artist.name}**`,
+            encodeURI(track.artist.url),
+          ),
+          inline: true,
+        },
+        {
+          name: "Album",
+          value: maskedUrl(
+            `**${track.album}**`,
+            encodeURI(`${track.artist.url}/${track.album}`),
+          ),
+          inline: true,
+        },
+      ])
+      .setFooter({
+        text: `${total} total Scrobbles on last.fm`,
+      });
+  }
+  //#endregion
 }

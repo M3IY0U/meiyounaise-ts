@@ -1,7 +1,7 @@
-import { request } from "undici";
-import * as spotify from "spotify-info";
 import { UnknownArtistArt } from "../lastfm/last-util/LastUtil.js";
+import * as spotify from "spotify-info";
 import { Service } from "typedi";
+import { request } from "undici";
 
 @Service("sc")
 export class SpotifyClient {
@@ -48,7 +48,7 @@ export class SpotifyClient {
 
   private async search(query: string, type: "track" | "album" | "artist") {
     if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET)
-      throw new Error("Spotify credentials not found.");
+      throw new Error("Spotify credentials not found");
     spotify.setApiCredentials(
       process.env.SPOTIFY_CLIENT_ID,
       process.env.SPOTIFY_CLIENT_SECRET,
@@ -58,7 +58,7 @@ export class SpotifyClient {
       type: [type],
     });
 
-    if (!results) throw new Error("No results found.");
+    if (!results) throw new Error("No results found");
 
     switch (type) {
       case "track":

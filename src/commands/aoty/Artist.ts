@@ -15,48 +15,54 @@ import {
   SlashOption,
 } from "discordx";
 
-import { ResponseType, respond, responseEmbed } from "../../util/general.js";
+import {
+  ResponseType,
+  remainingArgs,
+  respond,
+  responseEmbed,
+} from "../../util/general.js";
+import { getOpenGraphImage } from "../../util/general.js";
 import { getLastArtistImage } from "../lastfm/last-util/LastUtil.js";
 import { ArtistInfoScraper } from "./scraper/ArtistInfoScraper.js";
-import { getOpenGraphImage } from "../../util/general.js";
 
 @Discord()
 @SlashGroup("aoty")
-class Info {
+export class Info {
+  //#region Command Handlers
   @Slash({
     name: "info",
-    description: "Get an artist's info from AOTY.",
+    description: "Get an artist's info from AOTY",
   })
   async slashAotyInfo(
     @SlashOption({
-    name: "artist",
-    description: "The artist to get info about.",
-    type: ApplicationCommandOptionType.String,
-    required: true
-  }) artist: string,
+      name: "artist",
+      description: "The artist to get info about",
+      type: ApplicationCommandOptionType.String,
+      required: true
+    }) artist: string,
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-
     await this.getAotyInfo(artist, interaction);
   }
 
   @SimpleCommand({
     name: "info",
-    description: "Get an artist's info from AOTY.",
-    argSplitter: /^\b$/,
+    description: "Get an artist's info from AOTY",
+    argSplitter: remainingArgs,
   })
   async simpleAotyInfo(
     @SimpleCommandOption({
-    name: "artist",
-    description: "The artist to get info about.",
-    type: SimpleCommandOptionType.String
-  }) artist: string,
+      name: "artist",
+      description: "The artist to get info about",
+      type: SimpleCommandOptionType.String
+    }) artist: string,
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
     await this.getAotyInfo(artist, command.message);
   }
+  //#endregion
 
   async getAotyInfo(artist: string, interaction: CommandInteraction | Message) {
     const res = await ArtistInfoScraper.getArtistInfo(artist);

@@ -8,12 +8,7 @@ import {
   silently,
 } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
-import {
-  APIEmbed,
-  CommandInteraction,
-  EmbedBuilder,
-  Message,
-} from "discord.js";
+import { CommandInteraction, EmbedBuilder, Message } from "discord.js";
 import {
   Discord,
   SimpleCommand,
@@ -24,11 +19,11 @@ import {
 
 @Discord()
 @SlashGroup("fm")
-class Server extends LastCommand {
-  // slash handler
+export class Server extends LastCommand {
+  //#region Command Handlers
   @Slash({
     name: "server",
-    description: "Get what people are listening to in this server.",
+    description: "Get what people are listening to in this server",
   })
   async slashServer(interaction: CommandInteraction) {
     await interaction.deferReply();
@@ -37,16 +32,16 @@ class Server extends LastCommand {
 
   // simple handler
   @SimpleCommand({
-    name: "server",
-    description: "Get what people are listening to in this server.",
+    name: "fm server",
+    description: "Get what people are listening to in this server",
   })
   async simpleServer(command: SimpleCommandMessage) {
     await command.message.channel.sendTyping();
-
     await this.server(command.message);
   }
+  //#endregion
 
-  // command logic
+  //#region Logic
   async server(interaction: CommandInteraction | Message) {
     const members = await interaction.guild?.members.fetch();
     const users = await this.repo.getLastUsersInGuild(
@@ -73,7 +68,7 @@ class Server extends LastCommand {
     });
 
     if (texts.length === 0)
-      throw new InfoError("Nobody is listening to anything right now.");
+      throw new InfoError("Nobody is listening to anything right now");
 
     const embeds = paginateStrings(texts, "\n⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤\n", 1800).map(
       (p: string) => {
@@ -103,4 +98,5 @@ class Server extends LastCommand {
       track: res.tracks[0],
     };
   }
+  //#endregion
 }

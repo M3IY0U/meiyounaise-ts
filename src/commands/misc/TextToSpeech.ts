@@ -1,4 +1,4 @@
-import { respond } from "../../util/general.js";
+import { remainingArgs, respond } from "../../util/general.js";
 import { EnumChoice } from "@discordx/utilities";
 import {
   ApplicationCommandOptionType,
@@ -48,6 +48,7 @@ enum Voice {
 
 @Discord()
 export class TextToSpeech {
+  //#region Command Handlers
   @Slash({
     name: "tts",
     description: "Generate a TikTok TTS audio file",
@@ -71,10 +72,10 @@ export class TextToSpeech {
     await this.tts(text, interaction, voice);
   }
 
-  // arg splitter that never matches because i don't want to use command.argString
+  // simple handler
   @SimpleCommand({
     name: "tts",
-    argSplitter: /^\b$/,
+    argSplitter: remainingArgs,
     description:
       "Generate a TikTok TTS audio file (Use slash command version to select voice)",
   })
@@ -87,6 +88,8 @@ export class TextToSpeech {
   ) {
     await this.tts(text, command.message);
   }
+
+  //#endregion
 
   async tts(
     text: string,

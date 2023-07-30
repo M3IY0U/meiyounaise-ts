@@ -24,29 +24,29 @@ import {
 
 @Discord()
 @SlashGroup("fm")
-class SongChart extends LastCommand {
+export class SongChart extends LastCommand {
+  //#region Command Handlers
   @Slash({
     name: "songchart",
-    description: "Get your last.fm song chart.",
+    description: "Get your last.fm song chart",
   })
   async slashSongChart(
     @SlashChoice(...EnumChoice(TimeSpan))
     @SlashOption({
-    name: "timespan",
-    description: "The timespan to get the song chart for.",
-    type: ApplicationCommandOptionType.String,
-    required: false,
-  }) timespan: TimeSpan | undefined,
+      name: "timespan",
+      description: "The timespan to get the song chart for",
+      type: ApplicationCommandOptionType.String,
+      required: false,
+    }) timespan: TimeSpan | undefined,
     @SlashOption({
-    name: "user",
-    description: "The user to get the song chart for.",
-    required: false,
-    type: ApplicationCommandOptionType.User,
-  })user: User | undefined,
+      name: "user",
+      description: "The user to get the song chart for",
+      required: false,
+      type: ApplicationCommandOptionType.User,
+    }) user: User | undefined,
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-
     await this.songChart(
       user?.id ?? interaction.user.id,
       parseTimeSpan(timespan),
@@ -55,30 +55,30 @@ class SongChart extends LastCommand {
   }
 
   @SimpleCommand({
-    name: "songchart",
-    description: "Get your last.fm song chart.",
+    name: "fm songchart",
+    description: "Get your last.fm song chart",
   })
   async simpleSongChart(
     @SimpleCommandOption({
-    name: "timespan",
-    description: "The timespan to get the song chart for.",
-    type: SimpleCommandOptionType.String,
-  }) timespan: TimeSpan | undefined,
+      name: "timespan",
+      description: "The timespan to get the song chart for",
+      type: SimpleCommandOptionType.String,
+    }) timespan: TimeSpan | undefined,
     @SimpleCommandOption({
-    name: "user",
-    description: "The user to get the song chart for.",
-    type: SimpleCommandOptionType.User,
-  }) user: User | undefined,
+      name: "user",
+      description: "The user to get the song chart for",
+      type: SimpleCommandOptionType.User,
+    }) user: User | undefined,
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
-
     await this.songChart(
       user?.id ?? command.message.author.id,
       parseTimeSpan(timespan),
       command.message,
     );
   }
+  //#endregion
 
   async songChart(
     userId: string,
@@ -86,7 +86,6 @@ class SongChart extends LastCommand {
     interaction: CommandInteraction | Message,
   ) {
     const user = await this.tryGetLast(userId);
-
     const res = await this.lastClient.getTopTracks(user, timespan);
 
     await respond(

@@ -1,5 +1,5 @@
 import BoardRepo from "../../db/BoardRepo.js";
-import { ResponseType, responseEmbed } from "../../util/general.js";
+import { ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { PermissionGuard } from "@discordx/utilities";
 import {
   ActionRowBuilder,
@@ -7,7 +7,6 @@ import {
   ButtonInteraction,
   ButtonStyle,
   CommandInteraction,
-  EmbedBuilder,
   MessageActionRowComponentBuilder,
 } from "discord.js";
 import { ButtonComponent, Discord, Guard, Slash, SlashGroup } from "discordx";
@@ -16,7 +15,7 @@ import { Inject } from "typedi";
 @Discord()
 @SlashGroup({
   name: "board",
-  description: "Manage emoji board related things.",
+  description: "Manage emoji board related things",
 })
 @Guard(
   PermissionGuard(["ManageChannels"], {
@@ -32,14 +31,13 @@ export class BoardDelete {
 
   @Slash({
     name: "delete",
-    description: "Delete an existing emoji board.",
+    description: "Delete an existing emoji board",
   })
-  @SlashGroup("board")
   async deleteSlash(interaction: CommandInteraction) {
     await interaction.deferReply();
 
     const board = await this.repo.getBoard(interaction.guildId || "");
-    if (!board) throw new Error("There is no board in this server.");
+    if (!board) throw new Error("There is no board in this server");
 
     const btnRow =
       new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([
@@ -53,13 +51,16 @@ export class BoardDelete {
           .setStyle(ButtonStyle.Secondary),
       ]);
 
-    interaction.editReply({
-      embeds: responseEmbed(
-        ResponseType.Info,
-        `Are you sure you want to delete the board in <#${board.channel_id}>?`,
-      ),
-      components: [btnRow],
-    });
+    await respond(
+      {
+        embeds: responseEmbed(
+          ResponseType.Info,
+          `Are you sure you want to delete the board in <#${board.channel_id}>?`,
+        ),
+        components: [btnRow],
+      },
+      interaction,
+    );
   }
 
   @ButtonComponent({ id: "board_delete" })
