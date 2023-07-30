@@ -20,10 +20,11 @@ import {
   SlashOption,
 } from "discordx";
 import * as spotify from "spotify-info";
+import { LastCommand } from "../lastfm/last-util/LastCommand.js";
 
 @Discord()
 @SlashGroup("spotify")
-export class SpotifySearch {
+export class SpotifySearch extends LastCommand {
   //#region Command Handlers
   @Slash({
     name: "search",
@@ -58,6 +59,74 @@ export class SpotifySearch {
   ) {
     await command.message.channel.sendTyping();
     await this.searchSpotify(query, command.message);
+  }
+
+  // context menu handler
+  @ContextMenu({
+    type: ApplicationCommandType.Message,
+    name: "Spotify Search",
+  })
+  async contextSpotify(interaction: MessageContextMenuCommandInteraction) {
+    await interaction.deferReply();
+
+    // cheat because i just want to get the track and not the whole menu
+    const current = GuildHandlers.fmLog[interaction.targetMessage.channelId];
+    GuildHandlers.updateSongInChannel(
+      interaction.targetMessage.channelId,
+      this.buildQuery(interaction.targetMessage),
+    );
+
+    await this.searchSpotify(undefined, interaction);
+
+    GuildHandlers.updateSongInChannel(
+      interaction.targetMessage.channelId,
+      current,
+    );
+  }
+
+  // slash handler - current lastfm search
+  @Slash({
+    name: "sp",
+    description: "Get the Spotify link for the current song",
+  })
+  @SlashGroup("fm")
+  async slashNowPlayingSpotify(interaction: CommandInteraction) {
+    await interaction.deferReply();
+    await this.nowPlayingSpotify(interaction.user.id, interaction);
+  }
+
+  // simple handler - current lastfm search
+  @SimpleCommand({
+    name: "fm sp",
+    aliases: ["np sp"],
+    description: "Get the Spotify link for the current song",
+  })
+  async simpleNowPlayingSpotify(command: SimpleCommandMessage) {
+    await command.message.channel.sendTyping();
+    await this.nowPlayingSpotify(command.message.author.id, command.message);
+  }
+  //#endregion
+
+  async nowPlayingSpotify(
+    userId: string,
+    interaction: CommandInteraction | Message,
+  ) {
+    const last = await this.tryGetLast(userId);
+    const res = await this.lastClient.getRecentScrobbles(last, 1);
+
+    if (!res.tracks.length || res.total === 0)
+      throw new Error(`No tracks found for user '${res.user}'`);
+
+    // cheat because i just want to get the track and not the whole menu
+    const current = GuildHandlers.fmLog[interaction.channelId];
+    GuildHandlers.updateSongInChannel(
+      interaction.channelId,
+      `${res.tracks[0].artist.name} ${res.tracks[0].name}`,
+    );
+
+    await this.searchSpotify(undefined, interaction);
+
+    GuildHandlers.updateSongInChannel(interaction.channelId, current);
   }
 
   async searchSpotify(
@@ -151,30 +220,6 @@ export class SpotifySearch {
 
     await pagination.send();
   }
-
-  // context menu handler
-  @ContextMenu({
-    type: ApplicationCommandType.Message,
-    name: "Spotify Search",
-  })
-  async contextSpotify(interaction: MessageContextMenuCommandInteraction) {
-    await interaction.deferReply();
-
-    // cheat because i just want to get the track and not the whole menu
-    const current = GuildHandlers.fmLog[interaction.targetMessage.channelId];
-    GuildHandlers.updateSongInChannel(
-      interaction.targetMessage.channelId,
-      this.buildQuery(interaction.targetMessage),
-    );
-
-    await this.searchSpotify(undefined, interaction);
-
-    GuildHandlers.updateSongInChannel(
-      interaction.targetMessage.channelId,
-      current,
-    );
-  }
-  //#endregion
 
   private buildQuery(msg: Message) {
     if (msg.author.id !== msg.client.user.id || msg.embeds.length !== 1)

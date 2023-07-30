@@ -102,7 +102,7 @@ export class YouTube extends LastCommand {
     );
   }
 
-  // slash handler - without query/lastfm search
+  // slash handler - current lastfm search
   @Slash({
     name: "yt",
     description: "Get the YouTube video for the current song",
@@ -113,10 +113,10 @@ export class YouTube extends LastCommand {
     await this.nowPlayingYoutube(interaction.user.id, interaction);
   }
 
-  // simple handler - without query/lastfm search
+  // simple handler - current lastfm search
   @SimpleCommand({
-    name: "np yt",
-    aliases: ["fm yt"],
+    name: "fm yt",
+    aliases: ["np yt"],
     description: "Get the YouTube video for the current song",
   })
   async simpleNowPlayingYoutube(command: SimpleCommandMessage) {
@@ -161,8 +161,7 @@ export class YouTube extends LastCommand {
   ) {
     const res = await Youtube.search(query);
     if (!res || res.length === 0) {
-      interaction.reply("No videos found!");
-      return;
+      throw new Error("No videos found!");
     }
 
     const pages = res
