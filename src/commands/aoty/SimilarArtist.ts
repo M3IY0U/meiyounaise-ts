@@ -50,13 +50,13 @@ export class SimilarArtist {
   }
 
   @SimpleCommand({
-    name: "similar",
+    name: "aoty similarartist",
     description: "Get similar artists from AOTY",
     argSplitter: remainingArgs,
   })
   async simpleAotyArtistSimilar(
     @SimpleCommandOption({
-      name: "similarartist",
+      name: "artist",
       description: "The artist to get similar artists for",
       type: SimpleCommandOptionType.String
     }) artist: string,

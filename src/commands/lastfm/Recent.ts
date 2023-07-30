@@ -51,19 +51,16 @@ export class Recent extends LastCommand {
   // simple handler
   @SimpleCommand({ name: "fm recent", description: "Get your recent tracks" })
   async simpleRecent(
-    @SimpleCommandOption(
-      { 
-        name: "user", 
-        type: SimpleCommandOptionType.User, 
-        description: "User to get recent scrobbles for"}) user:
-      | User
-      | undefined,
-    @SimpleCommandOption(
-      {
-        name: "amount", 
-        type: SimpleCommandOptionType.Number, 
-        description: "Amount fo scrobbles to get"
-      }) amount: number | undefined,
+    @SimpleCommandOption({ 
+      name: "user",
+      type: SimpleCommandOptionType.User, 
+      description: "User to get recent scrobbles for"
+    }) user: User | undefined,
+    @SimpleCommandOption({
+      name: "amount", 
+      type: SimpleCommandOptionType.Number, 
+      description: "Amount fo scrobbles to get"
+    }) amount: number | undefined,
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
@@ -81,7 +78,6 @@ export class Recent extends LastCommand {
     interaction: CommandInteraction | Message,
   ) {
     const last = await this.tryGetLast(userId);
-
     const recent = await this.lastClient.getRecentScrobbles(
       last,
       Math.min(amount ?? 5, 10),

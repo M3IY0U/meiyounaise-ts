@@ -47,13 +47,13 @@ export class SimilarAlbum {
   }
 
   @SimpleCommand({
-    name: "similaralbum",
+    name: "aoty similaralbum",
     description: "Get similar albums",
     argSplitter: remainingArgs,
   })
   async simpleAotyAlbumSimilar(
     @SimpleCommandOption({
-    name: "similaralbum",
+    name: "album",
     description: "The album to get similar albums for",
     type: SimpleCommandOptionType.String
   }) album: string,

@@ -30,7 +30,7 @@ import { ArtistInfoScraper } from "./scraper/ArtistInfoScraper.js";
 export class Info {
   //#region Command Handlers
   @Slash({
-    name: "info",
+    name: "artist",
     description: "Get an artist's info from AOTY",
   })
   async slashAotyInfo(
@@ -47,7 +47,7 @@ export class Info {
   }
 
   @SimpleCommand({
-    name: "info",
+    name: "aoty artist",
     description: "Get an artist's info from AOTY",
     argSplitter: remainingArgs,
   })

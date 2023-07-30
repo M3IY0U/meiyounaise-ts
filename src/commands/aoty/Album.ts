@@ -46,7 +46,7 @@ export class Album {
   }
 
   @SimpleCommand({
-    name: "album",
+    name: "aoty album",
     description: "Get an album's info from AOTY",
     argSplitter: remainingArgs,
   })

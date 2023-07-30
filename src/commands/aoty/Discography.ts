@@ -50,7 +50,7 @@ export class Discography {
   }
 
   @SimpleCommand({
-    name: "discography",
+    name: "aoty discography",
     description: "Get an artist's discography from AOTY",
     argSplitter: remainingArgs,
   })
