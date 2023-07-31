@@ -78,7 +78,9 @@ export class SimilarAlbum {
 
     if (res.similar.length === 0)
       return await respond(
-        { embeds: responseEmbed(ResponseType.Error, "No similar albums found") },
+        {
+          embeds: responseEmbed(ResponseType.Error, "No similar albums found"),
+        },
         interaction,
       );
 

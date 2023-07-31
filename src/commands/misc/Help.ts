@@ -1,3 +1,5 @@
+import { Meiyounaise } from "../../Client.js";
+import { getUserColor, remainingArgs, respond } from "../../util/general.js";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
@@ -6,16 +8,14 @@ import {
 } from "discord.js";
 import {
   Discord,
+  MetadataStorage,
   SimpleCommand,
   SimpleCommandMessage,
-  Slash,
-  MetadataStorage,
-  SlashOption,
   SimpleCommandOption,
   SimpleCommandOptionType,
+  Slash,
+  SlashOption,
 } from "discordx";
-import { getUserColor, remainingArgs, respond } from "../../util/general.js";
-import { Meiyounaise } from "../../Client.js";
 
 @Discord()
 export class Help {

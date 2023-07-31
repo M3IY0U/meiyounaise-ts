@@ -1,5 +1,6 @@
 import { GuildHandlers } from "../../handlers/GuildHandlers.js";
 import { remainingArgs, respond, stripText } from "../../util/general.js";
+import { LastCommand } from "../lastfm/last-util/LastCommand.js";
 import { Pagination, PaginationType } from "@discordx/pagination";
 import {
   ApplicationCommandOptionType,
@@ -20,7 +21,6 @@ import {
   SlashOption,
 } from "discordx";
 import * as spotify from "spotify-info";
-import { LastCommand } from "../lastfm/last-util/LastCommand.js";
 
 @Discord()
 @SlashGroup("spotify")
@@ -150,7 +150,9 @@ export class SpotifySearch extends LastCommand {
 
       const searchItems = await spotify.search(
         GuildHandlers.fmLog[interaction.channelId],
-        { type: ["track"] },
+        {
+          type: ["track"],
+        },
       );
 
       if (!searchItems || searchItems.tracks.total === 0)
