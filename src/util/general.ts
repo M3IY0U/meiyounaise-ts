@@ -21,9 +21,9 @@ export async function respond(
     | ModalSubmitInteraction,
 ) {
   if (interaction instanceof Message) {
-    await interaction.reply(toSend);
+    return await interaction.reply(toSend);
   } else {
-    await interaction.editReply(toSend);
+    return await interaction.editReply(toSend);
   }
 }
 
