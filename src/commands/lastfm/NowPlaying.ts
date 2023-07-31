@@ -45,7 +45,11 @@ export class NowPlaying extends LastCommand {
   }
 
   // simple handler
-  @SimpleCommand({ name: "fm", aliases: ["np"] })
+  @SimpleCommand({
+    name: "fm",
+    aliases: ["np"],
+    description: "Show what you're listening to",
+  })
   async simpleNowPlaying(
     @SimpleCommandOption({
     name: "user",
