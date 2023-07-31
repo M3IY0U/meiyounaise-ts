@@ -16,23 +16,23 @@ import { GuildOnly } from "../../util/GuildOnly.js";
     ),
   }),
 )
-export class RepeatMessages {
+export class AniListEmbed {
   @Inject("guildRepo")
   private repo!: GuildRepo;
 
   @Slash({
-    name: "repeatmsg",
+    name: "anilistembed",
     description:
-      "Set the amount of messages that need to be repeated to be sent again",
+      "Set whether the bot should automatically search anilist for titles surrounded by <> or {}",
   })
   @Guard(GuildOnly)
-  async repeatMsgSlash(
+  async anilistEmbed(
     @SlashOption({
-      name: "amount",
-      description: "The amount of messages that need to be repeated to be sent again",
-      type: ApplicationCommandOptionType.Integer,
-      required: false,
-    }) amount: number | undefined,
+      name: "enabled",
+      description: "Whether to enable or disable the anilist embed",
+      type: ApplicationCommandOptionType.Boolean
+    })
+    enabled: boolean,
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
@@ -40,24 +40,20 @@ export class RepeatMessages {
     const guild = await this.repo.guildById(interaction.guildId || "");
     if (!guild) throw new Error("Guild not found");
 
-    if (!amount) {
-      await interaction.editReply({
+    await this.repo.setAnilistEmbed(interaction.guildId || "", enabled);
+
+    await respond(
+      {
         embeds: responseEmbed(
-          ResponseType.Info,
-          `Currently repeating messages after ${guild?.repeat_msg} identical ones`,
+          ResponseType.Success,
+          `AniList embeds are now ${enabled ? "enabled" : "disabled"}${
+            enabled
+              ? "\nSurround a title with <> (anime) or {} (manga) to search AniList"
+              : ""
+          }`,
         ),
-      });
-    } else {
-      await this.repo.setRepeatMsg(interaction.guildId || "", amount);
-      await respond(
-        {
-          embeds: responseEmbed(
-            ResponseType.Success,
-            `Messages will be repeated after ${amount} identical messages`,
-          ),
-        },
-        interaction,
-      );
-    }
+      },
+      interaction,
+    );
   }
 }

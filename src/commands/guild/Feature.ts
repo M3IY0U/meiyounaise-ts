@@ -3,4 +3,5 @@ export enum Feature {
   LeaveMessage = "leavemessage",
   RepeatMessages = "repeatmessages",
   SpotifyPreview = "spotifypreview",
+  AnilistEmbed = "anilistembed",
 }

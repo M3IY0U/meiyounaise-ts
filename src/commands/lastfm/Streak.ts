@@ -1,10 +1,11 @@
 import {
-  InfoError,
+  ResponseType,
   getUserAvatar,
   getUserColor,
   getUserName,
   maskedUrl,
   respond,
+  responseEmbed,
 } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
 import { UnknownAlbumArt, getLastArtistImage } from "./last-util/LastUtil.js";
@@ -69,7 +70,16 @@ export class Streak extends LastCommand {
     const last = await this.tryGetLast(userId);
     const streaks = await this.getStreaks(last);
 
-    if (!streaks) throw new InfoError(`No streak found for <@${userId}>`);
+    if (!streaks)
+      return await respond(
+        {
+          embeds: responseEmbed(
+            ResponseType.Info,
+            `No streak found for <@${userId}>`,
+          ),
+        },
+        interaction,
+      );
 
     await respond(
       {

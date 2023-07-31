@@ -4,6 +4,7 @@ import { PermissionGuard } from "@discordx/utilities";
 import { CommandInteraction, EmbedBuilder } from "discord.js";
 import { Discord, Guard, Slash, SlashGroup } from "discordx";
 import { Inject } from "typedi";
+import { GuildOnly } from "../../util/GuildOnly.js";
 
 @Discord()
 @SlashGroup("guild")
@@ -23,6 +24,7 @@ export class Overview {
     name: "overview",
     description: "Show all current guild settings",
   })
+  @Guard(GuildOnly)
   async overview(interaction: CommandInteraction) {
     await interaction.deferReply();
 

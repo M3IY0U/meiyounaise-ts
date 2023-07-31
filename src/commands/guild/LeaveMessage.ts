@@ -20,6 +20,7 @@ import {
   SlashOption,
 } from "discordx";
 import { Inject } from "typedi";
+import { GuildOnly } from "../../util/GuildOnly.js";
 
 @Discord()
 @SlashGroup("guild")
@@ -39,6 +40,7 @@ export class LeaveMessage {
     name: "leavechannel",
     description: "Set the channel the bot posts leave messages in",
   })
+  @Guard(GuildOnly)
   async leaveChannel(
     @SlashOption({
       name: "channel",
@@ -78,6 +80,7 @@ export class LeaveMessage {
     name: "leavemsg",
     description: "Set the message the bot posts when a user leaves",
   })
+  @Guard(GuildOnly)
   async leaveMsg(interaction: CommandInteraction) {
     const guild = await this.repo.guildById(interaction.guildId || "");
     if (!guild) throw new Error("Guild not found");

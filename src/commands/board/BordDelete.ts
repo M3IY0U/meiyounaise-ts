@@ -1,5 +1,5 @@
 import BoardRepo from "../../db/BoardRepo.js";
-import { ResponseType, respond, responseEmbed } from "../../util/general.js";
+import { CommandError, ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { PermissionGuard } from "@discordx/utilities";
 import {
   ActionRowBuilder,
@@ -11,6 +11,7 @@ import {
 } from "discord.js";
 import { ButtonComponent, Discord, Guard, Slash, SlashGroup } from "discordx";
 import { Inject } from "typedi";
+import { GuildOnly } from "../../util/GuildOnly.js";
 
 @Discord()
 @SlashGroup("board")
@@ -30,11 +31,12 @@ export class BoardDelete {
     name: "delete",
     description: "Delete an existing emoji board",
   })
+  @Guard(GuildOnly)
   async deleteSlash(interaction: CommandInteraction) {
     await interaction.deferReply();
 
     const board = await this.repo.getBoard(interaction.guildId || "");
-    if (!board) throw new Error("There is no board in this server");
+    if (!board) throw new CommandError("There is no board in this server");
 
     const btnRow =
       new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([

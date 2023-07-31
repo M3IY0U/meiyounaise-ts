@@ -1,5 +1,5 @@
 import BoardRepo from "../../db/BoardRepo.js";
-import { ResponseType, respond, responseEmbed } from "../../util/general.js";
+import { CommandError, ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { EnumChoice, PermissionGuard } from "@discordx/utilities";
 import {
   ApplicationCommandOptionType,
@@ -15,6 +15,7 @@ import {
   SlashOption,
 } from "discordx";
 import { Inject } from "typedi";
+import { GuildOnly } from "../../util/GuildOnly.js";
 
 enum Actions {
   add = "0",
@@ -41,6 +42,7 @@ export class BoardChannels {
     name: "banlist",
     description: "Manage banned channels for the board",
   })
+  @Guard(GuildOnly)
   async manageSlash(
     @SlashChoice(...EnumChoice(Actions))
     @SlashOption({
@@ -61,14 +63,14 @@ export class BoardChannels {
     await interaction.deferReply();
 
     const board = await this.repo.getBoard(interaction.guildId || "");
-    if (!board) throw new Error("There is no board in this server");
+    if (!board) throw new CommandError("There is no board in this server");
 
     const currentList: string[] = JSON.parse(board.banned_channels || "[]");
 
     let res: [ResponseType, string];
     switch (action) {
       case Actions.add:
-        if (!channel) throw new Error("You must provide a channel to add");
+        if (!channel) throw new CommandError("You must provide a channel to add");
 
         this.repo.addBannedChannel(interaction.guildId || "", channel.id);
         res = [
@@ -77,7 +79,7 @@ export class BoardChannels {
         ];
         break;
       case Actions.remove:
-        if (!channel) throw new Error("You must provide a channel to remove");
+        if (!channel) throw new CommandError("You must provide a channel to remove");
 
         this.repo.removeBannedChannel(interaction.guildId || "", channel.id);
         res = [

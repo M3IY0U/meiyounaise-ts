@@ -1,5 +1,5 @@
 import BoardRepo from "../../db/BoardRepo.js";
-import { ResponseType, respond, responseEmbed } from "../../util/general.js";
+import { CommandError, ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { PermissionGuard } from "@discordx/utilities";
 import {
   ApplicationCommandOptionType,
@@ -10,6 +10,7 @@ import {
 } from "discord.js";
 import { Discord, Guard, Slash, SlashGroup, SlashOption } from "discordx";
 import { Inject } from "typedi";
+import { GuildOnly } from "../../util/GuildOnly.js";
 
 @Discord()
 @SlashGroup({
@@ -33,6 +34,7 @@ export class BoardCreate {
     name: "create",
     description: "Create a new emoji board",
   })
+  @Guard(GuildOnly)
   async createSlash(
     @SlashOption({
       name: "channel", 
@@ -59,7 +61,7 @@ export class BoardCreate {
 
     if (threshold < 1) err = [true, "Threshold must be at least 1"];
 
-    if (err[0]) throw new Error(err[1]);
+    if (err[0]) throw new CommandError(err[1]);
 
     const created = await this.repo.upsertBoard(
       interaction.guildId || "",

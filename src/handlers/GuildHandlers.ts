@@ -1,13 +1,16 @@
 import GuildRepo from "../db/GuildRepo.js";
 import { respond } from "../util/general.js";
 import { EmbedBuilder, Message } from "discord.js";
-import { ArgsOf } from "discordx";
+import { ArgsOf, Discord } from "discordx";
 import { request as qrequest } from "graphql-request";
 import * as spotify from "spotify-info";
+import { ILogObj, Logger } from "tslog";
 import { Container } from "typedi";
 import { request } from "undici";
 
 export class GuildHandlers {
+  protected static logger = new Logger<ILogObj>();
+
   private static messages: {
     [id: string]: [msg: Message, count: number];
   } = {};
@@ -17,6 +20,7 @@ export class GuildHandlers {
   } = {};
 
   static updateSongInChannel(channel: string, song: string) {
+    this.logger.info(`Updating song in channel ${channel} to ${song}`);
     this.fmLog[channel] = song;
   }
 
@@ -88,6 +92,9 @@ export class GuildHandlers {
     if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET)
       return;
 
+    this.logger.info(
+      `Spotify embed triggered by ${msg.author.username} in ${msg.guildId} with ${match[0]}`,
+    );
     const repo: GuildRepo = Container.get("guildRepo");
     const guild = await repo.guildById(msg.guildId || "");
     if (!guild || !guild.embed_spotify) return;
@@ -120,10 +127,6 @@ export class GuildHandlers {
   static async anilistEmbed([msg]: ArgsOf<"messageCreate">) {
     if (!msg.content || msg.author.bot) return;
 
-    const repo: GuildRepo = Container.get("guildRepo");
-    const guild = await repo.guildById(msg.guildId || "");
-    if (!guild || !guild.embed_anilist) return;
-
     const mangaRegex = /{(.*?)}/g;
     const animeRegex = /<(.*?)>/g;
 
@@ -137,6 +140,14 @@ export class GuildHandlers {
       (!animeMatch || animeMatch.length === 0)
     )
       return;
+
+    this.logger.info(
+      `AniList embed triggered by ${msg.author.username} in ${msg.guildId} with ${msg.content}`,
+    );
+
+    const repo: GuildRepo = Container.get("guildRepo");
+    const guild = await repo.guildById(msg.guildId || "");
+    if (!guild || !guild.embed_anilist) return;
 
     const embeds = [];
 

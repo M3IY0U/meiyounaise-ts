@@ -104,10 +104,10 @@ export const getUserColor = (
     ? interaction.member?.displayColor ?? "Random"
     : (interaction.member as GuildMember).displayColor ?? "Random";
 
-export class InfoError extends Error {
+export class CommandError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "InfoError";
+    this.name = "CommandError";
   }
 }
 

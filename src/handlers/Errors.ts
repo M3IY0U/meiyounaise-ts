@@ -1,4 +1,4 @@
-import { InfoError, ResponseType, responseEmbed } from "../util/general.js";
+import { CommandError, ResponseType, responseEmbed } from "../util/general.js";
 import {
   AutocompleteInteraction,
   CommandInteraction,
@@ -6,6 +6,9 @@ import {
   MessageComponentInteraction,
   ModalSubmitInteraction,
 } from "discord.js";
+import { Logger, ILogObj } from "tslog";
+
+const logger = new Logger<ILogObj>();
 
 export async function handleError(
   interaction:
@@ -16,11 +19,13 @@ export async function handleError(
     | ModalSubmitInteraction,
   e: unknown,
 ) {
-  if (e instanceof Error) {
-    console.error(e.stack);
-    console.error(e.message);
+  if (e instanceof CommandError) {
+    logger.warn(e.message);
+  } else if (e instanceof Error) {
+    logger.error(e.stack);
+    logger.error(e.message);
   } else {
-    console.error(e);
+    logger.error(e);
   }
 
   if (interaction instanceof AutocompleteInteraction) return;
@@ -31,15 +36,8 @@ export async function handleError(
     try {
       await interaction.deleteReply();
     } catch (e) {
-      console.error(e);
+      logger.error(e);
     }
-
-  if (e instanceof InfoError) {
-    await interaction.channel?.send({
-      embeds: responseEmbed(ResponseType.Info, e.message),
-    });
-    return;
-  }
 
   await interaction.channel?.send({
     embeds: responseEmbed(

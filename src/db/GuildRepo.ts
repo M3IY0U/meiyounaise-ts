@@ -94,6 +94,17 @@ export default class GuildRepo extends MeiyounaiseDB {
     });
   }
 
+  async setAnilistEmbed(guildId: string, enabled: boolean) {
+    await this.client.guilds.update({
+      where: {
+        id: guildId,
+      },
+      data: {
+        embed_anilist: enabled,
+      },
+    });
+  }
+
   async disableFeature(guildId: string, feature: Feature) {
     switch (feature) {
       case Feature.JoinMessage:
@@ -136,6 +147,16 @@ export default class GuildRepo extends MeiyounaiseDB {
           },
           data: {
             embed_spotify: false,
+          },
+        });
+        break;
+      case Feature.AnilistEmbed:
+        await this.client.guilds.update({
+          where: {
+            id: guildId,
+          },
+          data: {
+            embed_anilist: false,
           },
         });
         break;

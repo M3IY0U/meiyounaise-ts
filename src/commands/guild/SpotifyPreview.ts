@@ -4,6 +4,7 @@ import { PermissionGuard } from "@discordx/utilities";
 import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
 import { Discord, Guard, Slash, SlashGroup, SlashOption } from "discordx";
 import { Inject } from "typedi";
+import { GuildOnly } from "../../util/GuildOnly.js";
 
 @Discord()
 @SlashGroup({ name: "guild", description: "Manage guild related things" })
@@ -25,10 +26,11 @@ export class SpotifyPreview {
     description:
       "Set whether the bot should send a preview mp3 for spotify links",
   })
+  @Guard(GuildOnly)
   async spotifyPreview(
     @SlashOption({
-      name: "amount",
-      description: "The amount of messages that need to be repeated to be sent again",
+      name: "enabled",
+      description: "Whether to enable or disable the spotify preview",
       type: ApplicationCommandOptionType.Boolean
     })
     enabled: boolean,

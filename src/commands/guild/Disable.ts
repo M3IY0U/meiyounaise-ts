@@ -12,6 +12,7 @@ import {
   SlashOption,
 } from "discordx";
 import { Inject } from "typedi";
+import { GuildOnly } from "../../util/GuildOnly.js";
 
 @Discord()
 @SlashGroup("guild")
@@ -28,6 +29,7 @@ export class Disable {
   private repo!: GuildRepo;
 
   @Slash({ name: "disable", description: "Disable a feature" })
+  @Guard(GuildOnly)
   async disable(
     @SlashChoice(...EnumChoice(Feature))
     @SlashOption({

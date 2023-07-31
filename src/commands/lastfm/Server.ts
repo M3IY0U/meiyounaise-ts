@@ -1,10 +1,11 @@
 import {
-  InfoError,
+  ResponseType,
   getGuildIcon,
   getUserColor,
   maskedUrl,
   paginateStrings,
   respond,
+  responseEmbed,
   silently,
 } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
@@ -68,7 +69,15 @@ export class Server extends LastCommand {
     });
 
     if (texts.length === 0)
-      throw new InfoError("Nobody is listening to anything right now");
+      await respond(
+        {
+          embeds: responseEmbed(
+            ResponseType.Info,
+            "Nobody is listening to anything right now",
+          ),
+        },
+        interaction,
+      );
 
     const embeds = paginateStrings(texts, "\n⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤\n", 1800).map(
       (p: string) => {

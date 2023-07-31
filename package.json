@@ -28,6 +28,7 @@
     "open-graph-scraper": "^6.2.2",
     "reflect-metadata": "^0.1.13",
     "spotify-info": "^1.1.3",
+    "tslog": "^4.8.2",
     "typedi": "^0.10.0",
     "undici": "^5.22.1",
     "youtube-sr": "^4.3.4"
