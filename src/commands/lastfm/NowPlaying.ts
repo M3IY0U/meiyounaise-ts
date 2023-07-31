@@ -101,7 +101,7 @@ export class NowPlaying extends LastCommand {
         iconURL: avatar,
         url: `https://www.last.fm/user/${name}`,
       })
-      .setThumbnail(track.image ?? UnknownAlbumArt)
+      .setThumbnail(track.image || UnknownAlbumArt)
       .setDescription(
         `**${maskedUrl(track.name, encodeURI(track.url))}**\nScrobbled <t:${
           track.date
@@ -118,10 +118,12 @@ export class NowPlaying extends LastCommand {
         },
         {
           name: "Album",
-          value: maskedUrl(
-            `**${track.album}**`,
-            encodeURI(`${track.artist.url}/${track.album}`),
-          ),
+          value: track.album
+            ? maskedUrl(
+                `**${track.album}**`,
+                encodeURI(`${track.artist.url}/${track.album}`),
+              )
+            : "Unknown",
           inline: true,
         },
       ])
