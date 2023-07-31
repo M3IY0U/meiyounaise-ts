@@ -31,7 +31,7 @@ export class SimilarAlbum {
   //#region Command Handlers
   @Slash({
     name: "similaralbum",
-    description: "Get similar albums",
+    description: "Get similar albums from AOTY",
   })
   async slashAotyAlbumSimilar(
     @SlashOption({
@@ -48,7 +48,7 @@ export class SimilarAlbum {
 
   @SimpleCommand({
     name: "aoty similaralbum",
-    description: "Get similar albums",
+    description: "Get similar albums from AOTY",
     argSplitter: remainingArgs,
   })
   async simpleAotyAlbumSimilar(
@@ -78,7 +78,7 @@ export class SimilarAlbum {
 
     if (res.similar.length === 0)
       return await respond(
-        { embeds: responseEmbed(ResponseType.Error, "No results found") },
+        { embeds: responseEmbed(ResponseType.Error, "No similar albums found") },
         interaction,
       );
 

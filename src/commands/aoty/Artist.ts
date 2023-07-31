@@ -27,6 +27,7 @@ import { ArtistInfoScraper } from "./scraper/ArtistInfoScraper.js";
 
 @Discord()
 @SlashGroup("aoty")
+@SlashGroup({ name: "aoty", description: "Commands for albumoftheyear.org" })
 export class Info {
   //#region Command Handlers
   @Slash({

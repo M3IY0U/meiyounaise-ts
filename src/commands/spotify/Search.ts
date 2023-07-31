@@ -53,7 +53,7 @@ export class SpotifySearch extends LastCommand {
   async simpleSpotify(
     @SimpleCommandOption({
       name: "spotify",
-      description: "Get spotify info",
+      description: "The query to search for",
       type: SimpleCommandOptionType.String}) query: string | undefined,
     command: SimpleCommandMessage,
   ) {
