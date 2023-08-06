@@ -1,3 +1,4 @@
+import { Logger } from "../util/Logger.js";
 import { CommandError, ResponseType, responseEmbed } from "../util/general.js";
 import {
   AutocompleteInteraction,
@@ -6,9 +7,6 @@ import {
   MessageComponentInteraction,
   ModalSubmitInteraction,
 } from "discord.js";
-import { Logger, ILogObj } from "tslog";
-
-const logger = new Logger<ILogObj>();
 
 export async function handleError(
   interaction:
@@ -20,12 +18,12 @@ export async function handleError(
   e: unknown,
 ) {
   if (e instanceof CommandError) {
-    logger.warn(e.message);
+    Logger.warn(e.message);
   } else if (e instanceof Error) {
-    logger.error(e.stack);
-    logger.error(e.message);
+    Logger.error(e.stack);
+    Logger.error(e.message);
   } else {
-    logger.error(e);
+    Logger.error(e);
   }
 
   if (interaction instanceof AutocompleteInteraction) return;
@@ -36,7 +34,7 @@ export async function handleError(
     try {
       await interaction.deleteReply();
     } catch (e) {
-      logger.error(e);
+      Logger.error(e);
     }
 
   await interaction.channel?.send({

@@ -1,3 +1,4 @@
+import { CommandError } from "../../../util/general.js";
 import { TimeSpan } from "./types/general.js";
 import ogs from "open-graph-scraper";
 
@@ -32,7 +33,7 @@ export const parseTimeSpan = (timespan: string | undefined) => {
     case undefined:
       return TimeSpan.All;
     default:
-      throw new Error(
+      throw new CommandError(
         "Invalid timespan.\nAvailable timespans: week, month, quarter, half(year), year, (over)all",
       );
   }

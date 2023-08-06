@@ -1,5 +1,11 @@
 import BoardRepo from "../../db/BoardRepo.js";
-import { CommandError, ResponseType, respond, responseEmbed } from "../../util/general.js";
+import { GuildOnly } from "../../util/GuildOnly.js";
+import {
+  CommandError,
+  ResponseType,
+  respond,
+  responseEmbed,
+} from "../../util/general.js";
 import { PermissionGuard } from "@discordx/utilities";
 import {
   ApplicationCommandOptionType,
@@ -10,7 +16,6 @@ import {
 } from "discord.js";
 import { Discord, Guard, Slash, SlashGroup, SlashOption } from "discordx";
 import { Inject } from "typedi";
-import { GuildOnly } from "../../util/GuildOnly.js";
 
 @Discord()
 @SlashGroup({

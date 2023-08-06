@@ -1,4 +1,5 @@
 import GuildRepo from "../../db/GuildRepo.js";
+import { GuildOnly } from "../../util/GuildOnly.js";
 import { ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { PermissionGuard } from "@discordx/utilities";
 import {
@@ -20,7 +21,6 @@ import {
   SlashOption,
 } from "discordx";
 import { Inject } from "typedi";
-import { GuildOnly } from "../../util/GuildOnly.js";
 
 @Discord()
 @SlashGroup("guild")

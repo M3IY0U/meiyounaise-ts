@@ -1,16 +1,14 @@
 import GuildRepo from "../db/GuildRepo.js";
+import { Logger } from "../util/Logger.js";
 import { respond } from "../util/general.js";
 import { EmbedBuilder, Message } from "discord.js";
-import { ArgsOf, Discord } from "discordx";
+import { ArgsOf } from "discordx";
 import { request as qrequest } from "graphql-request";
 import * as spotify from "spotify-info";
-import { ILogObj, Logger } from "tslog";
 import { Container } from "typedi";
 import { request } from "undici";
 
 export class GuildHandlers {
-  protected static logger = new Logger<ILogObj>();
-
   private static messages: {
     [id: string]: [msg: Message, count: number];
   } = {};
@@ -20,7 +18,7 @@ export class GuildHandlers {
   } = {};
 
   static updateSongInChannel(channel: string, song: string) {
-    this.logger.info(`Updating song in channel ${channel} to ${song}`);
+    Logger.info(`Updating song in channel ${channel} to '${song}'`);
     this.fmLog[channel] = song;
   }
 
@@ -92,8 +90,8 @@ export class GuildHandlers {
     if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET)
       return;
 
-    this.logger.info(
-      `Spotify embed triggered by ${msg.author.username} in ${msg.guildId} with ${match[0]}`,
+    Logger.info(
+      `Spotify embed triggered by ${msg.author.username} in ${msg.guild?.name} (${msg.guildId}) with '${match[0]}'`,
     );
     const repo: GuildRepo = Container.get("guildRepo");
     const guild = await repo.guildById(msg.guildId || "");
@@ -128,7 +126,7 @@ export class GuildHandlers {
     if (!msg.content || msg.author.bot) return;
 
     const mangaRegex = /{(.*?)}/g;
-    const animeRegex = /<(.*?)>/g;
+    const animeRegex = /\[(.*?)\](?!\()/g;
 
     const mangaMatch = msg.content.match(mangaRegex);
     const animeMatch = msg.content
@@ -141,8 +139,8 @@ export class GuildHandlers {
     )
       return;
 
-    this.logger.info(
-      `AniList embed triggered by ${msg.author.username} in ${msg.guildId} with ${msg.content}`,
+    Logger.info(
+      `AniList embed triggered by ${msg.author.username} in ${msg.guild?.name} (${msg.guildId}) with '${msg.content}'`,
     );
 
     const repo: GuildRepo = Container.get("guildRepo");
@@ -150,22 +148,29 @@ export class GuildHandlers {
     if (!guild || !guild.embed_anilist) return;
 
     const embeds = [];
+    try {
+      for (const match of animeMatch ?? []) {
+        const embed = await this.createAnilistEmbed(
+          match.replaceAll(/<|>/g, ""),
+          false,
+        );
+        embeds.push(embed);
+      }
 
-    for (const match of animeMatch ?? []) {
-      const embed = await this.createAnilistEmbed(
-        match.replaceAll(/<|>/g, ""),
-        false,
-      );
-      embeds.push(embed);
+      for (const match of mangaMatch ?? []) {
+        const embed = await this.createAnilistEmbed(
+          match.replaceAll(/{|}/g, ""),
+          true,
+        );
+        embeds.push(embed);
+      }
+    } catch (e) {
+      Logger.warn(`AniList embed failed: ${e}`);
+      if (e instanceof Error && e.message.toLowerCase().includes("not found")) {
+        return await msg.react("📭");
+      }
     }
-
-    for (const match of mangaMatch ?? []) {
-      const embed = await this.createAnilistEmbed(
-        match.replaceAll(/{|}/g, ""),
-        true,
-      );
-      embeds.push(embed);
-    }
+    if (!embeds.length) return await msg.react("❌");
 
     await respond({ embeds: embeds.slice(0, 5) }, msg);
   }

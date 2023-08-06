@@ -1,10 +1,9 @@
-import { Container } from "typedi";
 import { BoardHandlers } from "./handlers/BoardHandlers.js";
 import { handleError } from "./handlers/Errors.js";
 import { GuildHandlers } from "./handlers/GuildHandlers.js";
+import { Logger } from "./util/Logger.js";
 import { IntentsBitField, Message, Partials } from "discord.js";
 import { Client } from "discordx";
-import { Logger, ILogObj } from "tslog";
 
 export const Meiyounaise = new Client({
   intents: [
@@ -28,14 +27,12 @@ export const Meiyounaise = new Client({
   partials: [Partials.Reaction, Partials.Message, Partials.Channel],
 });
 
-const logger = new Logger<undefined>();
-
 Meiyounaise.once("ready", async () => {
-  logger.info("Clearing commands...");
+  Logger.info("Clearing commands...");
   //await Meiyounaise.clearApplicationCommands("328353999508209678");
-  logger.info("Registering commands...");
+  Logger.info("Registering commands...");
   //await Meiyounaise.initApplicationCommands();
-  logger.info(
+  Logger.info(
     `Logged in as ${Meiyounaise.user?.username} (${Meiyounaise.user?.id})`,
   );
 });
@@ -48,17 +45,25 @@ Meiyounaise.on("interactionCreate", async (interaction) => {
     }
   }
   try {
-    logger.info(`Executing interaction: ${interaction}`);
+    Logger.info(`Executing interaction: ${interaction}`);
     await Meiyounaise.executeInteraction(interaction);
   } catch (e) {
-    logger.error(`Error executing interaction: ${interaction}`);
+    Logger.error(`Error executing interaction: ${interaction}`);
     await handleError(interaction, e);
   }
 });
 
 Meiyounaise.on("messageCreate", async (message: Message) => {
-  if (message.author.bot) return;
+  if (
+    message.author.bot ||
+    !Meiyounaise.simpleCommandConfig?.prefix ||
+    !message.content.startsWith(
+      Meiyounaise.simpleCommandConfig.prefix as string,
+    )
+  )
+    return;
   try {
+    Logger.info(`Executing message '${message}'`);
     await Meiyounaise.executeCommand(message);
   } catch (e) {
     await handleError(message, e);
@@ -69,7 +74,7 @@ Meiyounaise.on("messageCreate", async (message: Message) => {
   try {
     await GuildHandlers.spotifyEmbed([message]);
   } catch (e) {
-    logger.warn(`Error executing spotifyEmbed: ${e}`);
+    Logger.warn(`Error executing spotifyEmbed: ${e}`);
   }
 });
 
@@ -77,7 +82,7 @@ Meiyounaise.on("messageCreate", async (message: Message) => {
   try {
     await GuildHandlers.repeatMessage([message]);
   } catch (e) {
-    logger.warn(`Error executing repeatMessage: ${e}`);
+    Logger.warn(`Error executing repeatMessage: ${e}`);
   }
 });
 
@@ -85,7 +90,7 @@ Meiyounaise.on("messageCreate", async (message: Message) => {
   try {
     await GuildHandlers.anilistEmbed([message]);
   } catch (e) {
-    logger.warn(`Error executing anilistEmbed: ${e}`);
+    Logger.warn(`Error executing anilistEmbed: ${e}`);
   }
 });
 
@@ -93,7 +98,7 @@ Meiyounaise.on("messageReactionAdd", async (reaction, user) => {
   try {
     await BoardHandlers.onReactionAdd([reaction, user]);
   } catch (e) {
-    logger.warn(`Error executing onReactionAdd: ${e}`);
+    Logger.warn(`Error executing onReactionAdd: ${e}`);
   }
 });
 
@@ -101,7 +106,7 @@ Meiyounaise.on("messageReactionRemove", async (reaction, user) => {
   try {
     await BoardHandlers.onReactionRm([reaction, user]);
   } catch (e) {
-    logger.warn(`Error executing onReactionRm: ${e}`);
+    Logger.warn(`Error executing onReactionRm: ${e}`);
   }
 });
 
@@ -109,7 +114,7 @@ Meiyounaise.on("guildMemberAdd", async (member) => {
   try {
     await GuildHandlers.onMemberAdd([member]);
   } catch (e) {
-    logger.warn(`Error executing onMemberAdd: ${e}`);
+    Logger.warn(`Error executing onMemberAdd: ${e}`);
   }
 });
 
@@ -117,6 +122,6 @@ Meiyounaise.on("guildMemberRemove", async (member) => {
   try {
     await GuildHandlers.onMemberRemove([member]);
   } catch (e) {
-    logger.warn(`Error executing onMemberRemove: ${e}`);
+    Logger.warn(`Error executing onMemberRemove: ${e}`);
   }
 });

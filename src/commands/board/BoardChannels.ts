@@ -1,5 +1,11 @@
 import BoardRepo from "../../db/BoardRepo.js";
-import { CommandError, ResponseType, respond, responseEmbed } from "../../util/general.js";
+import { GuildOnly } from "../../util/GuildOnly.js";
+import {
+  CommandError,
+  ResponseType,
+  respond,
+  responseEmbed,
+} from "../../util/general.js";
 import { EnumChoice, PermissionGuard } from "@discordx/utilities";
 import {
   ApplicationCommandOptionType,
@@ -15,7 +21,6 @@ import {
   SlashOption,
 } from "discordx";
 import { Inject } from "typedi";
-import { GuildOnly } from "../../util/GuildOnly.js";
 
 enum Actions {
   add = "0",
@@ -70,7 +75,8 @@ export class BoardChannels {
     let res: [ResponseType, string];
     switch (action) {
       case Actions.add:
-        if (!channel) throw new CommandError("You must provide a channel to add");
+        if (!channel)
+          throw new CommandError("You must provide a channel to add");
 
         this.repo.addBannedChannel(interaction.guildId || "", channel.id);
         res = [
@@ -79,7 +85,8 @@ export class BoardChannels {
         ];
         break;
       case Actions.remove:
-        if (!channel) throw new CommandError("You must provide a channel to remove");
+        if (!channel)
+          throw new CommandError("You must provide a channel to remove");
 
         this.repo.removeBannedChannel(interaction.guildId || "", channel.id);
         res = [
