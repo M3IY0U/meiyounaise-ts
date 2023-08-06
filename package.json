@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "ts-node-esm src/main.ts",
-    "watch": "nodemon --exec ts-node-esm src/main.ts"
+    "watch": "nodemon --exec ts-node-esm src/main.ts",
+    "start": "node build/main.js"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +24,6 @@
     "discordx": "^11.7.6",
     "dotenv": "^16.3.1",
     "graphql-request": "^6.1.0",
-    "markov-catena": "^1.0.0",
     "node-html-parser": "^6.1.5",
     "open-graph-scraper": "^6.2.2",
     "reflect-metadata": "^0.1.13",

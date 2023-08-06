@@ -1,5 +1,4 @@
 import { BoardHandlers } from "./handlers/BoardHandlers.js";
-import { handleError } from "./handlers/Errors.js";
 import { GuildHandlers } from "./handlers/GuildHandlers.js";
 import { Logger } from "./util/Logger.js";
 import { IntentsBitField, Message, Partials } from "discord.js";
