@@ -4,6 +4,7 @@ import { GuildHandlers } from "./handlers/GuildHandlers.js";
 import { Logger } from "./util/Logger.js";
 import { IntentsBitField, Message, Partials } from "discord.js";
 import { Client } from "discordx";
+import { executeSimpleCommand, executeSlashCommand } from "./util/Commands.js";
 
 export const Meiyounaise = new Client({
   intents: [
@@ -44,13 +45,8 @@ Meiyounaise.on("interactionCreate", async (interaction) => {
       return;
     }
   }
-  try {
-    Logger.info(`Executing interaction: ${interaction}`);
-    await Meiyounaise.executeInteraction(interaction);
-  } catch (e) {
-    Logger.error(`Error executing interaction: ${interaction}`);
-    await handleError(interaction, e);
-  }
+
+  await executeSlashCommand(interaction);
 });
 
 Meiyounaise.on("messageCreate", async (message: Message) => {
@@ -62,12 +58,8 @@ Meiyounaise.on("messageCreate", async (message: Message) => {
     )
   )
     return;
-  try {
-    Logger.info(`Executing message '${message}'`);
-    await Meiyounaise.executeCommand(message);
-  } catch (e) {
-    await handleError(message, e);
-  }
+
+  await executeSimpleCommand(message);
 });
 
 Meiyounaise.on("messageCreate", async (message: Message) => {

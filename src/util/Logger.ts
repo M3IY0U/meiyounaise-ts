@@ -5,7 +5,11 @@ export const Logger = new tslog({
   hideLogPositionForProduction: true,
   attachedTransports: [
     (logObj) => {
-      appendFileSync("logs.txt", JSON.stringify(logObj) + "\n");
+      try {
+        appendFileSync("logs.txt", JSON.stringify(logObj) + "\n");
+      } catch (e) {
+        console.log(`Couldn't write to logfile: ${e}`);
+      }
     },
   ],
 });
