@@ -1,12 +1,12 @@
+import { Meiyounaise } from "../Client.js";
+import { handleError } from "../handlers/Errors.js";
+import { Logger } from "./Logger.js";
 import {
   CacheType,
   Interaction,
   Message,
   MessageContextMenuCommandInteraction,
 } from "discord.js";
-import { Logger } from "./Logger.js";
-import { Meiyounaise } from "../Client.js";
-import { handleError } from "../handlers/Errors.js";
 
 export const executeSimpleCommand = async (command: Message) => {
   const [name, ...args] = command.content.split(" ");
@@ -17,7 +17,9 @@ export const executeSimpleCommand = async (command: Message) => {
   });
 
   subLogger.info(
-    `Executing command '${name.substring(1)}' with args '${JSON.stringify(args)}'`,
+    `Executing command '${name.substring(1)}' with args '${JSON.stringify(
+      args,
+    )}'`,
     {
       guildName: command.guild?.name,
       guildId: command.guildId ?? undefined,

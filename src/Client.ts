@@ -1,9 +1,9 @@
 import { BoardHandlers } from "./handlers/BoardHandlers.js";
 import { GuildHandlers } from "./handlers/GuildHandlers.js";
+import { executeSimpleCommand, executeSlashCommand } from "./util/Commands.js";
 import { Logger } from "./util/Logger.js";
 import { IntentsBitField, Message, Partials } from "discord.js";
 import { Client } from "discordx";
-import { executeSimpleCommand, executeSlashCommand } from "./util/Commands.js";
 
 export const Meiyounaise = new Client({
   intents: [
