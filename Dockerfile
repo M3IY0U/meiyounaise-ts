@@ -16,35 +16,37 @@ RUN apk add --no-cache \
   python3 \
   && rm -rf /var/cache/apk/*
 
+# Install pnpm
+RUN npm install -g pnpm
+
 WORKDIR /tmp/app
 
-# Copy package.json and install dependencies
-COPY package.json .
-RUN npm install
+# Copy package.json and pnpm-lock.yaml
+COPY package.json pnpm-lock.yaml tsconfig.json  ./
+
+# Install dependencies using pnpm
+RUN pnpm install
 
 # Move source files
 COPY src ./src
 COPY prisma ./prisma
-COPY tsconfig.json .
-
-# Generate Prisma Client
-RUN npm install -g prisma && prisma generate
 
 # Build project
-RUN npm run build
+RUN pnpm run build
 
 # Production runner
 FROM base as prod-runner
 
 WORKDIR /app
 
-# Copy package.json and installed dependencies from build-runner
+# Copy package.json, pnpm-lock.yaml, and generated files from base
 COPY --from=base /tmp/app/package.json /app/package.json
-COPY --from=base /tmp/app/node_modules /app/node_modules
-
-# Move build files and Prisma setup
+COPY --from=base /tmp/app/pnpm-lock.yaml /app/pnpm-lock.yaml
 COPY --from=base /tmp/app/build /app/build
 COPY --from=base /tmp/app/prisma /app/prisma
 
+# Generate Prisma Client
+RUN pnpm install --prod && pnpm prisma generate
+
 # Start bot
-CMD [ "npm", "run", "start" ]
+CMD ["pnpm", "run", "start"]
