@@ -1,8 +1,5 @@
 ## build runner
-FROM node:lts-alpine as build-runner
-
-# Set temp directory
-WORKDIR /tmp/app
+FROM node:lts-alpine as base
 
 # Install canvas dependencies
 RUN apk add --no-cache \
@@ -18,6 +15,11 @@ RUN apk add --no-cache \
   giflib-dev \
   python3 \
   ;
+
+FROM base as build-runner
+
+# Set temp directory
+WORKDIR /tmp/app
 
 # Move package.json
 COPY package.json .
@@ -38,25 +40,10 @@ RUN prisma generate
 RUN npm run build
 
 ## production runner
-FROM node:lts-alpine as prod-runner
+FROM base as prod-runner
 
 # Set work directory
 WORKDIR /app
-
-# Install canvas dependencies
-RUN apk add --no-cache \
-  sudo \
-  curl \
-  build-base \
-  g++ \
-  libpng \
-  libpng-dev \
-  jpeg-dev \
-  pango-dev \
-  cairo-dev \
-  giflib-dev \
-  python3 \
-  ;
 
 # Copy package.json from build-runner
 COPY --from=build-runner /tmp/app/package.json /app/package.json
