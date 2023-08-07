@@ -22,7 +22,7 @@ export class SpotifyClient {
           Authorization: `Bearer ${this.accessToken}`,
         },
       },
-    ).then((res) => res.body.json());
+    ).then((res) => res.body.json() as any);
 
     return {
       artist: {
@@ -33,7 +33,6 @@ export class SpotifyClient {
         followers: res.followers,
       },
       related: json.artists.map(
-        // rome-ignore lint/suspicious/noExplicitAny: not gonna type json
         (artist: any) =>
           ({
             name: artist.name,
@@ -84,7 +83,7 @@ export class SpotifyClient {
         ).toString("base64")}`,
       },
       body: "grant_type=client_credentials",
-    }).then((res) => res.body.json());
+    }).then((res) => res.body.json() as any);
 
     this.expiresAt = Date.now() + json.expires_in * 1000;
     this.accessToken = json.access_token;

@@ -21,10 +21,9 @@ export class LastClient {
 
     const json = await request(
       `http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${user}&extended=1&api_key=${process.env.LAST_KEY}&format=json&limit=${limit}&page=${page}&from=${fromUnix}&to=${toUnix}`,
-    ).then((res) => res.body.json());
+    ).then((res) => res.body.json() as any);
 
     return {
-      // rome-ignore lint/suspicious/noExplicitAny: this mf definitely is an any
       tracks: json.recenttracks.track.map((track: any) => {
         track["nowplaying"] = (track["@attr"]?.nowplaying as boolean) ?? false;
         track["date"] = new Date(
@@ -46,10 +45,9 @@ export class LastClient {
   async getTopAlbums(user: string, timespan: TimeSpan): Promise<AlbumResponse> {
     const json = await request(
       `http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${user}&api_key=${process.env.LAST_KEY}&format=json&limit=25&period=${timespan}`,
-    ).then((res) => res.body.json());
+    ).then((res) => res.body.json() as any);
 
     return {
-      // rome-ignore lint/suspicious/noExplicitAny: <explanation>
       albums: json.topalbums.album.map((album: any) => {
         // fix rank
         album.rank = parseInt(album["@attr"].rank);
@@ -70,11 +68,10 @@ export class LastClient {
   ): Promise<ArtistResponse> {
     const json = await request(
       `http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=${user}&api_key=${process.env.LAST_KEY}&format=json&limit=25&period=${timespan}`,
-    ).then((res) => res.body.json());
+    ).then((res) => res.body.json() as any);
 
     return {
       artists: await Promise.all(
-        // rome-ignore lint/suspicious/noExplicitAny: <explanation>
         json.topartists.artist.map(async (artist: any) => {
           artist.rank = parseInt(artist["@attr"].rank);
           artist.image = await getLastArtistImage(artist.name);
@@ -102,8 +99,8 @@ export class LastClient {
     const tracks: TopTrack[] = [];
 
     while (page <= total) {
-      let json = await request(`${url}&page=${page}`).then((res) =>
-        res.body.json(),
+      let json = await request(`${url}&page=${page}`).then(
+        (res) => res.body.json() as any,
       );
 
       json = json.toptracks;
@@ -142,8 +139,8 @@ export class LastClient {
     const durations = new Map<string, number>();
 
     while (page <= total) {
-      let json = await request(`${url}&page=${page}`).then((res) =>
-        res.body.json(),
+      let json = await request(`${url}&page=${page}`).then(
+        (res) => res.body.json() as any,
       );
 
       json = json.toptracks;
@@ -180,8 +177,8 @@ export class LastClient {
     const tracks: RecentTrack[] = [];
 
     while (page <= total) {
-      let json = await request(`${url}&page=${page}`).then((res) =>
-        res.body.json(),
+      let json = await request(`${url}&page=${page}`).then(
+        (res) => res.body.json() as any,
       );
 
       json = json.recenttracks;

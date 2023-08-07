@@ -199,7 +199,6 @@ export class GuildHandlers {
           }
         }
       }`.replace("$search", title),
-      // rome-ignore lint/suspicious/noExplicitAny: <explanation>
     )) as any;
 
     const media = res.Media;
