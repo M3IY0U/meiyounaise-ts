@@ -1,0 +1,20 @@
+version: '3.3'
+
+services:
+  app:
+    image: meiyounaise:latest
+    ports:
+      - "4321:4321" # ports for metrics server
+    volumes:
+      - sqlite-volume:/app/prisma/db
+    environment:
+      BOT_TOKEN: "YOUR_BOT_TOKEN_HERE"
+      LAST_KEY: "YOUR_LAST_KEY_HERE"
+      TIKTOK_SESSION: "YOUR_TIKTOK_SESSION_HERE"
+      SPOTIFY_CLIENT_ID: "YOUR_SPOTIFY_CLIENT_ID_HERE"
+      SPOTIFY_CLIENT_SECRET: "YOUR_SPOTIFY_CLIENT_SECRET_HERE"
+      PREFIX: "%"
+      DATABASE_URL: "file:db/sqlite.db"
+
+volumes:
+  sqlite-volume:

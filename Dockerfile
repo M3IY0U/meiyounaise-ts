@@ -46,7 +46,7 @@ COPY --from=base /tmp/app/build /app/build
 COPY --from=base /tmp/app/prisma /app/prisma
 
 # Generate Prisma Client
-RUN pnpm install --prod && pnpm prisma generate
+RUN pnpm install --prod
 
 # Start bot
-CMD ["pnpm", "run", "start"]
+ENTRYPOINT ["/bin/sh", "-c", "pnpm prisma db push && pnpm run start"]
