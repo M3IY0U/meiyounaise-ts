@@ -1,7 +1,7 @@
-## build runner
+# Build runner
 FROM node:lts-alpine as base
 
-# Install canvas dependencies
+# Install canvas dependencies and clean up
 RUN apk add --no-cache \
   sudo \
   curl \
@@ -14,50 +14,37 @@ RUN apk add --no-cache \
   cairo-dev \
   giflib-dev \
   python3 \
-  ;
+  && rm -rf /var/cache/apk/*
 
-FROM base as build-runner
-
-# Set temp directory
 WORKDIR /tmp/app
 
-# Move package.json
+# Copy package.json and install dependencies
 COPY package.json .
-
-# Install dependencies
 RUN npm install
 
 # Move source files
 COPY src ./src
 COPY prisma ./prisma
-COPY tsconfig.json   .
+COPY tsconfig.json .
 
 # Generate Prisma Client
-RUN npm install -g prisma
-RUN prisma generate
+RUN npm install -g prisma && prisma generate
 
 # Build project
 RUN npm run build
 
-## production runner
+# Production runner
 FROM base as prod-runner
 
-# Set work directory
 WORKDIR /app
 
-# Copy package.json from build-runner
-COPY --from=build-runner /tmp/app/package.json /app/package.json
+# Copy package.json and installed dependencies from build-runner
+COPY --from=base /tmp/app/package.json /app/package.json
+COPY --from=base /tmp/app/node_modules /app/node_modules
 
-# Install dependencies
-RUN npm install --omit=dev
-
-# Move build files
-COPY --from=build-runner /tmp/app/build /app/build
-COPY --from=build-runner /tmp/app/prisma /app/prisma
-
-RUN npm install -g prisma
-RUN prisma generate
+# Move build files and Prisma setup
+COPY --from=base /tmp/app/build /app/build
+COPY --from=base /tmp/app/prisma /app/prisma
 
 # Start bot
 CMD [ "npm", "run", "start" ]
-
