@@ -17,7 +17,7 @@ export const executeSimpleCommand = async (command: Message) => {
   });
 
   subLogger.info(
-    `Executing command '${name.substring(1)}' with args '${args}'`,
+    `Executing command '${name.substring(1)}' with args '${JSON.stringify(args)}'`,
     {
       guildName: command.guild?.name,
       guildId: command.guildId ?? undefined,

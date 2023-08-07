@@ -91,6 +91,8 @@ export class AlbumInfoScraper extends BaseScraper {
     if (tracks.length === 0) {
       tracks = undefined;
     }
+    
+    const mustHear = albumDom.querySelector(".mustHearButton") !== null;
 
     return {
       name,
@@ -99,6 +101,7 @@ export class AlbumInfoScraper extends BaseScraper {
       cover,
       details,
       tags,
+      mustHear,
       scores: ratings,
       tracks,
     };

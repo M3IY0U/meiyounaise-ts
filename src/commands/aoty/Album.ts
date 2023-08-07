@@ -83,10 +83,12 @@ export class Album {
         text: `Album by ${res.artist}`,
         iconURL: await getLastArtistImage(res.artist),
       })
-      .setDescription(
-        `**User Score**\n${res.scores.user.score} (${res.scores.user.ratings} ratings)
-        **Critic Score**\n${res.scores.critic.score} (${res.scores.critic.ratings} ratings)`,
-      );
+      .setDescription(`${
+        res.mustHear ? "[__**★ Must Hear Album ★**__]\n" : ""
+      }**User Score**\n${res.scores.user.score} (${res.scores.user.ratings} ratings)
+        **Critic Score**\n${res.scores.critic.score} (${
+        res.scores.critic.ratings
+      } ratings)`);
 
     if (res.tags.length > 0) {
       embed.addFields([

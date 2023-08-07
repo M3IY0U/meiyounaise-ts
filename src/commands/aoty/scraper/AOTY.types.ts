@@ -38,7 +38,7 @@ export interface Album {
   cover: string;
   details?: { title: string; content: string }[];
   tags: string[];
-
+  mustHear: boolean;
   scores: Scores;
   tracks?: string[];
 }
