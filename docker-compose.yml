@@ -1,7 +1,7 @@
 version: '3.3'
 
 services:
-  app:
+  bot:
     image: meiyounaise:latest
     ports:
       - "4321:4321" # ports for metrics server
@@ -16,5 +16,15 @@ services:
       PREFIX: "%"
       DATABASE_URL: "file:db/sqlite.db"
 
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+    - '--config.file=/etc/prometheus/prometheus.yml'
+
 volumes:
-  sqlite-volume:
+  sqlite-volume: 

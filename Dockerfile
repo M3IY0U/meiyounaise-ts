@@ -3,26 +3,19 @@ FROM node:lts-alpine as base
 
 # Install canvas dependencies and clean up
 RUN apk add --no-cache \
-  sudo \
-  curl \
   build-base \
   g++ \
-  libpng \
-  libpng-dev \
+  cairo-dev \
   jpeg-dev \
   pango-dev \
-  cairo-dev \
-  giflib-dev \
-  python3 \
-  && rm -rf /var/cache/apk/*
-
-# Install pnpm
-RUN npm install -g pnpm
+  giflib-dev && \
+  rm -rf /var/cache/apk/* && \
+  npm install -g pnpm
 
 WORKDIR /tmp/app
 
 # Copy package.json and pnpm-lock.yaml
-COPY package.json pnpm-lock.yaml tsconfig.json  ./
+COPY package.json pnpm-lock.yaml tsconfig.json ./assets/Baloo2.ttf ./
 
 # Install dependencies using pnpm
 RUN pnpm install
@@ -31,8 +24,12 @@ RUN pnpm install
 COPY src ./src
 COPY prisma ./prisma
 
+RUN mkdir -p /usr/share/fonts/truetype/ && \
+  install -m644 Baloo2.ttf /usr/share/fonts/truetype/ && \
+  rm ./Baloo2.ttf 
+
 # Build project
-RUN pnpm run build
+RUN pnpm build
 
 # Production runner
 FROM base as prod-runner
@@ -46,7 +43,7 @@ COPY --from=base /tmp/app/build /app/build
 COPY --from=base /tmp/app/prisma /app/prisma
 
 # Generate Prisma Client
-RUN pnpm install --prod
+RUN pnpm install --prod && rm -rf /tmp/*
 
 # Start bot
-ENTRYPOINT ["/bin/sh", "-c", "pnpm prisma db push && pnpm run start"]
+ENTRYPOINT ["/bin/sh", "-c", "pnpm prisma db push && pnpm start"]

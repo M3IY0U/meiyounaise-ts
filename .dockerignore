@@ -1,3 +1,6 @@
 *.db
 logs.txt
 node_modules
+build
+.vscode
+rome.json
