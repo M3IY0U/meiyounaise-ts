@@ -1,5 +1,6 @@
-import LastRepo from "../../../db/LastRepo";
-import { LastClient } from "./LastClient";
+import LastRepo from "../../../db/LastRepo.js";
+import { CommandError } from "../../../util/general.js";
+import { LastClient } from "./LastClient.js";
 import { Inject } from "typedi";
 
 export abstract class LastCommand {
@@ -10,7 +11,7 @@ export abstract class LastCommand {
 
   protected async tryGetLast(userId: string) {
     const user = await this.repo.userById(userId);
-    if (!user?.lastfm) throw new Error("No last.fm username set");
+    if (!user?.lastfm) throw new CommandError("No last.fm username set");
     return user.lastfm;
   }
 }
