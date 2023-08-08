@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: prom-meiyounaise
+    static_configs:
+      - targets: ["bot:4321"]
+remote_write:
+  - url: https://example.net/api/prom/push
+    basic_auth:
+      username: "1234"
+      password: "yes"
