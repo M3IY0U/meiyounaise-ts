@@ -48,7 +48,7 @@ export class AniListEmbed {
           ResponseType.Success,
           `AniList embeds are now ${enabled ? "enabled" : "disabled"}${
             enabled
-              ? "\nSurround a title with <> (anime) or {} (manga) to search AniList"
+              ? "\nSurround a title with [] (anime) or {} (manga) to search AniList"
               : ""
           }`,
         ),
