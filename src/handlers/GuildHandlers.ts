@@ -3,10 +3,10 @@ import { Logger } from "../util/Logger.js";
 import { respond } from "../util/general.js";
 import { EmbedBuilder, Message } from "discord.js";
 import { ArgsOf } from "discordx";
-import { request as qrequest } from "graphql-request";
 import * as spotify from "spotify-info";
 import { Container } from "typedi";
 import { request } from "undici";
+import { searchAnilist } from "../util/AnilistQueries.js";
 
 export class GuildHandlers {
   private static messages: {
@@ -176,32 +176,7 @@ export class GuildHandlers {
   }
 
   private static async createAnilistEmbed(title: string, isManga: boolean) {
-    const res = (await qrequest(
-      "https://graphql.anilist.co",
-      `{
-        Media(search:"$search", type: ${isManga ? "MANGA" : "ANIME"}) {
-          id,
-          title {
-            romaji
-            english
-          }
-          siteUrl
-          description
-          format
-          status
-          startDate {
-            year
-            month
-            day
-          }
-          coverImage {
-            color
-          }
-        }
-      }`.replace("$search", title),
-    )) as any;
-
-    const media = res.Media;
+    const media = await searchAnilist(title, isManga);
 
     const embed = new EmbedBuilder()
       .setAuthor({
