@@ -116,7 +116,6 @@ export class Trace {
         text: `Similarity: ${(res.similarity * 100).toFixed(2)}%`,
       });
 
-    console.log(res);
     const msg = await respond(
       {
         embeds: [embed],
