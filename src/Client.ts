@@ -11,7 +11,7 @@ import {
   Partials,
   WebhookClient,
 } from "discord.js";
-import { Client } from "discordx";
+import { Client, MetadataStorage } from "discordx";
 import { dirname, importx } from "@discordx/importer";
 import { readFileSync } from "fs";
 import { UnknownAvatar } from "./util/general.js";
@@ -19,6 +19,7 @@ import { UnknownAvatar } from "./util/general.js";
 export class Meiyounaise {
   public Bot: Client;
   private isProd: boolean;
+  private devGuild = "328353999508209678";
 
   constructor() {
     this.isProd = process.env.NODE_ENV !== "development";
@@ -40,14 +41,17 @@ export class Meiyounaise {
       allowedMentions: {
         repliedUser: false,
       },
-      botGuilds: this.isProd ? ["328353999508209678"] : undefined,
+      botGuilds: this.isProd ? undefined : [this.devGuild],
       partials: [Partials.Reaction, Partials.Message, Partials.Channel],
     });
   }
 
   private async initCommands() {
     if (this.isProd) await this.Bot.initGlobalApplicationCommands();
-    else await this.Bot.initApplicationCommands();
+    else
+      await this.Bot.initGuildApplicationCommands(this.devGuild, [
+        ...MetadataStorage.instance.applicationCommandSlashes,
+      ]);
   }
 
   private async announceRestart() {
@@ -89,7 +93,7 @@ export class Meiyounaise {
       Logger.info(
         `Logged in as ${this.Bot.user?.username} (${this.Bot.user?.id})`,
       );
-      await this.announceRestart();
+      if (this.isProd) await this.announceRestart();
     });
 
     this.Bot.on("interactionCreate", async (interaction) => {

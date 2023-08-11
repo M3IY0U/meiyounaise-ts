@@ -105,7 +105,7 @@ export class BoardHandlers {
   }
 
   private static async boardEmbed(msg: Message, reactions: string) {
-    const member = msg.member;
+    const member = await msg.member?.fetch();
     const content: string[] = [
       msg.content.length > 2048
         ? `${msg.content.slice(0, 2048)} [...]`
