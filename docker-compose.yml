@@ -27,4 +27,4 @@ services:
     - '--config.file=/etc/prometheus/prometheus.yml'
 
 volumes:
-  sqlite-volume: 
+  sqlite-volume:

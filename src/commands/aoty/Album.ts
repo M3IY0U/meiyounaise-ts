@@ -102,7 +102,7 @@ export class Album {
 
     if (res.details) {
       embed.addFields(
-        res.details.map((d, i) => ({
+        res.details.map((d) => ({
           name: d.title,
           value: d.content,
           inline: true,
