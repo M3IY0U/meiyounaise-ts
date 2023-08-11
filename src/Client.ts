@@ -40,7 +40,7 @@ export class Meiyounaise {
       allowedMentions: {
         repliedUser: false,
       },
-      botGuilds: this.isProd ? ["328353999508209678"] : undefined,
+      botGuilds: this.isProd ? undefined : ["328353999508209678"],
       partials: [Partials.Reaction, Partials.Message, Partials.Channel],
     });
   }
