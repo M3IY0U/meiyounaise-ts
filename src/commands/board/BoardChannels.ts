@@ -23,10 +23,10 @@ import {
 import { Inject } from "typedi";
 
 enum Actions {
-  add = "0",
-  remove = "1",
-  list = "2",
-  clear = "3",
+  add = "add",
+  remove = "remove",
+  list = "list",
+  clear = "clear",
 }
 
 @Discord()

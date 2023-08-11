@@ -90,7 +90,7 @@ export class Discography {
 
     for (const [type, entries] of Object.entries(albumsByType)
       .filter(([type]) => !type.includes("Single"))
-      .sort(([a], _) => (a.includes("LP") ? -1 : 1))) {
+      .sort(([a]) => (a.includes("LP") ? -1 : 1))) {
       pages.push(`**${type}**`);
       for (const album of entries) {
         pages.push(
