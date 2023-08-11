@@ -3,6 +3,7 @@ version: '3.3'
 services:
   bot:
     image: m3iy0u/meiyounaise:latest
+    restart: always
     ports:
       - "4321:4321" # ports for metrics server
     volumes:

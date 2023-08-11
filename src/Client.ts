@@ -4,9 +4,17 @@ import { BoardHandlers } from "./handlers/BoardHandlers.js";
 import { GuildHandlers } from "./handlers/GuildHandlers.js";
 import { executeSimpleCommand, executeSlashCommand } from "./util/Commands.js";
 import { Logger } from "./util/Logger.js";
-import { IntentsBitField, Message, Partials } from "discord.js";
+import {
+  EmbedBuilder,
+  IntentsBitField,
+  Message,
+  Partials,
+  WebhookClient,
+} from "discord.js";
 import { Client } from "discordx";
 import { dirname, importx } from "@discordx/importer";
+import { readFileSync } from "fs";
+import { UnknownAvatar } from "./util/general.js";
 
 export class Meiyounaise {
   public Bot: Client;
@@ -42,6 +50,38 @@ export class Meiyounaise {
     else await this.Bot.initApplicationCommands();
   }
 
+  private async announceRestart() {
+    let content = "Couldn't read restart file";
+    try {
+      const file = readFileSync(process.env.RESTART_PATH as string, "utf-8");
+      const ts = new Date(parseInt(file));
+      const time = (new Date().getTime() - ts.getTime()) / 1000;
+      content = `Started: <t:${Math.floor(
+        ts.getTime() / 1000,
+      )}:T>\nEnded: <t:${Math.floor(
+        Date.now() / 1000,
+      )}:T>\n(took ${time.toFixed(2)}s)`;
+    } catch {}
+
+    try {
+      const webhook = new WebhookClient({
+        url: process.env.WEBHOOK_URL ?? "",
+      });
+
+      await webhook.send({
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(`Bot ${this.Bot.user?.username} restarted`)
+            .setDescription(content)
+            .setColor("Blurple")
+            .setThumbnail(this.Bot.user?.displayAvatarURL() ?? UnknownAvatar),
+        ],
+      });
+    } catch (e) {
+      Logger.warn(`Error sending restart webhook: ${e}`);
+    }
+  }
+
   public async start() {
     this.Bot.once("ready", async () => {
       Logger.info("Initializing slash commands");
@@ -49,6 +89,7 @@ export class Meiyounaise {
       Logger.info(
         `Logged in as ${this.Bot.user?.username} (${this.Bot.user?.id})`,
       );
+      await this.announceRestart();
     });
 
     this.Bot.on("interactionCreate", async (interaction) => {
