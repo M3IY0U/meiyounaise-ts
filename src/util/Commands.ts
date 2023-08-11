@@ -1,6 +1,5 @@
 import { handleError } from "../handlers/Errors.js";
 import { Logger } from "./Logger.js";
-import client from "prom-client";
 import {
   ApplicationCommandType,
   CacheType,
@@ -9,6 +8,7 @@ import {
   MessageContextMenuCommandInteraction,
 } from "discord.js";
 import { Client } from "discordx";
+import client from "prom-client";
 
 const simpleCounter = new client.Counter({
   name: "simple_commands_executed",

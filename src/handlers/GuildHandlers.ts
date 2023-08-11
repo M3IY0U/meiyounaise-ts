@@ -1,4 +1,5 @@
 import GuildRepo from "../db/GuildRepo.js";
+import { searchAnilist } from "../util/AnilistQueries.js";
 import { Logger } from "../util/Logger.js";
 import { respond } from "../util/general.js";
 import { EmbedBuilder, Message } from "discord.js";
@@ -6,7 +7,6 @@ import { ArgsOf } from "discordx";
 import * as spotify from "spotify-info";
 import { Container } from "typedi";
 import { request } from "undici";
-import { searchAnilist } from "../util/AnilistQueries.js";
 
 export class GuildHandlers {
   private static messages: {

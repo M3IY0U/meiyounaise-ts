@@ -56,4 +56,4 @@ export const anilistById = async (id: number, isManga: boolean) => {
   )) as any;
 
   return res.Media;
-}
+};

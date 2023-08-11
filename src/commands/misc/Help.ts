@@ -21,7 +21,7 @@ import { Inject } from "typedi";
 @Discord()
 export class Help {
   @Inject("simpleCommandConfig")
-  private simpleCommandConfig!: SimpleCommandConfig
+  private simpleCommandConfig!: SimpleCommandConfig;
 
   //#region Command Handlers
   @Slash({

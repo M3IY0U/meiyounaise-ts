@@ -1,15 +1,15 @@
-import { ContextMenu, Discord } from "discordx";
-import { LastCommand } from "./last-util/LastCommand.js";
-import {
-  ApplicationCommandType,
-  ContextMenuCommandInteraction,
-} from "discord.js";
 import {
   ResponseType,
   maskedUrl,
   respond,
   responseEmbed,
 } from "../../util/general.js";
+import { LastCommand } from "./last-util/LastCommand.js";
+import {
+  ApplicationCommandType,
+  ContextMenuCommandInteraction,
+} from "discord.js";
+import { ContextMenu, Discord } from "discordx";
 
 @Discord()
 export class GetProfile extends LastCommand {

@@ -1,9 +1,10 @@
-import { Container } from "typedi";
 import MeiyounaiseDB from "./db/MeiyounaiseDB.js";
 import { BoardHandlers } from "./handlers/BoardHandlers.js";
 import { GuildHandlers } from "./handlers/GuildHandlers.js";
 import { executeSimpleCommand, executeSlashCommand } from "./util/Commands.js";
 import { Logger } from "./util/Logger.js";
+import { UnknownAvatar } from "./util/general.js";
+import { dirname, importx } from "@discordx/importer";
 import {
   EmbedBuilder,
   IntentsBitField,
@@ -12,9 +13,8 @@ import {
   WebhookClient,
 } from "discord.js";
 import { Client, MetadataStorage } from "discordx";
-import { dirname, importx } from "@discordx/importer";
 import { readFileSync } from "fs";
-import { UnknownAvatar } from "./util/general.js";
+import { Container } from "typedi";
 
 export class Meiyounaise {
   public Bot: Client;
