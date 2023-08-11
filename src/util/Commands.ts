@@ -2,6 +2,7 @@ import { handleError } from "../handlers/Errors.js";
 import { Logger } from "./Logger.js";
 import client from "prom-client";
 import {
+  ApplicationCommandType,
   CacheType,
   Interaction,
   Message,
@@ -62,7 +63,8 @@ export const executeSimpleCommand = async (command: Message, bot: Client) => {
 export const executeSlashCommand = async (
   interaction:
     | Interaction<CacheType>
-    | MessageContextMenuCommandInteraction<CacheType>, bot: Client
+    | MessageContextMenuCommandInteraction<CacheType>,
+  bot: Client,
 ) => {
   const subLogger = Logger.getSubLogger({
     name: "InteractionLogger",
@@ -87,8 +89,24 @@ export const executeSlashCommand = async (
       });
     }
 
+    let type: string;
+    switch (interaction.commandType) {
+      case ApplicationCommandType.ChatInput:
+        type = "slash command";
+        break;
+      case ApplicationCommandType.Message:
+        type = "message context menu";
+        break;
+      case ApplicationCommandType.User:
+        type = "user context menu";
+        break;
+      default:
+        type = "unknown command";
+        break;
+    }
+
     subLogger.info(
-      `Executing slash command: ${name}${
+      `Executing ${type}: ${name}${
         args.length > 0 ? ` with args '${JSON.stringify(args)}'` : ""
       }`,
       {

@@ -37,10 +37,15 @@ export class Meiyounaise {
     });
   }
 
+  private async initCommands() {
+    if (this.isProd) await this.Bot.initGlobalApplicationCommands();
+    else await this.Bot.initApplicationCommands();
+  }
+
   public async start() {
     this.Bot.once("ready", async () => {
       Logger.info("Initializing slash commands");
-      await this.Bot.initApplicationCommands();
+      this.initCommands();
       Logger.info(
         `Logged in as ${this.Bot.user?.username} (${this.Bot.user?.id})`,
       );
