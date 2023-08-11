@@ -28,3 +28,9 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/meiyounaise:latest
+          
+      - name: Trigger Redeploy
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: ${{ secrets.REDEPLOY_HOOK }}
+       

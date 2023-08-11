@@ -1,13 +1,14 @@
-import { Meiyounaise } from "../Client.js";
 import { handleError } from "../handlers/Errors.js";
 import { Logger } from "./Logger.js";
 import client from "prom-client";
 import {
+  ApplicationCommandType,
   CacheType,
   Interaction,
   Message,
   MessageContextMenuCommandInteraction,
 } from "discord.js";
+import { Client } from "discordx";
 
 const simpleCounter = new client.Counter({
   name: "simple_commands_executed",
@@ -29,7 +30,7 @@ const slashFailedCounter = new client.Counter({
   help: "Number of slash commands failed",
 });
 
-export const executeSimpleCommand = async (command: Message) => {
+export const executeSimpleCommand = async (command: Message, bot: Client) => {
   const [name, ...args] = command.content.split(" ");
 
   const subLogger = Logger.getSubLogger({
@@ -51,7 +52,7 @@ export const executeSimpleCommand = async (command: Message) => {
     } satisfies LogContext,
   );
   try {
-    await Meiyounaise.executeCommand(command);
+    await bot.executeCommand(command);
     simpleCounter.inc();
   } catch (e) {
     await handleError(command, e);
@@ -63,6 +64,7 @@ export const executeSlashCommand = async (
   interaction:
     | Interaction<CacheType>
     | MessageContextMenuCommandInteraction<CacheType>,
+  bot: Client,
 ) => {
   const subLogger = Logger.getSubLogger({
     name: "InteractionLogger",
@@ -87,8 +89,24 @@ export const executeSlashCommand = async (
       });
     }
 
+    let type: string;
+    switch (interaction.commandType) {
+      case ApplicationCommandType.ChatInput:
+        type = "slash command";
+        break;
+      case ApplicationCommandType.Message:
+        type = "message context menu";
+        break;
+      case ApplicationCommandType.User:
+        type = "user context menu";
+        break;
+      default:
+        type = "unknown command";
+        break;
+    }
+
     subLogger.info(
-      `Executing slash command: ${name}${
+      `Executing ${type}: ${name}${
         args.length > 0 ? ` with args '${JSON.stringify(args)}'` : ""
       }`,
       {
@@ -112,7 +130,7 @@ export const executeSlashCommand = async (
   }
 
   try {
-    await Meiyounaise.executeInteraction(interaction);
+    await bot.executeInteraction(interaction);
     slashCounter.inc();
   } catch (e) {
     await handleError(interaction, e);

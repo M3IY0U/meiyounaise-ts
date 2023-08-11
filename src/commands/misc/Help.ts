@@ -1,4 +1,3 @@
-import { Meiyounaise } from "../../Client.js";
 import { getUserColor, remainingArgs, respond } from "../../util/general.js";
 import {
   ApplicationCommandOptionType,
@@ -10,15 +9,20 @@ import {
   Discord,
   MetadataStorage,
   SimpleCommand,
+  SimpleCommandConfig,
   SimpleCommandMessage,
   SimpleCommandOption,
   SimpleCommandOptionType,
   Slash,
   SlashOption,
 } from "discordx";
+import { Inject } from "typedi";
 
 @Discord()
 export class Help {
+  @Inject("simpleCommandConfig")
+  private simpleCommandConfig!: SimpleCommandConfig
+
   //#region Command Handlers
   @Slash({
     name: "help",
@@ -65,7 +69,7 @@ export class Help {
       embed = new EmbedBuilder()
         .setTitle("Help")
         .setDescription(
-          `Use \`${Meiyounaise.simpleCommandConfig?.prefix}help <command>\` to get help for a specific command or group`,
+          `Use \`${this.simpleCommandConfig?.prefix}help <command>\` to get help for a specific command or group`,
         )
         .setColor("Random")
         .addFields([
@@ -117,7 +121,7 @@ export class Help {
         embed = new EmbedBuilder()
           .setTitle(`Help: ${group} (group)`)
           .setDescription(
-            `Use \`${Meiyounaise.simpleCommandConfig?.prefix}help ${group} <command>\` to get help for a specific command`,
+            `Use \`${this.simpleCommandConfig?.prefix}help ${group} <command>\` to get help for a specific command`,
           )
           .setColor("Random")
           .addFields([

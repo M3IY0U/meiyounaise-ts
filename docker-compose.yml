@@ -2,7 +2,8 @@ version: '3.3'
 
 services:
   bot:
-    image: meiyounaise:latest
+    image: m3iy0u/meiyounaise:latest
+    restart: always
     ports:
       - "4321:4321" # ports for metrics server
     volumes:
@@ -27,4 +28,4 @@ services:
     - '--config.file=/etc/prometheus/prometheus.yml'
 
 volumes:
-  sqlite-volume: 
+  sqlite-volume:

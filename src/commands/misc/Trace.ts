@@ -17,7 +17,6 @@ import {
 import TraceMoe from "moe-api";
 import { Result } from "moe-api/dist/cjs/interface.js";
 import { anilistById } from "../../util/AnilistQueries.js";
-import { Pagination, PaginationType } from "@discordx/pagination";
 
 @Discord()
 export class Trace {
@@ -116,7 +115,6 @@ export class Trace {
         text: `Similarity: ${(res.similarity * 100).toFixed(2)}%`,
       });
 
-    console.log(res);
     const msg = await respond(
       {
         embeds: [embed],

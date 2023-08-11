@@ -12,7 +12,6 @@ import {
   Channel,
   ChannelType,
   CommandInteraction,
-  EmbedBuilder,
 } from "discord.js";
 import { Discord, Guard, Slash, SlashGroup, SlashOption } from "discordx";
 import { Inject } from "typedi";

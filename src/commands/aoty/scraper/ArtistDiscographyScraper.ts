@@ -1,4 +1,3 @@
-import { UnknownAlbumArt } from "../../lastfm/last-util/LastUtil.js";
 import { Discography, Scores, SearchType } from "./AOTY.types.js";
 import { BaseScraper } from "./BaseScraper.js";
 

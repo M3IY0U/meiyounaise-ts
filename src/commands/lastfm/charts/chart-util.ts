@@ -47,17 +47,12 @@ export function drawImageProp(
   const offsetX = 0.5;
   const offsetY = 0.5;
 
-  // rome-ignore lint/style/useSingleVarDeclarator: <explanation>
-  let iw = img.width,
-    ih = img.height,
-    r = Math.min(w / iw, h / ih),
-    nw = iw * r, // new prop. width
-    nh = ih * r, // new prop. height
-    cx,
-    cy,
-    cw,
-    ch,
-    ar = 1;
+  const iw = img.width;
+  const ih = img.height;
+  const r = Math.min(w / iw, h / ih);
+  let nw = iw * r;
+  let nh = ih * r;
+  let ar = 1;
 
   // decide which gap to fill
   if (nw < w) ar = w / nw;
@@ -66,11 +61,11 @@ export function drawImageProp(
   nh *= ar;
 
   // calc source rectangle
-  cw = iw / (nw / w);
-  ch = ih / (nh / h);
+  let cw = iw / (nw / w);
+  let ch = ih / (nh / h);
 
-  cx = (iw - cw) * offsetX;
-  cy = (ih - ch) * offsetY;
+  let cx = (iw - cw) * offsetX;
+  let cy = (ih - ch) * offsetY;
 
   // make sure source rectangle is valid
   if (cx < 0) cx = 0;
