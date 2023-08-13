@@ -15,9 +15,9 @@ export const executeSimpleCommand = async (
   bot: Client,
   stats: Stats,
 ) => {
-  let [command, ...args] = message.content.split(" ");
+  const [name, ...args] = message.content.split(" ");
 
-  command = command.substring(1);
+  const command = name.substring(1);
   const subLogger = Logger.getSubLogger({
     name: "SimpleCommandLogger",
     hideLogPositionForProduction: true,
