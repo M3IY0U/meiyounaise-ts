@@ -140,7 +140,7 @@ export class BoardHandlers {
         if (img.spoiler) spoiler = true;
         imgUrl = img.url;
       }
-      
+
       content.push(
         ...msg.attachments.map((a) => `📎 ${maskedUrl(a.name, a.url)}`),
       );
