@@ -105,7 +105,7 @@ export class BoardHandlers {
   }
 
   private static async boardEmbed(msg: Message, reactions: string) {
-    const member = msg.member;
+    const member = await msg.member?.fetch();
     const content: string[] = [
       msg.content.length > 2048
         ? `${msg.content.slice(0, 2048)} [...]`
@@ -113,12 +113,15 @@ export class BoardHandlers {
     ];
 
     let imgUrl: string | undefined;
+    let spoiler = false;
 
     if (msg.embeds.length > 0) {
-      imgUrl =
-        msg.embeds.find((e) => e.thumbnail != null || e.image != null)
-          ?.thumbnail?.url ??
-        msg.embeds.find((e) => e.image != null)?.image?.url;
+      const embed =
+        msg.embeds.find((e) => e.thumbnail != null || e.image != null) ??
+        msg.embeds.find((e) => e.image != null);
+
+      if (msg.content.includes(`|| ${embed?.url} ||`)) spoiler = true;
+      imgUrl = embed?.thumbnail?.url ?? embed?.image?.url;
 
       if (content[0] == null || content[0].trim() === "") {
         if (
@@ -129,11 +132,18 @@ export class BoardHandlers {
         }
       }
     } else if (msg.attachments.size > 0) {
-      imgUrl = msg.attachments.first()?.url;
-      const attachment = msg.attachments.first();
+      const img = msg.attachments.find((a) =>
+        a.contentType?.startsWith("image"),
+      );
 
-      if (attachment)
-        content.push(`📎 ${maskedUrl(attachment.name, attachment.proxyURL)}`);
+      if (img) {
+        if (img.spoiler) spoiler = true;
+        imgUrl = img.url;
+      }
+
+      content.push(
+        ...msg.attachments.map((a) => `📎 ${maskedUrl(a.name, a.url)}`),
+      );
     }
 
     const embed = new EmbedBuilder()
@@ -193,7 +203,12 @@ export class BoardHandlers {
 
     if (content.length > 0) embed.setDescription(content.join("\n"));
 
-    if (imgUrl) embed.setImage(imgUrl);
+    if (imgUrl)
+      embed.setImage(
+        spoiler
+          ? "https://cdn.discordapp.com/attachments/817365366997123115/1140075068664324197/spoilered.png"
+          : imgUrl,
+      );
 
     return [embed.toJSON()];
   }

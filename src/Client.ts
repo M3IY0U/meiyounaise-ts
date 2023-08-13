@@ -1,9 +1,14 @@
-import { Container } from "typedi";
 import MeiyounaiseDB from "./db/MeiyounaiseDB.js";
 import { BoardHandlers } from "./handlers/BoardHandlers.js";
+import {
+  executeSimpleCommand,
+  executeSlashCommand,
+} from "./handlers/Commands.js";
 import { GuildHandlers } from "./handlers/GuildHandlers.js";
-import { executeSimpleCommand, executeSlashCommand } from "./util/Commands.js";
+import { Stats } from "./metrics/Stats.js";
 import { Logger } from "./util/Logger.js";
+import { UnknownAvatar } from "./util/general.js";
+import { dirname, importx } from "@discordx/importer";
 import {
   EmbedBuilder,
   IntentsBitField,
@@ -11,14 +16,15 @@ import {
   Partials,
   WebhookClient,
 } from "discord.js";
-import { Client } from "discordx";
-import { dirname, importx } from "@discordx/importer";
+import { Client, MetadataStorage } from "discordx";
 import { readFileSync } from "fs";
-import { UnknownAvatar } from "./util/general.js";
+import { Container } from "typedi";
 
 export class Meiyounaise {
   public Bot: Client;
   private isProd: boolean;
+  private devGuild = "328353999508209678";
+  private stats = new Stats();
 
   constructor() {
     this.isProd = process.env.NODE_ENV !== "development";
@@ -32,7 +38,7 @@ export class Meiyounaise {
       ],
       silent: this.isProd,
       simpleCommand: {
-        prefix: "%",
+        prefix: process.env.PREFIX ?? "%",
         responses: {
           notFound: "Command not found",
         },
@@ -40,14 +46,17 @@ export class Meiyounaise {
       allowedMentions: {
         repliedUser: false,
       },
-      botGuilds: this.isProd ? undefined : ["328353999508209678"],
+      botGuilds: this.isProd ? undefined : [this.devGuild],
       partials: [Partials.Reaction, Partials.Message, Partials.Channel],
     });
   }
 
   private async initCommands() {
     if (this.isProd) await this.Bot.initGlobalApplicationCommands();
-    else await this.Bot.initApplicationCommands();
+    else
+      await this.Bot.initGuildApplicationCommands(this.devGuild, [
+        ...MetadataStorage.instance.applicationCommandSlashes,
+      ]);
   }
 
   private async announceRestart() {
@@ -89,7 +98,10 @@ export class Meiyounaise {
       Logger.info(
         `Logged in as ${this.Bot.user?.username} (${this.Bot.user?.id})`,
       );
-      await this.announceRestart();
+      if (this.isProd) await this.announceRestart();
+
+      await this.stats.initBotStats(this.Bot);
+      this.stats.createMetricEventHandlers(this.Bot);
     });
 
     this.Bot.on("interactionCreate", async (interaction) => {
@@ -100,7 +112,7 @@ export class Meiyounaise {
         }
       }
 
-      await executeSlashCommand(interaction, this.Bot);
+      await executeSlashCommand(interaction, this.Bot, this.stats);
     });
 
     this.Bot.on("messageCreate", async (message: Message) => {
@@ -113,7 +125,7 @@ export class Meiyounaise {
       )
         return;
 
-      await executeSimpleCommand(message, this.Bot);
+      await executeSimpleCommand(message, this.Bot, this.stats);
     });
 
     this.Bot.on("messageCreate", async (message: Message) => {

@@ -1,3 +1,10 @@
+import { anilistById } from "../../util/AnilistQueries.js";
+import {
+  CommandError,
+  ResponseType,
+  respond,
+  responseEmbed,
+} from "../../util/general.js";
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
@@ -8,15 +15,8 @@ import {
   MessageContextMenuCommandInteraction,
 } from "discord.js";
 import { ContextMenu, Discord, Slash, SlashOption } from "discordx";
-import {
-  CommandError,
-  ResponseType,
-  respond,
-  responseEmbed,
-} from "../../util/general.js";
 import TraceMoe from "moe-api";
 import { Result } from "moe-api/dist/cjs/interface.js";
-import { anilistById } from "../../util/AnilistQueries.js";
 
 @Discord()
 export class Trace {

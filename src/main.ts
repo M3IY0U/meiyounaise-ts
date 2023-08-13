@@ -2,7 +2,7 @@ import { Meiyounaise } from "./Client.js";
 import BoardRepo from "./db/BoardRepo.js";
 import GuildRepo from "./db/GuildRepo.js";
 import LastRepo from "./db/LastRepo.js";
-import { startMetricsServer } from "./util/metrics.js";
+import { startMetricsServer } from "./metrics/Server.js";
 import { DIService, typeDiDependencyRegistryEngine } from "discordx";
 import "dotenv/config";
 import "reflect-metadata";
