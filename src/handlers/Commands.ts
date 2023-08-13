@@ -1,5 +1,6 @@
-import { handleError } from "../handlers/Errors.js";
-import { Logger } from "./Logger.js";
+import { Stats } from "../metrics/Stats.js";
+import { Logger } from "../util/Logger.js";
+import { handleError } from "./Errors.js";
 import {
   ApplicationCommandType,
   CacheType,
@@ -8,55 +9,40 @@ import {
   MessageContextMenuCommandInteraction,
 } from "discord.js";
 import { Client } from "discordx";
-import client from "prom-client";
 
-const simpleCounter = new client.Counter({
-  name: "simple_commands_executed",
-  help: "Number of simple commands executed",
-});
+export const executeSimpleCommand = async (
+  message: Message,
+  bot: Client,
+  stats: Stats,
+) => {
+  let [command, ...args] = message.content.split(" ");
 
-const slashCounter = new client.Counter({
-  name: "slash_commands_executed",
-  help: "Number of slash commands executed",
-});
-
-const simpleFailedCounter = new client.Counter({
-  name: "simple_commands_failed",
-  help: "Number of simple commands failed",
-});
-
-const slashFailedCounter = new client.Counter({
-  name: "slash_commands_failed",
-  help: "Number of slash commands failed",
-});
-
-export const executeSimpleCommand = async (command: Message, bot: Client) => {
-  const [name, ...args] = command.content.split(" ");
-
+  command = command.substring(1);
   const subLogger = Logger.getSubLogger({
     name: "SimpleCommandLogger",
     hideLogPositionForProduction: true,
   });
 
   subLogger.info(
-    `Executing command '${name.substring(1)}' with args '${JSON.stringify(
-      args,
-    )}'`,
+    `Executing command '${command}' with args '${JSON.stringify(args)}'`,
     {
-      guildName: command.guild?.name,
-      guildId: command.guildId ?? undefined,
-      channelName: command.inGuild() ? command.channel.name : "DM",
-      channelId: command.channelId,
-      authorId: command.author.id,
-      authorName: command.author.username,
+      guildName: message.guild?.name,
+      guildId: message.guildId ?? undefined,
+      channelName: message.inGuild() ? message.channel.name : "DM",
+      channelId: message.channelId,
+      authorId: message.author.id,
+      authorName: message.author.username,
     } satisfies LogContext,
   );
+  const timer = stats.commandStats.simpleCommandsHistogram.startTimer();
   try {
-    await bot.executeCommand(command);
-    simpleCounter.inc();
+    await bot.executeCommand(message);
+    timer({ command, success: "true" });
+    stats.commandStats.simpleCommands.inc({ command });
   } catch (e) {
-    await handleError(command, e);
-    simpleFailedCounter.inc();
+    await handleError(message, e);
+    timer({ command, success: "false" });
+    stats.commandStats.simpleCommandErrors.inc({ command });
   }
 };
 
@@ -65,6 +51,7 @@ export const executeSlashCommand = async (
     | Interaction<CacheType>
     | MessageContextMenuCommandInteraction<CacheType>,
   bot: Client,
+  stats: Stats,
 ) => {
   const subLogger = Logger.getSubLogger({
     name: "InteractionLogger",
@@ -129,12 +116,16 @@ export const executeSlashCommand = async (
     } satisfies LogContext);
   }
 
+  const command = interaction.toString();
+  const timer = stats.commandStats.slashCommandsHistogram.startTimer();
   try {
     await bot.executeInteraction(interaction);
-    slashCounter.inc();
+    timer({ command, success: "true" });
+    stats.commandStats.slashCommands.inc({ command });
   } catch (e) {
     await handleError(interaction, e);
-    slashFailedCounter.inc();
+    timer({ command, success: "false" });
+    stats.commandStats.slashCommandErrors.inc({ command });
   }
 };
 
