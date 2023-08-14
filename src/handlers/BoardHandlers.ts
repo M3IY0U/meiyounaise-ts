@@ -3,7 +3,6 @@ import { Stats } from "../metrics/Stats.js";
 import { UnknownAvatar, maskedUrl } from "../util/general.js";
 import {
   ChannelType,
-  Collection,
   EmbedBuilder,
   Message,
   MessageReaction,
