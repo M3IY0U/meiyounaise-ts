@@ -107,9 +107,9 @@ export class NowPlaying extends LastCommand {
       })
       .setThumbnail(track.image || UnknownAlbumArt)
       .setDescription(
-        `**${maskedUrl(track.name, encodeURI(track.url))}**\nScrobbled <t:${
-          track.date
-        }:R>`,
+        `**${maskedUrl(track.name, encodeURI(track.url))}**${
+          track.nowplaying ? "" : `\nScrobbled <t:${track.date}:R>`
+        }`,
       )
       .addFields([
         {

@@ -4,6 +4,7 @@ import {
   executeSimpleCommand,
   executeSlashCommand,
 } from "./handlers/Commands.js";
+import { handleEventError } from "./handlers/Errors.js";
 import { GuildHandlers } from "./handlers/GuildHandlers.js";
 import { Stats } from "./metrics/Stats.js";
 import { Logger } from "./util/Logger.js";
@@ -104,6 +105,7 @@ export class Meiyounaise {
       this.stats.createMetricEventHandlers(this.Bot);
     });
 
+    // commands
     this.Bot.on("interactionCreate", async (interaction) => {
       // do not execute interaction, if it's pagination (avoid warning: select-menu/button interaction not found)
       if (interaction.isButton() || interaction.isStringSelectMenu()) {
@@ -128,11 +130,15 @@ export class Meiyounaise {
       await executeSimpleCommand(message, this.Bot, this.stats);
     });
 
+    // message events
     this.Bot.on("messageCreate", async (message: Message) => {
+      const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
-        await GuildHandlers.spotifyEmbed([message]);
+        await GuildHandlers.spotifyPreview([message], this.stats);
+        timer({ event_name: "spotifyPreview", success: "true" });
       } catch (e) {
         Logger.warn(`Error executing spotifyEmbed: ${e}`);
+        timer({ event_name: "spotifyPreview", success: "false" });
       }
     });
 
@@ -145,42 +151,59 @@ export class Meiyounaise {
     });
 
     this.Bot.on("messageCreate", async (message: Message) => {
+      const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
-        await GuildHandlers.anilistEmbed([message]);
+        await GuildHandlers.anilistEmbed([message], this.stats);
+        timer({ event_name: "anilistEmbed", success: "true" });
       } catch (e) {
         Logger.warn(`Error executing anilistEmbed: ${e}`);
+        timer({ event_name: "anilistEmbed", success: "false" });
       }
     });
 
+    // other events
     this.Bot.on("messageReactionAdd", async (reaction, user) => {
+      const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
-        await BoardHandlers.onReactionAdd([reaction, user]);
+        await BoardHandlers.onReactionAdd([reaction, user], this.stats);
+        timer({ event_name: "reactionAdd", success: "true" });
       } catch (e) {
-        Logger.warn(`Error executing onReactionAdd: ${e}`);
+        handleEventError("messageReactionAdd", [reaction, user], e);
+        timer({ event_name: "reactionAdd", success: "false" });
       }
     });
 
     this.Bot.on("messageReactionRemove", async (reaction, user) => {
+      const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
-        await BoardHandlers.onReactionRm([reaction, user]);
+        await BoardHandlers.onReactionRm([reaction, user], this.stats);
+        timer({ event_name: "reactionRemove", success: "true" });
       } catch (e) {
-        Logger.warn(`Error executing onReactionRm: ${e}`);
+        handleEventError("messageReactionRemove", [reaction, user], e);
+        timer({ event_name: "reactionRemove", success: "false" });
       }
     });
 
     this.Bot.on("guildMemberAdd", async (member) => {
+      const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
-        await GuildHandlers.onMemberAdd([member]);
+        await GuildHandlers.onMemberAdd([member], this.stats);
+        timer({ event_name: "guildMemberAdd", success: "true" });
       } catch (e) {
-        Logger.warn(`Error executing onMemberAdd: ${e}`);
+        handleEventError("guildMemberAdd", [member], e);
+        timer({ event_name: "guildMemberAdd", success: "false" });
       }
     });
 
     this.Bot.on("guildMemberRemove", async (member) => {
+      const timer = this.stats.eventStats.eventHistogram.startTimer();
+
       try {
-        await GuildHandlers.onMemberRemove([member]);
+        await GuildHandlers.onMemberRemove([member], this.stats);
+        timer({ event_name: "guildMemberRemove", success: "true" });
       } catch (e) {
-        Logger.warn(`Error executing onMemberRemove: ${e}`);
+        handleEventError("guildMemberRemove", [member], e);
+        timer({ event_name: "guildMemberRemove", success: "false" });
       }
     });
 
