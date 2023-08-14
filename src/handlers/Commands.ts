@@ -58,6 +58,8 @@ export const executeSlashCommand = async (
     hideLogPositionForProduction: true,
   });
 
+  let command = interaction.toString()
+
   if (interaction.isCommand() || interaction.isChatInputCommand()) {
     let name = interaction.commandName;
     let args = interaction.options.data.map(
@@ -105,6 +107,8 @@ export const executeSlashCommand = async (
         authorName: interaction.user.username,
       } satisfies LogContext,
     );
+
+    command = name;
   } else {
     subLogger.info(`Executing interaction: ${interaction}`, {
       guildName: interaction.guild?.name,
@@ -116,7 +120,6 @@ export const executeSlashCommand = async (
     } satisfies LogContext);
   }
 
-  const command = interaction.toString();
   const timer = stats.commandStats.slashCommandsHistogram.startTimer();
   try {
     await bot.executeInteraction(interaction);
