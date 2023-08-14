@@ -34,7 +34,9 @@ export class BoardHandlers {
     // fetch necessary data
     const dbMsg = await repo.getMessage(reaction.message.id);
     const sourceMsg = await reaction.message.fetch();
-    const reactions = sourceMsg.reactions.cache;
+    const reactions = await Promise.all(
+      sourceMsg.reactions.cache.map(async (r) => await r.fetch()),
+    );
     const boardChannel = (await reaction.message.guild?.channels.fetch(
       board.channel_id,
     )) as TextBasedChannel;
@@ -53,7 +55,8 @@ export class BoardHandlers {
       });
     } else {
       // post new message to board
-      if (reactions.filter((r) => r.count >= board.threshold).size < 1) return;
+      if (reactions.filter((r) => r.count >= board.threshold).length < 1)
+        return;
       const embed = await this.boardEmbed(
         sourceMsg,
         this.formatReactions(reactions, board.threshold),
@@ -90,13 +93,15 @@ export class BoardHandlers {
 
     if (dbMsg?.hasBeenSent) {
       const sourceMsg = await reaction.message.fetch();
-      const reactions = sourceMsg.reactions.cache;
+      const reactions = await Promise.all(
+        sourceMsg.reactions.cache.map(async (r) => await r.fetch()),
+      );
       const boardChannel = (await reaction.message.guild?.channels.fetch(
         board.channel_id,
       )) as TextBasedChannel;
       const msgInBoard = await boardChannel.messages.fetch(dbMsg.idInBoard);
 
-      if (reactions.filter((r) => r.count >= board.threshold).size > 0) {
+      if (reactions.filter((r) => r.count >= board.threshold).length > 0) {
         const embed = await this.boardEmbed(
           sourceMsg,
           this.formatReactions(reactions, board.threshold),
@@ -224,7 +229,7 @@ export class BoardHandlers {
   }
 
   private static formatReactions(
-    reactions: Collection<string, MessageReaction>,
+    reactions: MessageReaction[],
     threshold: number,
   ): string {
     return Array.from(
