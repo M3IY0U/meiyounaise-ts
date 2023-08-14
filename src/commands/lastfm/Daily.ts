@@ -106,7 +106,7 @@ export class Daily extends LastCommand {
         },
         {
           name: "Hours",
-          value: `${Math.floor(minutes / 60)}:${Math.floor(minutes % 60)}`,
+          value: `${Math.floor(minutes / 60)}:${`${Math.floor(minutes % 60)}`.padStart(2, "0")}`,
           inline: true,
         },
       ])

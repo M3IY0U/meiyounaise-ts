@@ -143,7 +143,10 @@ export class Weekly extends LastCommand {
     ).sort((a, b) => b[1] - a[1])[0];
 
     const embed = new EmbedBuilder()
-      .setTitle(`${getUserName(interaction)}'s Weekly Report`)
+      .setAuthor({
+        name: `${getUserName(interaction)}'s Weekly Report`,
+        url: `https://last.fm/user/${last}`,
+      })
       .setThumbnail(getUserAvatar(interaction))
       .setColor(getUserColor(interaction))
       // add each day to description and extra stats as fields
