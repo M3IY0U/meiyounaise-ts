@@ -1,4 +1,5 @@
 import GuildRepo from "../db/GuildRepo.js";
+import { Stats } from "../metrics/Stats.js";
 import { searchAnilist } from "../util/AnilistQueries.js";
 import { Logger } from "../util/Logger.js";
 import { respond } from "../util/general.js";
@@ -7,7 +8,6 @@ import { ArgsOf } from "discordx";
 import * as spotify from "spotify-info";
 import { Container } from "typedi";
 import { request } from "undici";
-import { Stats } from "../metrics/Stats.js";
 
 export class GuildHandlers {
   private static messages: {
