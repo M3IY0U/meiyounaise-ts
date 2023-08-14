@@ -215,7 +215,8 @@ export class BoardHandlers {
       });
     }
 
-    if (content.length > 0) embed.setDescription(content.join("\n"));
+    const description = content.join("\n").trim();
+    if (description) embed.setDescription(description);
 
     if (imgUrl)
       embed.setImage(
