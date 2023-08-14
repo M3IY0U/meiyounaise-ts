@@ -52,6 +52,8 @@ export class BoardHandlers {
       await msgInBoard.edit({
         embeds: embed,
       });
+
+      stats.eventStats.events.inc({ event_name: "board_update" });
     } else {
       // post new message to board
       if (reactions.filter((r) => r.count >= board.threshold).length < 1)
@@ -66,8 +68,8 @@ export class BoardHandlers {
       });
 
       await repo.updateMessage(reaction.message.id, msgInBoard.id, true);
+      stats.eventStats.events.inc({ event_name: "board_new" });
     }
-    stats.eventStats.events.inc({ event_name: "reactionAdd" });
   }
 
   static async onReactionRm(
@@ -114,7 +116,7 @@ export class BoardHandlers {
         await msgInBoard.delete();
       }
     }
-    stats.eventStats.events.inc({ event_name: "reactionRemove" });
+    stats.eventStats.events.inc({ event_name: "board_delete" });
   }
 
   private static async boardEmbed(msg: Message, reactions: string) {
