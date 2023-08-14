@@ -151,6 +151,7 @@ export class BoardHandlers {
         name: `Message from ${
           msg.member?.nickname ?? member?.displayName ?? msg.author.username
         }`,
+        url: `https://discord.com/users/${msg.author.id}`,
       })
       .setThumbnail(member?.displayAvatarURL() ?? UnknownAvatar)
       .setColor(member?.displayColor ?? "Random")
