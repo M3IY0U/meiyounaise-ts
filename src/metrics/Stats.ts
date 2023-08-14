@@ -15,13 +15,17 @@ export class Stats {
         name: "discord_guilds_total",
         help: "Number of guilds the bot is in",
       }),
-      users: new client.Gauge({
-        name: "discord_users_total",
+      uniqueUsers: new client.Gauge({
+        name: "discord_unique_users_total",
         help: "Number of users the bot can see",
       }),
       channels: new client.Gauge({
         name: "discord_channels_total",
         help: "Number of channels the bot can see",
+      }),
+      totalUsers: new client.Gauge({
+        name: "discord_users_total",
+        help: "Number of users the bot can see",
       }),
     };
     this.commandStats = {
@@ -79,18 +83,17 @@ export class Stats {
   public async initBotStats(client: Client) {
     this.botStats.guilds.set(client.guilds.cache.size);
     this.botStats.channels.set(client.channels.cache.size);
-
-    await this.calcUniqueUsers(client.guilds);
+    await this.calcUsers(client.guilds);
   }
 
   public createMetricEventHandlers(client: Client) {
     client.on("guildCreate", (guild) => {
       this.botStats.guilds.inc();
-      this.botStats.users.inc(guild.memberCount);
+      this.botStats.uniqueUsers.inc(guild.memberCount);
     });
     client.on("guildDelete", (guild) => {
       this.botStats.guilds.dec();
-      this.botStats.users.dec(guild.memberCount);
+      this.botStats.uniqueUsers.dec(guild.memberCount);
     });
     client.on("channelCreate", () => {
       this.botStats.channels.inc();
@@ -99,15 +102,15 @@ export class Stats {
       this.botStats.channels.dec();
     });
     client.on("guildMemberAdd", async () => {
-      await this.calcUniqueUsers(client.guilds);
+      await this.calcUsers(client.guilds);
     });
 
     client.on("guildMemberRemove", async () => {
-      await this.calcUniqueUsers(client.guilds);
+      await this.calcUsers(client.guilds);
     });
   }
 
-  private async calcUniqueUsers(guilds: GuildManager) {
+  private async calcUsers(guilds: GuildManager) {
     const allMembers = [];
     for (const guild of guilds.cache.values()) {
       const members = await guild.members.fetch();
@@ -115,13 +118,15 @@ export class Stats {
     }
 
     const flat = allMembers.flat().map((member) => member.id);
-    this.botStats.users.set(new Set(flat).size);
+    this.botStats.uniqueUsers.set(new Set(flat).size);
+    this.botStats.totalUsers.set(flat.length);
   }
 }
 
 interface BotStats {
   guilds: client.Gauge;
-  users: client.Gauge;
+  uniqueUsers: client.Gauge;
+  totalUsers: client.Gauge;
   channels: client.Gauge;
 }
 
