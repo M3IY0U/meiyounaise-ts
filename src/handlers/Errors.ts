@@ -44,3 +44,13 @@ export async function handleError(
     ),
   });
 }
+
+export function handleEventError(event: string, args: any, e: unknown) {
+  Logger.warn(
+    `Error executing event ${event} with args ${JSON.stringify(args)}`,
+  );
+  if (e instanceof Error) {
+    Logger.error(e.stack);
+    Logger.error(e.message);
+  }
+}

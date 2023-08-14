@@ -10,9 +10,10 @@ import {
 } from "discord.js";
 import { ArgsOf } from "discordx";
 import { Container } from "typedi";
+import { Stats } from "../metrics/Stats.js";
 
 export class BoardHandlers {
-  static async onReactionAdd([reaction, user]: ArgsOf<"messageReactionAdd">) {
+  static async onReactionAdd([reaction, user]: ArgsOf<"messageReactionAdd">, stats: Stats) {
     if (user.bot || reaction.message.guildId === null) return;
 
     const repo: BoardRepo = Container.get("boardRepo");
@@ -61,9 +62,10 @@ export class BoardHandlers {
 
       await repo.updateMessage(reaction.message.id, msgInBoard.id, true);
     }
+    stats.eventStats.events.inc({ event_name: "reactionAdd" })
   }
 
-  static async onReactionRm([reaction, user]: ArgsOf<"messageReactionRemove">) {
+  static async onReactionRm([reaction, user]: ArgsOf<"messageReactionRemove">, stats: Stats) {
     if (user.bot || reaction.message.guildId === null) return;
 
     const repo: BoardRepo = Container.get("boardRepo");
@@ -102,6 +104,7 @@ export class BoardHandlers {
         await msgInBoard.delete();
       }
     }
+    stats.eventStats.events.inc({ event_name: "reactionRemove" })
   }
 
   private static async boardEmbed(msg: Message, reactions: string) {

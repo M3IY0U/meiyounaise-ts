@@ -6,6 +6,7 @@ export class Stats {
   startTime: number;
   botStats: BotStats;
   commandStats: CommandStats;
+  eventStats: EventStats;
 
   constructor() {
     this.startTime = Date.now();
@@ -53,6 +54,24 @@ export class Stats {
         name: "discord_slash_commands_duration_seconds",
         help: "Duration of slash commands in seconds",
         labelNames: ["command", "success"],
+      }),
+    };
+
+    this.eventStats = {
+      events: new client.Counter({
+        name: "discord_events_total",
+        help: "Number of events executed",
+        labelNames: ["event_name"],
+      }),
+      eventErrors: new client.Counter({
+        name: "discord_event_errors_total",
+        help: "Number of event errors",
+        labelNames: ["event_name"],
+      }),
+      eventHistogram: new client.Histogram({
+        name: "discord_events_duration_seconds",
+        help: "Duration of events in seconds",
+        labelNames: ["event_name", "success"],
       }),
     };
   }
@@ -113,4 +132,10 @@ interface CommandStats {
   slashCommandErrors: client.Counter;
   simpleCommandsHistogram: client.Histogram;
   slashCommandsHistogram: client.Histogram;
+}
+
+interface EventStats {
+  events: client.Counter;
+  eventErrors: client.Counter;
+  eventHistogram: client.Histogram;
 }

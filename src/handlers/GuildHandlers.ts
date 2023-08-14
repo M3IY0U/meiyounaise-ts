@@ -7,6 +7,7 @@ import { ArgsOf } from "discordx";
 import * as spotify from "spotify-info";
 import { Container } from "typedi";
 import { request } from "undici";
+import { Stats } from "../metrics/Stats.js";
 
 export class GuildHandlers {
   private static messages: {
@@ -22,7 +23,7 @@ export class GuildHandlers {
     this.fmLog[channel] = song;
   }
 
-  static async onMemberAdd([event]: ArgsOf<"guildMemberAdd">) {
+  static async onMemberAdd([event]: ArgsOf<"guildMemberAdd">, stats: Stats) {
     const repo: GuildRepo = Container.get("guildRepo");
     const guild = await repo.guildById(event.guild.id);
     if (!guild || !guild.join_chn || !guild.join_msg) return;
@@ -33,9 +34,14 @@ export class GuildHandlers {
     await channel.send(
       guild.join_msg.replaceAll("[user]", `<@${event.user.id}>`),
     );
+
+    stats.eventStats.events.inc({ event_name: "guildMemberAdd" });
   }
 
-  static async onMemberRemove([event]: ArgsOf<"guildMemberRemove">) {
+  static async onMemberRemove(
+    [event]: ArgsOf<"guildMemberRemove">,
+    stats: Stats,
+  ) {
     const repo: GuildRepo = Container.get("guildRepo");
     const guild = await repo.guildById(event.guild.id);
     if (!guild || !guild.leave_chn || !guild.leave_msg) return;
@@ -46,6 +52,8 @@ export class GuildHandlers {
     await channel.send(
       guild.leave_msg.replaceAll("[user]", `@${event.user.username}`),
     );
+
+    stats.eventStats.events.inc({ event_name: "guildMemberRemove" });
   }
 
   static async repeatMessage([msg]: ArgsOf<"messageCreate">) {
@@ -79,7 +87,7 @@ export class GuildHandlers {
     }
   }
 
-  static async spotifyEmbed([msg]: ArgsOf<"messageCreate">) {
+  static async spotifyPreview([msg]: ArgsOf<"messageCreate">, stats: Stats) {
     const match = msg.content.match(
       /<?https?:\/\/open.spotify.com\/track\/[a-zA-Z0-9]+>?/,
     );
@@ -91,7 +99,7 @@ export class GuildHandlers {
       return;
 
     Logger.info(
-      `Spotify embed triggered by ${msg.author.username} in ${msg.guild?.name} (${msg.guildId}) with '${match[0]}'`,
+      `Spotify preview triggered by ${msg.author.username} in ${msg.guild?.name} (${msg.guildId}) with '${match[0]}'`,
     );
     const repo: GuildRepo = Container.get("guildRepo");
     const guild = await repo.guildById(msg.guildId || "");
@@ -120,9 +128,11 @@ export class GuildHandlers {
       },
       msg,
     );
+
+    stats.eventStats.events.inc({ event_name: "spotifyPreview" });
   }
 
-  static async anilistEmbed([msg]: ArgsOf<"messageCreate">) {
+  static async anilistEmbed([msg]: ArgsOf<"messageCreate">, stats: Stats) {
     if (!msg.content || msg.author.bot) return;
 
     const mangaRegex = /{(.*?)}/g;
@@ -173,6 +183,8 @@ export class GuildHandlers {
     if (!embeds.length) return await msg.react("❌");
 
     await respond({ embeds: embeds.slice(0, 5) }, msg);
+
+    stats.eventStats.events.inc({ event_name: "anilistEmbed" });
   }
 
   private static async createAnilistEmbed(title: string, isManga: boolean) {
