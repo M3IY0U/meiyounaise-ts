@@ -32,7 +32,7 @@ export async function handleError(
     // do nothing
   } else if (interaction.replied || interaction.deferred)
     try {
-      await interaction.deleteReply();
+      await interaction.editReply("Something went wrong");
     } catch (e) {
       Logger.error(e);
     }

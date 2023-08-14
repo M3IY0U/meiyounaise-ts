@@ -40,9 +40,6 @@ export class Meiyounaise {
       silent: this.isProd,
       simpleCommand: {
         prefix: process.env.PREFIX ?? "%",
-        responses: {
-          notFound: "Command not found",
-        },
       },
       allowedMentions: {
         repliedUser: false,
