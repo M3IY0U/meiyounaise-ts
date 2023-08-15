@@ -1,5 +1,5 @@
 import BoardRepo from "../../db/BoardRepo.js";
-import { GuildOnly } from "../../util/GuildOnly.js";
+import { GuildOnly } from "../../util/guards/GuildOnly.js";
 import {
   CommandError,
   ResponseType,

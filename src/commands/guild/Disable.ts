@@ -1,5 +1,5 @@
 import GuildRepo from "../../db/GuildRepo.js";
-import { GuildOnly } from "../../util/GuildOnly.js";
+import { GuildOnly } from "../../util/guards/GuildOnly.js";
 import { ResponseType, respond, responseEmbed } from "../../util/general.js";
 import { Feature } from "./Feature.js";
 import { EnumChoice, PermissionGuard } from "@discordx/utilities";
