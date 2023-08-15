@@ -9,6 +9,7 @@ import {
   ModalSubmitInteraction,
 } from "discord.js";
 import ogs from "open-graph-scraper";
+import { request } from "undici";
 
 export const UnknownAvatar = "https://cdn.discordapp.com/embed/avatars/0.png";
 
@@ -134,4 +135,13 @@ export function paginateStrings(
 export const getOpenGraphImage = async (url: string) => {
   const { result } = await ogs({ url });
   return result.ogImage?.at(0)?.url;
+};
+
+export const toHastebin = async (content: string) => {
+  const json = await request("https://haste.timostestdoma.in/documents", {
+    method: "POST",
+    body: content,
+  }).then((res) => res.body.json() as any);
+
+  return `https://haste.timostestdoma.in/${json.key}`;
 };
