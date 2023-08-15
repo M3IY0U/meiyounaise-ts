@@ -1,6 +1,6 @@
 import GuildRepo from "../../db/GuildRepo.js";
-import { GuildOnly } from "../../util/GuildOnly.js";
 import { ResponseType, respond, responseEmbed } from "../../util/general.js";
+import { GuildOnly } from "../../util/guards/GuildOnly.js";
 import { PermissionGuard } from "@discordx/utilities";
 import { CommandInteraction, EmbedBuilder } from "discord.js";
 import { Discord, Guard, Slash, SlashGroup } from "discordx";

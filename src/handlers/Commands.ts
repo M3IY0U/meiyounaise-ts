@@ -8,7 +8,7 @@ import {
   Message,
   MessageContextMenuCommandInteraction,
 } from "discord.js";
-import { Client } from "discordx";
+import { Client, MetadataStorage } from "discordx";
 
 export const executeSimpleCommand = async (
   message: Message,
@@ -22,6 +22,17 @@ export const executeSimpleCommand = async (
     name: "SimpleCommandLogger",
     hideLogPositionForProduction: true,
   });
+
+  if (
+    MetadataStorage.instance.simpleCommandsByName.find(
+      (c) => c.name === command,
+    ) === undefined
+  ) {
+    subLogger.silly(`Ignoring unknown command '${command}'`);
+    stats.commandStats.simpleCommands.inc({ command: "unknown" });
+    await message.react("❓");
+    return;
+  }
 
   subLogger.info(
     `Executing command '${command}' with args '${JSON.stringify(args)}'`,
@@ -58,7 +69,7 @@ export const executeSlashCommand = async (
     hideLogPositionForProduction: true,
   });
 
-  let command = interaction.toString()
+  let command = interaction.toString();
 
   if (interaction.isCommand() || interaction.isChatInputCommand()) {
     let name = interaction.commandName;

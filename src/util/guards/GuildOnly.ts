@@ -1,4 +1,4 @@
-import { CommandError } from "./general.js";
+import { CommandError } from "../general.js";
 import { CommandInteraction } from "discord.js";
 import { ArgsOf, GuardFunction } from "discordx";
 

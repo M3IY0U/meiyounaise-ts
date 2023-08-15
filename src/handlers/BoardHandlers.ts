@@ -203,7 +203,7 @@ export class BoardHandlers {
         {
           name: "Replying to",
           value: `${refMsg.author}`,
-          inline: true,
+          inline: false,
         },
       ]);
 
