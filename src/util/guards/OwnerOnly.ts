@@ -1,6 +1,6 @@
+import { CommandError } from "../general.js";
 import { CommandInteraction } from "discord.js";
 import { ArgsOf, GuardFunction } from "discordx";
-import { CommandError } from "../general.js";
 
 export const OwnerOnly: GuardFunction<ArgsOf<"interactionCreate">> = async (
   interaction,

@@ -1,5 +1,5 @@
-import { Service } from "typedi";
 import MeiyounaiseDB from "./MeiyounaiseDB.js";
+import { Service } from "typedi";
 
 @Service("debugRepo")
 export default class DebugRepo extends MeiyounaiseDB {

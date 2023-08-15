@@ -1,9 +1,9 @@
-import { Discord, Guard, Slash, SlashGroup, SlashOption } from "discordx";
-import { Inject } from "typedi";
-import { OwnerOnly } from "../../util/guards/OwnerOnly.js";
-import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
 import DebugRepo from "../../db/DebugRepo.js";
 import { respond, toHastebin } from "../../util/general.js";
+import { OwnerOnly } from "../../util/guards/OwnerOnly.js";
+import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
+import { Discord, Guard, Slash, SlashGroup, SlashOption } from "discordx";
+import { Inject } from "typedi";
 
 @Discord()
 @Guard(OwnerOnly)
@@ -24,7 +24,7 @@ export class Sql {
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-    
+
     const result = await this.repo.query(query);
     const resultString = JSON.stringify(result, null, 2);
 
