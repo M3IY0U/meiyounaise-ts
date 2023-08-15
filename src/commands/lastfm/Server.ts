@@ -69,7 +69,7 @@ export class Server extends LastCommand {
     });
 
     if (texts.length === 0)
-      await respond(
+      return await respond(
         {
           embeds: responseEmbed(
             ResponseType.Info,
