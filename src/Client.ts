@@ -124,7 +124,6 @@ export class Meiyounaise {
       if (
         message.author.bot ||
         !this.Bot.simpleCommandConfig?.prefix ||
-        !this.startsWithCommand(message) ||
         !message.content.startsWith(
           this.Bot.simpleCommandConfig.prefix as string,
         )
