@@ -48,12 +48,12 @@ export const executeSimpleCommand = async (
   const timer = stats.commandStats.simpleCommandsHistogram.startTimer();
   try {
     await bot.executeCommand(message);
-    timer({ command, success: "true" });
     stats.commandStats.simpleCommands.inc({ command });
   } catch (e) {
     await handleError(message, e);
-    timer({ command, success: "false" });
     stats.commandStats.simpleCommandErrors.inc({ command });
+  } finally {
+    timer();
   }
 };
 
@@ -134,12 +134,12 @@ export const executeSlashCommand = async (
   const timer = stats.commandStats.slashCommandsHistogram.startTimer();
   try {
     await bot.executeInteraction(interaction);
-    timer({ command, success: "true" });
     stats.commandStats.slashCommands.inc({ command });
   } catch (e) {
     await handleError(interaction, e);
-    timer({ command, success: "false" });
     stats.commandStats.slashCommandErrors.inc({ command });
+  } finally {
+    timer();
   }
 };
 

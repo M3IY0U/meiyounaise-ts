@@ -135,8 +135,8 @@ export class GuildHandlers {
   static async anilistEmbed([msg]: ArgsOf<"messageCreate">, stats: Stats) {
     if (!msg.content || msg.author.bot) return;
 
-    const mangaRegex = /{(.*?)}/g;
-    const animeRegex = /\[(.*?)\](?!\()/g;
+    const mangaRegex = /{{(.*?)}}/g;
+    const animeRegex = /\[\[(.*?)\]\](?!\()/g;
 
     const mangaMatch = msg.content.match(mangaRegex);
     const animeMatch = msg.content

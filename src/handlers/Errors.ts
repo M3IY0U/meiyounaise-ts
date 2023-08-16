@@ -32,7 +32,9 @@ export async function handleError(
     // do nothing
   } else if (interaction.replied || interaction.deferred)
     try {
-      await interaction.editReply("Something went wrong");
+      await interaction.editReply(
+        "Something went wrong while executing this command",
+      );
     } catch (e) {
       Logger.error(e);
     }
