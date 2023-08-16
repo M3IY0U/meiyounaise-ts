@@ -141,10 +141,10 @@ export class Meiyounaise {
       const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
         await GuildHandlers.spotifyPreview([message], this.stats);
-        timer({ event_name: "spotifyPreview", success: "true" });
       } catch (e) {
         Logger.warn(`Error executing spotifyEmbed: ${e}`);
-        timer({ event_name: "spotifyPreview", success: "false" });
+      } finally {
+        timer();
       }
     });
 
@@ -162,10 +162,10 @@ export class Meiyounaise {
       const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
         await GuildHandlers.anilistEmbed([message], this.stats);
-        timer({ event_name: "anilistEmbed", success: "true" });
       } catch (e) {
         Logger.warn(`Error executing anilistEmbed: ${e}`);
-        timer({ event_name: "anilistEmbed", success: "false" });
+      } finally {
+        timer();
       }
     });
 
@@ -174,10 +174,10 @@ export class Meiyounaise {
       const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
         await BoardHandlers.onReactionAdd([reaction, user], this.stats);
-        timer({ event_name: "reactionAdd", success: "true" });
       } catch (e) {
         handleEventError("messageReactionAdd", [reaction, user], e);
-        timer({ event_name: "reactionAdd", success: "false" });
+      } finally {
+        timer();
       }
     });
 
@@ -185,10 +185,10 @@ export class Meiyounaise {
       const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
         await BoardHandlers.onReactionRm([reaction, user], this.stats);
-        timer({ event_name: "reactionRemove", success: "true" });
       } catch (e) {
         handleEventError("messageReactionRemove", [reaction, user], e);
-        timer({ event_name: "reactionRemove", success: "false" });
+      } finally {
+        timer();
       }
     });
 
@@ -196,10 +196,10 @@ export class Meiyounaise {
       const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
         await GuildHandlers.onMemberAdd([member], this.stats);
-        timer({ event_name: "guildMemberAdd", success: "true" });
       } catch (e) {
         handleEventError("guildMemberAdd", [member], e);
-        timer({ event_name: "guildMemberAdd", success: "false" });
+      } finally {
+        timer();
       }
     });
 
@@ -208,10 +208,10 @@ export class Meiyounaise {
 
       try {
         await GuildHandlers.onMemberRemove([member], this.stats);
-        timer({ event_name: "guildMemberRemove", success: "true" });
       } catch (e) {
         handleEventError("guildMemberRemove", [member], e);
-        timer({ event_name: "guildMemberRemove", success: "false" });
+      } finally {
+        timer();
       }
     });
 

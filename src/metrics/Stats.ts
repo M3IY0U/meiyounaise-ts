@@ -7,6 +7,7 @@ export class Stats {
   botStats: BotStats;
   commandStats: CommandStats;
   eventStats: EventStats;
+  private defaultBuckets = [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10];
 
   constructor() {
     this.startTime = Date.now();
@@ -52,12 +53,12 @@ export class Stats {
       simpleCommandsHistogram: new client.Histogram({
         name: "discord_simple_commands_duration_seconds",
         help: "Duration of simple commands in seconds",
-        labelNames: ["command", "success"],
+        buckets: this.defaultBuckets
       }),
       slashCommandsHistogram: new client.Histogram({
         name: "discord_slash_commands_duration_seconds",
         help: "Duration of slash commands in seconds",
-        labelNames: ["command", "success"],
+        buckets: this.defaultBuckets
       }),
     };
 
@@ -74,8 +75,8 @@ export class Stats {
       }),
       eventHistogram: new client.Histogram({
         name: "discord_events_duration_seconds",
-        help: "Duration of events in seconds",
-        labelNames: ["event_name", "success"],
+        help: "Duration of event handlers in seconds",
+        buckets: this.defaultBuckets
       }),
     };
   }
