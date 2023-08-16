@@ -53,12 +53,12 @@ export class Stats {
       simpleCommandsHistogram: new client.Histogram({
         name: "discord_simple_commands_duration_seconds",
         help: "Duration of simple commands in seconds",
-        buckets: this.defaultBuckets
+        buckets: this.defaultBuckets,
       }),
       slashCommandsHistogram: new client.Histogram({
         name: "discord_slash_commands_duration_seconds",
         help: "Duration of slash commands in seconds",
-        buckets: this.defaultBuckets
+        buckets: this.defaultBuckets,
       }),
     };
 
@@ -76,7 +76,7 @@ export class Stats {
       eventHistogram: new client.Histogram({
         name: "discord_events_duration_seconds",
         help: "Duration of event handlers in seconds",
-        buckets: this.defaultBuckets
+        buckets: this.defaultBuckets,
       }),
     };
   }
@@ -126,9 +126,9 @@ export class Stats {
 
 interface BotStats {
   guilds: client.Gauge;
-  uniqueUsers: client.Gauge;
-  totalUsers: client.Gauge;
   channels: client.Gauge;
+  totalUsers: client.Gauge;
+  uniqueUsers: client.Gauge;
 }
 
 interface CommandStats {
