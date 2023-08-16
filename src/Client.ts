@@ -89,6 +89,12 @@ export class Meiyounaise {
     }
   }
 
+  private startsWithCommand = (message: Message) => {
+    return [...MetadataStorage.instance.simpleCommandsByName.values()].some(
+      (x) => message.content.substring(1).startsWith(x.name),
+    );
+  };
+
   public async start() {
     this.Bot.once("ready", async () => {
       Logger.info("Initializing slash commands");
@@ -118,6 +124,7 @@ export class Meiyounaise {
       if (
         message.author.bot ||
         !this.Bot.simpleCommandConfig?.prefix ||
+        !this.startsWithCommand(message) ||
         !message.content.startsWith(
           this.Bot.simpleCommandConfig.prefix as string,
         )
@@ -129,6 +136,8 @@ export class Meiyounaise {
 
     // message events
     this.Bot.on("messageCreate", async (message: Message) => {
+      if (message.author.bot || this.startsWithCommand(message)) return;
+
       const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
         await GuildHandlers.spotifyPreview([message], this.stats);
@@ -148,6 +157,8 @@ export class Meiyounaise {
     });
 
     this.Bot.on("messageCreate", async (message: Message) => {
+      if (message.author.bot || this.startsWithCommand(message)) return;
+
       const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
         await GuildHandlers.anilistEmbed([message], this.stats);
