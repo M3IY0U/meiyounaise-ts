@@ -1,12 +1,14 @@
 import { type GuildManager } from "discord.js";
 import { Client } from "discordx";
 import client from "prom-client";
+import os from "os";
 
 export class Stats {
   startTime: number;
   botStats: BotStats;
   commandStats: CommandStats;
   eventStats: EventStats;
+  hostStats: HostStats;
   private defaultBuckets = [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10];
 
   constructor() {
@@ -79,6 +81,74 @@ export class Stats {
         buckets: this.defaultBuckets,
       }),
     };
+
+    this.hostStats = {
+      cpuUsage: new client.Gauge({
+        name: "host_cpu_usage_percent",
+        help: "CPU usage of the host in percent",
+        collect() {
+          const start = getCPUInfo();
+          const startIdle = start.idle;
+          const startTotal = start.total;
+
+          setTimeout(() => {
+            const end = getCPUInfo();
+            const endIdle = end.idle;
+            const endTotal = end.total;
+
+            const idle = endIdle - startIdle;
+            const total = endTotal - startTotal;
+            const perc = idle / total;
+
+            this.set(1 - perc);
+          }, 1000);
+
+          function getCPUInfo() {
+            const { idle, user, nice, sys, irq } = os.cpus().reduce(
+              (acc, cpu) => ({
+                idle: acc.idle + cpu.times.idle,
+                user: acc.user + cpu.times.user,
+                nice: acc.nice + cpu.times.nice,
+                sys: acc.sys + cpu.times.sys,
+                irq: acc.irq + cpu.times.irq,
+              }),
+              { idle: 0, user: 0, nice: 0, sys: 0, irq: 0 },
+            );
+
+            return { idle, total: user + nice + sys + irq + idle };
+          }
+        },
+      }),
+      freeMemory: new client.Gauge({
+        name: "host_free_memory_bytes",
+        help: "Free memory of the host in bytes",
+        collect() {
+          this.set(os.freemem());
+        },
+      }),
+      totalMemory: new client.Gauge({
+        name: "host_total_memory_bytes",
+        help: "Total memory of the host",
+        collect() {
+          this.set(os.totalmem());
+        },
+      }),
+
+      hostUptime: new client.Gauge({
+        name: "host_uptime_seconds",
+        help: "Uptime of the host in seconds",
+        collect() {
+          this.set(os.uptime());
+        },
+      }),
+      processUptime: new client.Gauge({
+        name: "process_uptime_seconds",
+        help: "Uptime of the process in seconds",
+        collect() {
+          this.set(process.uptime());
+        },
+      }),
+    };
   }
 
   public async initBotStats(client: Client) {
@@ -144,4 +214,12 @@ interface EventStats {
   events: client.Counter;
   eventErrors: client.Counter;
   eventHistogram: client.Histogram;
+}
+
+interface HostStats {
+  cpuUsage: client.Gauge;
+  freeMemory: client.Gauge;
+  totalMemory: client.Gauge;
+  hostUptime: client.Gauge;
+  processUptime: client.Gauge;
 }
