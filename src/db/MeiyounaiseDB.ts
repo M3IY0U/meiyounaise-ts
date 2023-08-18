@@ -13,6 +13,10 @@ export default class MeiyounaiseDB {
     });
   }
 
+  async getMetrics() {
+    return await this.client.$metrics.prometheus()
+  }
+
   async disconnect() {
     await this.client.$disconnect();
   }

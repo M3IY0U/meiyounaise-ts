@@ -1,16 +1,16 @@
 import { UnknownAlbumArt } from "../../last-util/LastUtil.js";
 import { Album } from "../../last-util/types/AlbumResponse.js";
-import { drawStrokedText, fitString } from "../chart-util.js";
+import { CHART_FONT, drawStrokedText, fitString } from "../chart-util.js";
 import { createCanvas, loadImage } from "canvas";
 export class AlbumChartService {
   static albumSize = 300;
   static async renderChart(albums: Album[]) {
     const canvas = createCanvas(
-      Math.min(albums.length * this.albumSize, 1500),
+      Math.min(albums.length * this.albumSize, this.albumSize * 5),
       Math.ceil((albums.length / 5) * this.albumSize),
     );
     const ctx = canvas.getContext("2d");
-    ctx.font = "bold 23px Baloo 2, Sans";
+    ctx.font = CHART_FONT;
 
     let x = 0;
     let y = 0;

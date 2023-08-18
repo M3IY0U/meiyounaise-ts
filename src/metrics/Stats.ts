@@ -119,18 +119,11 @@ export class Stats {
           }
         },
       }),
-      freeMemory: new client.Gauge({
-        name: "host_free_memory_bytes",
-        help: "Free memory of the host in bytes",
-        collect() {
-          this.set(os.freemem());
-        },
-      }),
-      totalMemory: new client.Gauge({
-        name: "host_total_memory_bytes",
+      usedMemory: new client.Gauge({
+        name: "host_used_memory_bytes",
         help: "Total memory of the host",
         collect() {
-          this.set(os.totalmem());
+          this.set(os.totalmem() - os.freemem());
         },
       }),
 
@@ -218,8 +211,7 @@ interface EventStats {
 
 interface HostStats {
   cpuUsage: client.Gauge;
-  freeMemory: client.Gauge;
-  totalMemory: client.Gauge;
+  usedMemory: client.Gauge;
   hostUptime: client.Gauge;
   processUptime: client.Gauge;
 }

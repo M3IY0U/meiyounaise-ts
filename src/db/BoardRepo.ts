@@ -95,17 +95,13 @@ export default class BoardRepo extends MeiyounaiseDB {
     });
   }
 
-  async getMessage(id: string) {
-    return await this.client.messages.findUnique({
+  async findOrCreateMessage(id: string) {
+    return await this.client.messages.upsert({
       where: {
         id,
       },
-    });
-  }
-
-  async addMessage(id: string) {
-    await this.client.messages.create({
-      data: {
+      update: {},
+      create: {
         id,
         idInBoard: "0",
         hasBeenSent: false,
