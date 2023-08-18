@@ -15,7 +15,7 @@ RUN apk add --no-cache \
 WORKDIR /tmp/app
 
 # Copy package.json and pnpm-lock.yaml
-COPY package.json pnpm-lock.yaml tsconfig.json ./assets/Baloo2.ttf ./
+COPY package.json pnpm-lock.yaml tsconfig.json ./assets/Baloo2.ttf ./assets/HeiseiMaruGothic.otf ./
 
 # Install dependencies using pnpm
 RUN pnpm install
@@ -27,6 +27,10 @@ COPY prisma ./prisma
 RUN mkdir -p /usr/share/fonts/truetype/ && \
   install -m644 Baloo2.ttf /usr/share/fonts/truetype/ && \
   rm ./Baloo2.ttf 
+
+RUN mkdir -p /usr/share/fonts/opentype/ && \
+  install -m644 HeiseiMaruGothic.otf /usr/share/fonts/opentype/ && \
+  rm ./HeiseiMaruGothic.otf
 
 # Build project
 RUN pnpm build
