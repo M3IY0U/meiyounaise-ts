@@ -1,16 +1,16 @@
 import { UnknownArtistArt } from "../../last-util/LastUtil.js";
 import { Artist } from "../../last-util/types/ArtistResponse.js";
-import { drawImageProp, drawStrokedText, fitString } from "../chart-util.js";
+import { CHART_FONT, drawImageProp, drawStrokedText, fitString } from "../chart-util.js";
 import { createCanvas, loadImage } from "canvas";
 export class ArtistChartService {
   static artistSize = 300;
   static async renderChart(artists: Artist[]) {
     const canvas = createCanvas(
-      Math.min(artists.length * this.artistSize, 1500),
+      Math.min(artists.length * this.artistSize, this.artistSize * 5),
       Math.ceil((artists.length / 5) * this.artistSize),
     );
     const ctx = canvas.getContext("2d");
-    ctx.font = "bold 23px Baloo 2, Sans";
+    ctx.font = CHART_FONT;
 
     let x = 0;
     let y = 0;
