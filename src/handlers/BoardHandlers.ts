@@ -31,18 +31,17 @@ export class BoardHandlers {
       return;
 
     // fetch necessary data
-    const dbMsg = await repo.getMessage(reaction.message.id);
+    const dbMsg = await repo.findOrCreateMessage(reaction.message.id);
     const sourceMsg = await reaction.message.fetch();
     const reactions = await Promise.all(
       sourceMsg.reactions.cache.map(async (r) => await r.fetch()),
     );
-    const boardChannel = (await reaction.message.guild?.channels.fetch(
+    const boardChannel = (await sourceMsg.guild?.channels.fetch(
       board.channel_id,
     )) as TextBasedChannel;
 
-    if (!dbMsg) await repo.addMessage(reaction.message.id);
 
-    if (dbMsg?.hasBeenSent) {
+    if (dbMsg.hasBeenSent) {
       // edit message in board
       const msgInBoard = await boardChannel.messages.fetch(dbMsg.idInBoard);
       const embed = await this.boardEmbed(
@@ -67,7 +66,7 @@ export class BoardHandlers {
         embeds: embed,
       });
 
-      await repo.updateMessage(reaction.message.id, msgInBoard.id, true);
+      await repo.updateMessage(sourceMsg.id, msgInBoard.id, true);
       stats.eventStats.events.inc({ event_name: "board_new" });
     }
   }
@@ -90,14 +89,14 @@ export class BoardHandlers {
     )
       return;
 
-    const dbMsg = await repo.getMessage(reaction.message.id);
+    const dbMsg = await repo.findOrCreateMessage(reaction.message.id);
 
-    if (dbMsg?.hasBeenSent) {
+    if (dbMsg.hasBeenSent) {
       const sourceMsg = await reaction.message.fetch();
       const reactions = await Promise.all(
         sourceMsg.reactions.cache.map(async (r) => await r.fetch()),
       );
-      const boardChannel = (await reaction.message.guild?.channels.fetch(
+      const boardChannel = (await sourceMsg.guild?.channels.fetch(
         board.channel_id,
       )) as TextBasedChannel;
       const msgInBoard = await boardChannel.messages.fetch(dbMsg.idInBoard);
@@ -112,7 +111,7 @@ export class BoardHandlers {
           embeds: embed,
         });
       } else {
-        await repo.updateMessage(reaction.message.id, "0", false);
+        await repo.updateMessage(sourceMsg.id, "0", false);
         await msgInBoard.delete();
       }
     }

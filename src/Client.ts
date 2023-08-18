@@ -20,12 +20,15 @@ import {
 import { Client, MetadataStorage } from "discordx";
 import { readFileSync } from "fs";
 import { Container } from "typedi";
+import { Mutex } from "async-mutex";
 
 export class Meiyounaise {
   public Bot: Client;
   private isProd: boolean;
   private devGuild = "328353999508209678";
   private stats = new Stats();
+  private boardAddMutex = new Mutex();
+  private boardRmMutex = new Mutex();
 
   constructor() {
     this.isProd = process.env.NODE_ENV !== "development";
@@ -172,7 +175,9 @@ export class Meiyounaise {
     this.Bot.on("messageReactionAdd", async (reaction, user) => {
       const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
-        await BoardHandlers.onReactionAdd([reaction, user], this.stats);
+        await this.boardAddMutex.runExclusive(async () => {
+          await BoardHandlers.onReactionAdd([reaction, user], this.stats);
+        });
       } catch (e) {
         handleEventError("messageReactionAdd", [reaction, user], e);
       } finally {
@@ -183,7 +188,9 @@ export class Meiyounaise {
     this.Bot.on("messageReactionRemove", async (reaction, user) => {
       const timer = this.stats.eventStats.eventHistogram.startTimer();
       try {
-        await BoardHandlers.onReactionRm([reaction, user], this.stats);
+        await this.boardRmMutex.runExclusive(async () => {
+          await BoardHandlers.onReactionRm([reaction, user], this.stats);
+        });
       } catch (e) {
         handleEventError("messageReactionRemove", [reaction, user], e);
       } finally {
