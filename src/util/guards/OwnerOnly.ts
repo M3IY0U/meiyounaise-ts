@@ -1,5 +1,5 @@
 import { CommandError } from "../general.js";
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, ModalSubmitInteraction } from "discord.js";
 import { ArgsOf, GuardFunction, SimpleCommandMessage } from "discordx";
 
 export const OwnerOnly: GuardFunction<
@@ -7,9 +7,13 @@ export const OwnerOnly: GuardFunction<
 > = async (interaction, _, next) => {
   const int = interaction as unknown as
     | CommandInteraction
-    | SimpleCommandMessage;
+    | SimpleCommandMessage
+    | ModalSubmitInteraction;
 
-  if (int instanceof CommandInteraction) {
+  if (
+    int instanceof CommandInteraction ||
+    int instanceof ModalSubmitInteraction
+  ) {
     const app = await int.client.application.fetch();
     if (int.user.id === app.owner?.id) {
       await next();

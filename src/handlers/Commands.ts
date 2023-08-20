@@ -71,7 +71,7 @@ export const executeSlashCommand = async (
 
   let command = interaction.toString();
 
-  if (interaction.isCommand() || interaction.isChatInputCommand()) {
+  if (interaction.isCommand() || interaction.isContextMenuCommand()) {
     let name = interaction.commandName;
     let args = interaction.options.data.map(
       (option) => `${option.name}: ${option.value}`,
@@ -121,14 +121,20 @@ export const executeSlashCommand = async (
 
     command = name;
   } else {
-    subLogger.info(`Executing interaction: ${interaction}`, {
-      guildName: interaction.guild?.name,
-      guildId: interaction.guildId ?? undefined,
-      channelName: interaction.inGuild() ? interaction.channel?.name : "DM",
-      channelId: interaction.channelId ?? undefined,
-      authorId: interaction.user.id,
-      authorName: interaction.user.username,
-    } satisfies LogContext);
+    command = "other interaction";
+    subLogger.info(
+      `Executing interaction: ${
+        interaction.isModalSubmit() ? interaction.customId : interaction.id
+      }`,
+      {
+        guildName: interaction.guild?.name,
+        guildId: interaction.guildId ?? undefined,
+        channelName: interaction.inGuild() ? interaction.channel?.name : "DM",
+        channelId: interaction.channelId ?? undefined,
+        authorId: interaction.user.id,
+        authorName: interaction.user.username,
+      } satisfies LogContext,
+    );
   }
 
   const timer = stats.commandStats.slashCommandsHistogram.startTimer();
