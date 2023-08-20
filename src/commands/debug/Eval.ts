@@ -1,8 +1,4 @@
-import {
-  remainingArgs,
-  respond,
-  toHastebin,
-} from "../../util/general.js";
+import { remainingArgs, respond, toHastebin } from "../../util/general.js";
 import { OwnerOnly } from "../../util/guards/OwnerOnly.js";
 import {
   Discord,

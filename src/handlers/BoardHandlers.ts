@@ -40,7 +40,6 @@ export class BoardHandlers {
       board.channel_id,
     )) as TextBasedChannel;
 
-
     if (dbMsg.hasBeenSent) {
       // edit message in board
       const msgInBoard = await boardChannel.messages.fetch(dbMsg.idInBoard);

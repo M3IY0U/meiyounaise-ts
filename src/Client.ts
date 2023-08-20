@@ -10,6 +10,7 @@ import { Stats } from "./metrics/Stats.js";
 import { Logger } from "./util/Logger.js";
 import { UnknownAvatar } from "./util/general.js";
 import { dirname, importx } from "@discordx/importer";
+import { Mutex } from "async-mutex";
 import {
   EmbedBuilder,
   IntentsBitField,
@@ -20,7 +21,6 @@ import {
 import { Client, MetadataStorage } from "discordx";
 import { readFileSync } from "fs";
 import { Container } from "typedi";
-import { Mutex } from "async-mutex";
 
 export class Meiyounaise {
   public Bot: Client;

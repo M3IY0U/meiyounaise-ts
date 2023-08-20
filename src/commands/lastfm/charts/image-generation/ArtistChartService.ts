@@ -1,6 +1,11 @@
 import { UnknownArtistArt } from "../../last-util/LastUtil.js";
 import { Artist } from "../../last-util/types/ArtistResponse.js";
-import { CHART_FONT, drawImageProp, drawStrokedText, fitString } from "../chart-util.js";
+import {
+  CHART_FONT,
+  drawImageProp,
+  drawStrokedText,
+  fitString,
+} from "../chart-util.js";
 import { createCanvas, loadImage } from "canvas";
 export class ArtistChartService {
   static artistSize = 300;
