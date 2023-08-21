@@ -179,7 +179,11 @@ export class Meiyounaise {
           await BoardHandlers.onReactionAdd([reaction, user], this.stats);
         });
       } catch (e) {
-        handleEventError("messageReactionAdd", [reaction, user], e);
+        handleEventError(
+          "messageReactionAdd",
+          [reaction, reaction.message, user],
+          e,
+        );
       } finally {
         timer();
       }
@@ -192,7 +196,11 @@ export class Meiyounaise {
           await BoardHandlers.onReactionRm([reaction, user], this.stats);
         });
       } catch (e) {
-        handleEventError("messageReactionRemove", [reaction, user], e);
+        handleEventError(
+          "messageReactionRemove",
+          [reaction, reaction.message, user],
+          e,
+        );
       } finally {
         timer();
       }

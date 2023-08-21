@@ -205,14 +205,16 @@ export class BoardHandlers {
         },
       ]);
 
-      let footer = `${refMsg.content.trim()}`;
+      if (refMsg.content.trim() !== "") {
+        let footer = `${refMsg.content.trim()}`;
 
-      if (footer.length > 128) footer = `${footer.slice(0, 128)} [...]`;
+        if (footer.length > 128) footer = `${footer.slice(0, 128)} [...]`;
 
-      embed.setFooter({
-        text: footer,
-        iconURL: refMsg.author.displayAvatarURL() ?? undefined,
-      });
+        embed.setFooter({
+          text: footer,
+          iconURL: refMsg.author.displayAvatarURL() ?? undefined,
+        });
+      }
     }
 
     const description = content.join("\n").trim();
