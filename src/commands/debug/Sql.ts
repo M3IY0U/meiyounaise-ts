@@ -46,7 +46,7 @@ export class Sql {
     await interaction.deferReply();
 
     const result = await this.repo.query(query);
-    const resultString = JSON.stringify(result, null, 2);
+    const resultString = JSON.stringify({ query, result }, null, 2);
 
     if (resultString.length > 2000 - 11) {
       return await respond(
@@ -115,11 +115,10 @@ export class Sql {
   })
   async sqlModalQuery(interaction: ModalSubmitInteraction) {
     await interaction.deferReply();
-    const result = await this.repo.query(
-      interaction.fields.getTextInputValue("query"),
-    );
 
-    const resultString = JSON.stringify(result, null, 2);
+    const query = interaction.fields.getTextInputValue("query");
+    const result = await this.repo.query(query);
+    const resultString = JSON.stringify({ query, result }, null, 2);
 
     if (resultString.length > 2000 - 11) {
       return await respond(

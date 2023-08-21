@@ -33,14 +33,14 @@
     "prom-client": "^14.2.0",
     "reflect-metadata": "^0.1.13",
     "spotify-info": "^1.1.4",
-    "tslib": "^2.6.1",
+    "tslib": "^2.6.2",
     "tslog": "^4.9.1",
     "typedi": "^0.10.0",
     "undici": "^5.23.0",
     "youtube-sr": "^4.3.4"
   },
   "devDependencies": {
-    "@types/node": "^20.5.0",
+    "@types/node": "^20.5.1",
     "@types/request-promise": "^4.1.48",
     "nodemon": "^2.0.22",
     "rome": "^12.1.3",

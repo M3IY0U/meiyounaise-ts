@@ -40,7 +40,6 @@ export class BoardHandlers {
       board.channel_id,
     )) as TextBasedChannel;
 
-
     if (dbMsg.hasBeenSent) {
       // edit message in board
       const msgInBoard = await boardChannel.messages.fetch(dbMsg.idInBoard);
@@ -139,7 +138,7 @@ export class BoardHandlers {
 
       if (content[0] == null || content[0].trim() === "") {
         if (
-          msg.embeds[0]?.description != null &&
+          msg.embeds[0].description != null &&
           msg.embeds[0].description.trim() !== ""
         ) {
           content.push(msg.embeds[0].description);
@@ -206,14 +205,16 @@ export class BoardHandlers {
         },
       ]);
 
-      let footer = `${refMsg.content.trim()}`;
+      if (refMsg.content.trim() !== "") {
+        let footer = `${refMsg.content.trim()}`;
 
-      if (footer.length > 128) footer = `${footer.slice(0, 128)} [...]`;
+        if (footer.length > 128) footer = `${footer.slice(0, 128)} [...]`;
 
-      embed.setFooter({
-        text: footer,
-        iconURL: refMsg.author.displayAvatarURL() ?? undefined,
-      });
+        embed.setFooter({
+          text: footer,
+          iconURL: refMsg.author.displayAvatarURL() ?? undefined,
+        });
+      }
     }
 
     const description = content.join("\n").trim();

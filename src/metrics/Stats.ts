@@ -1,7 +1,7 @@
 import { type GuildManager } from "discord.js";
 import { Client } from "discordx";
-import client from "prom-client";
 import os from "os";
+import client from "prom-client";
 
 export class Stats {
   startTime: number;
