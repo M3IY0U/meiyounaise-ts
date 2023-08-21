@@ -5,7 +5,7 @@ import {
   drawImageProp,
   drawStrokedText,
   fitString,
-} from "../chart-util.js";
+} from "./chart-util.js";
 import { createCanvas, loadImage } from "canvas";
 export class ArtistChartService {
   static artistSize = 300;
@@ -22,13 +22,14 @@ export class ArtistChartService {
 
     ctx.strokeStyle = "black";
     ctx.fillStyle = "white";
+    const unknownArtist = await loadImage(UnknownArtistArt);
 
     for (const artist of artists) {
       let image;
       try {
         image = await loadImage(artist.image);
       } catch {
-        image = await loadImage(UnknownArtistArt);
+        image = unknownArtist;
       }
 
       drawImageProp(image, x, y, this.artistSize, this.artistSize, ctx);

@@ -55,7 +55,7 @@ export class NowPlaying extends LastCommand {
     name: "user",
     description: "Optional user to check",
     type: SimpleCommandOptionType.User
-  }) user: User,
+  }) user: User | undefined,
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();

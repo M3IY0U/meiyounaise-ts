@@ -1,5 +1,5 @@
 import { TopTrack } from "../../last-util/types/TopTracksResponse.js";
-import { CHART_FONT } from "../chart-util.js";
+import { CHART_FONT } from "./chart-util.js";
 import { createCanvas } from "canvas";
 
 export class SongChartService {

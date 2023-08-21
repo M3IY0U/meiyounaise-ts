@@ -138,7 +138,7 @@ export class BoardHandlers {
 
       if (content[0] == null || content[0].trim() === "") {
         if (
-          msg.embeds[0]?.description != null &&
+          msg.embeds[0].description != null &&
           msg.embeds[0].description.trim() !== ""
         ) {
           content.push(msg.embeds[0].description);
