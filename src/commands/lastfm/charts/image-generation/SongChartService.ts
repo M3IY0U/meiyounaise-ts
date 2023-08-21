@@ -1,5 +1,5 @@
 import { TopTrack } from "../../last-util/types/TopTracksResponse.js";
-import { CHART_FONT } from "./chart-util.js";
+import { chartFont } from "./chart-util.js";
 import { createCanvas } from "canvas";
 
 export class SongChartService {
@@ -8,7 +8,7 @@ export class SongChartService {
     const canvas = createCanvas(this.width, tracks.length * 50);
     const ctx = canvas.getContext("2d");
     const maxPlayCount = Math.max(...tracks.map((t) => parseInt(t.playcount)));
-    ctx.font = CHART_FONT;
+    ctx.font = chartFont(20);
 
     ctx.fillStyle = "#262626";
     ctx.fillRect(0, 0, canvas.width, canvas.height);

@@ -1,6 +1,6 @@
 import { UnknownAlbumArt } from "../../last-util/LastUtil.js";
 import { Album } from "../../last-util/types/AlbumResponse.js";
-import { CHART_FONT, drawStrokedText, fitString } from "./chart-util.js";
+import { chartFont, drawStrokedText, fitString } from "./chart-util.js";
 import { createCanvas, loadImage } from "canvas";
 export class AlbumChartService {
   static albumSize = 300;
@@ -10,20 +10,21 @@ export class AlbumChartService {
       Math.ceil((albums.length / 5) * this.albumSize),
     );
     const ctx = canvas.getContext("2d");
-    ctx.font = CHART_FONT;
+    ctx.font = chartFont(23);
 
     let x = 0;
     let y = 0;
 
     ctx.strokeStyle = "black";
     ctx.fillStyle = "white";
+    const unknownArtist = await loadImage(UnknownAlbumArt);
 
     for (const album of albums) {
       let image;
       try {
         image = await loadImage(album.image);
       } catch {
-        image = await loadImage(UnknownAlbumArt);
+        image = unknownArtist;
       }
 
       ctx.drawImage(image, x, y, this.albumSize, this.albumSize);
@@ -43,12 +44,12 @@ export class AlbumChartService {
       drawStrokedText(
         fitString(`${album.playcount} Plays`, this.albumSize - 10, ctx),
         x + 5,
-        y + 290,
+        y + (this.albumSize - 10),
         ctx,
       );
 
       x += this.albumSize;
-      if (x >= 1500) {
+      if (x >= this.albumSize * 5) {
         x = 0;
         y += this.albumSize;
       }

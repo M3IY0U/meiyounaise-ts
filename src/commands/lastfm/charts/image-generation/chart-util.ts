@@ -1,7 +1,7 @@
 import { CanvasRenderingContext2D, Image } from "canvas";
 
-export const CHART_FONT =
-  "bold 23px Baloo 2, 23px Heisei Maru Gothic Std W8, Sans";
+export const chartFont = (size: number) =>
+  `bold ${size}px Baloo 2, ${size}px Heisei Maru Gothic Std W8, Sans`;
 
 export const fitString = (
   str: string,
