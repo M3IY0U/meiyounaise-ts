@@ -25,10 +25,14 @@ export const executeSimpleCommand = async (
 
   if (
     MetadataStorage.instance.simpleCommandsByName.find(
-      (c) => c.name === command,
+      (c) => c.name === command || c.name === `${command} ${args[0]}`,
     ) === undefined
   ) {
-    subLogger.silly(`Ignoring unknown command '${command}'`);
+    subLogger.silly(
+      `Ignoring unknown command '${command}' with args '${JSON.stringify(
+        args,
+      )}'`,
+    );
     stats.commandStats.simpleCommands.inc({ command: "unknown" });
     await message.react("❓");
     return;

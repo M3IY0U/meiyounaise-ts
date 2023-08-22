@@ -1,3 +1,4 @@
+import { maskedUrl, respond } from "../../util/general.js";
 import {
   CommandInteraction,
   EmbedBuilder,
@@ -5,7 +6,6 @@ import {
   OAuth2Scopes,
 } from "discord.js";
 import { Discord, SimpleCommand, SimpleCommandMessage, Slash } from "discordx";
-import { maskedUrl, respond } from "../../util/general.js";
 
 @Discord()
 export class Info {
