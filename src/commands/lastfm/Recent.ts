@@ -1,5 +1,5 @@
 import {
-  getUserAvatar,
+  UnknownAvatar,
   getUserColor,
   maskedUrl,
   respond,
@@ -45,7 +45,7 @@ export class Recent extends LastCommand {
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-    await this.recent(user?.id ?? interaction.user.id, amount, interaction);
+    await this.recent(user ?? interaction.user, amount, interaction);
   }
 
   // simple handler
@@ -64,20 +64,16 @@ export class Recent extends LastCommand {
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
-    await this.recent(
-      user?.id ?? command.message.author.id,
-      amount,
-      command.message,
-    );
+    await this.recent(user ?? command.message.author, amount, command.message);
   }
   //#endregion
 
   async recent(
-    userId: string,
+    user: User,
     amount: number | undefined,
     interaction: CommandInteraction | Message,
   ) {
-    const last = await this.tryGetLast(userId);
+    const last = await this.tryGetLast(user.id);
     const recent = await this.lastClient.getRecentScrobbles(
       last,
       Math.min(amount ?? 5, 10),
@@ -87,7 +83,7 @@ export class Recent extends LastCommand {
       .setAuthor({
         name: `Most recent scrobbles for ${last}`,
         url: `https://last.fm/user/${last}`,
-        iconURL: getUserAvatar(interaction),
+        iconURL: user.displayAvatarURL() ?? UnknownAvatar,
       })
       .setColor(getUserColor(interaction))
       .setThumbnail(recent.tracks[0].image ?? UnknownAlbumArt);

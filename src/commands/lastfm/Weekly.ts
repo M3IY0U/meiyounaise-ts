@@ -1,7 +1,6 @@
 import {
-  getUserAvatar,
+  UnknownAvatar,
   getUserColor,
-  getUserName,
   maskedUrl,
   respond,
 } from "../../util/general.js";
@@ -45,7 +44,7 @@ export class Weekly extends LastCommand {
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-    await this.weekly(user?.id ?? interaction.user.id, interaction);
+    await this.weekly(user ?? interaction.user, interaction);
   }
 
   @SimpleCommand({
@@ -61,12 +60,12 @@ export class Weekly extends LastCommand {
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
-    await this.weekly(user?.id ?? command.message.author.id, command.message);
+    await this.weekly(user ?? command.message.author, command.message);
   }
   //#endregion
 
-  async weekly(userId: string, interaction: CommandInteraction | Message) {
-    const last = await this.tryGetLast(userId);
+  async weekly(user: User, interaction: CommandInteraction | Message) {
+    const last = await this.tryGetLast(user.id);
 
     const week = new Date();
     week.setDate(week.getDate() - 7);
@@ -144,10 +143,10 @@ export class Weekly extends LastCommand {
 
     const embed = new EmbedBuilder()
       .setAuthor({
-        name: `${getUserName(interaction)}'s Weekly Report`,
+        name: `${last}'s Weekly Report`,
         url: `https://last.fm/user/${last}`,
       })
-      .setThumbnail(getUserAvatar(interaction))
+      .setThumbnail(user.displayAvatarURL() ?? UnknownAvatar)
       .setColor(getUserColor(interaction))
       // add each day to description and extra stats as fields
       .setDescription(
