@@ -24,23 +24,13 @@ export class ArtistChartService {
     ctx.fillStyle = "white";
     const unknownArtist = await loadImage(UnknownArtistArt);
 
-    const loadedArtists = await Promise.all(
-      artists.map(async (artist) => {
-        let image;
-        try {
-          image = await loadImage(artist.image);
-        } catch {
-          image = unknownArtist;
-        }
-        return {
-          artist,
-          image,
-        };
-      }),
-    ); 
-
-    for (const la of loadedArtists) {
-      const { artist, image } = la;
+    for (const artist of artists) {
+      let image;
+      try {
+        image = await loadImage(artist.image);
+      } catch {
+        image = unknownArtist;
+      }
 
       drawImageProp(image, x, y, this.artistSize, this.artistSize, ctx);
 
