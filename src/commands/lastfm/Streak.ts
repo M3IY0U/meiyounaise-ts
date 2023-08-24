@@ -1,8 +1,7 @@
 import {
   ResponseType,
-  getUserAvatar,
+  UnknownAvatar,
   getUserColor,
-  getUserName,
   maskedUrl,
   respond,
   responseEmbed,
@@ -45,7 +44,7 @@ export class Streak extends LastCommand {
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-    await this.streak(user?.id ?? interaction.user.id, interaction);
+    await this.streak(user ?? interaction.user, interaction);
   }
 
   // simple handler
@@ -61,13 +60,13 @@ export class Streak extends LastCommand {
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
-    await this.streak(user?.id ?? command.message.author.id, command.message);
+    await this.streak(user ?? command.message.author, command.message);
   }
   //#endregion
 
   //#region Logic
-  async streak(userId: string, interaction: CommandInteraction | Message) {
-    const last = await this.tryGetLast(userId);
+  async streak(user: User, interaction: CommandInteraction | Message) {
+    const last = await this.tryGetLast(user.id);
     const streaks = await this.getStreaks(last);
 
     if (!streaks)
@@ -75,7 +74,7 @@ export class Streak extends LastCommand {
         {
           embeds: responseEmbed(
             ResponseType.Info,
-            `No streak found for <@${userId}>`,
+            `No streak found for <@${user.id}>`,
           ),
         },
         interaction,
@@ -86,9 +85,9 @@ export class Streak extends LastCommand {
         embeds: [
           new EmbedBuilder()
             .setAuthor({
-              name: `Current listening streak for ${getUserName(interaction)}`,
+              name: `Current listening streak for ${last}`,
               url: encodeURI(`https://www.last.fm/user/${last}`),
-              iconURL: getUserAvatar(interaction),
+              iconURL: user.displayAvatarURL() ?? UnknownAvatar,
             })
             .setDescription(streaks.description)
             .setThumbnail(streaks.image)

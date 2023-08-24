@@ -1,9 +1,4 @@
-import {
-  getUserAvatar,
-  getUserColor,
-  getUserName,
-  respond,
-} from "../../util/general.js";
+import { UnknownAvatar, getUserColor, respond } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
 import { TimeSpan } from "./last-util/types/general.js";
 import {
@@ -42,7 +37,7 @@ export class Daily extends LastCommand {
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-    await this.daily(user?.id ?? interaction.user.id, interaction);
+    await this.daily(user ?? interaction.user, interaction);
   }
 
   // simple handler
@@ -59,12 +54,12 @@ export class Daily extends LastCommand {
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
-    await this.daily(user?.id ?? command.message.author.id, command.message);
+    await this.daily(user ?? command.message.author, command.message);
   }
   //#endregion
 
-  async daily(userId: string, interaction: CommandInteraction | Message) {
-    const last = await this.tryGetLast(userId);
+  async daily(user: User, interaction: CommandInteraction | Message) {
+    const last = await this.tryGetLast(user.id);
 
     const durations = await this.lastClient.getTrackDurations(
       last,
@@ -89,8 +84,8 @@ export class Daily extends LastCommand {
 
     const embed = new EmbedBuilder()
       .setAuthor({
-        name: `${getUserName(interaction)}'s last 24 hours`,
-        iconURL: getUserAvatar(interaction),
+        name: `${last}'s last 24 hours`,
+        iconURL: user.displayAvatarURL() ?? UnknownAvatar,
         url: `https://last.fm/user/${last}`,
       })
       .addFields([

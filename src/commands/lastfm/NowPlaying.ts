@@ -1,6 +1,6 @@
 import { GuildHandlers } from "../../handlers/GuildHandlers.js";
 import {
-  getUserAvatar,
+  UnknownAvatar,
   getUserColor,
   maskedUrl,
   respond,
@@ -41,7 +41,7 @@ export class NowPlaying extends LastCommand {
     interaction: CommandInteraction,
   ) {
     await interaction.deferReply();
-    await this.nowPlaying(user?.id ?? interaction.user.id, interaction);
+    await this.nowPlaying(user ?? interaction.user, interaction);
   }
 
   // simple handler
@@ -59,16 +59,13 @@ export class NowPlaying extends LastCommand {
     command: SimpleCommandMessage,
   ) {
     await command.message.channel.sendTyping();
-    await this.nowPlaying(
-      user?.id ?? command.message.author.id,
-      command.message,
-    );
+    await this.nowPlaying(user ?? command.message.author, command.message);
   }
   //#endregion
 
   //#region Logic
-  async nowPlaying(userId: string, interaction: CommandInteraction | Message) {
-    const lastfm = await this.tryGetLast(userId);
+  async nowPlaying(user: User, interaction: CommandInteraction | Message) {
+    const lastfm = await this.tryGetLast(user.id);
 
     const res = await this.lastClient.getRecentScrobbles(lastfm, 1);
 
@@ -79,7 +76,7 @@ export class NowPlaying extends LastCommand {
       lastfm,
       res.tracks[0],
       res.total,
-      getUserAvatar(interaction),
+      user.displayAvatarURL() ?? UnknownAvatar,
     );
 
     await respond(
@@ -94,16 +91,16 @@ export class NowPlaying extends LastCommand {
   }
 
   private makeEmbed(
-    name: string,
+    last: string,
     track: RecentTrack,
     total: number,
     avatar: string,
   ) {
     return new EmbedBuilder()
       .setAuthor({
-        name: `${name} - ${track.nowplaying ? "Now Playing" : "Last Track"}`,
+        name: `${last} - ${track.nowplaying ? "Now Playing" : "Last Track"}`,
         iconURL: avatar,
-        url: `https://www.last.fm/user/${name}`,
+        url: `https://www.last.fm/user/${last}`,
       })
       .setThumbnail(track.image || UnknownAlbumArt)
       .setDescription(
