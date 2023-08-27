@@ -86,7 +86,7 @@ export class Recent extends LastCommand {
         iconURL: user.displayAvatarURL() ?? UnknownAvatar,
       })
       .setColor(getUserColor(interaction))
-      .setThumbnail(recent.tracks[0].image ?? UnknownAlbumArt);
+      .setThumbnail(recent.tracks[0].image || UnknownAlbumArt);
 
     for (const track of recent.tracks) {
       embed.addFields({
