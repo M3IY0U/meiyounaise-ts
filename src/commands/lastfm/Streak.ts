@@ -163,7 +163,7 @@ export class Streak extends LastCommand {
     const image =
       artistCount > albumCount && artistCount > trackCount
         ? await getLastArtistImage(first.artist.name)
-        : first.image ?? UnknownAlbumArt;
+        : first.image || UnknownAlbumArt;
     return {
       description: content,
       image: image,
