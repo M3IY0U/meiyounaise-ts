@@ -1,4 +1,3 @@
-import { Logger } from "../../../util/Logger.js";
 import { CommandError } from "../../../util/general.js";
 import { TimeSpan } from "./types/general.js";
 import ogs from "open-graph-scraper";
@@ -41,14 +40,9 @@ export const parseTimeSpan = (timespan: string | undefined) => {
 };
 
 export const getLastArtistImage = async (artist: string) => {
-  try {
-    const { result } = await ogs({
-      url: encodeURI(`https://www.last.fm/music/${encodeURIComponent(artist)}`),
-    });
-    if (!result?.ogImage) return UnknownArtistArt;
-    return result.ogImage[0].url ?? UnknownArtistArt;
-  } catch (e) {
-    Logger.error(e);
-    return UnknownArtistArt;
-  }
+  const { result } = await ogs({
+    url: encodeURI(`https://www.last.fm/music/${encodeURIComponent(artist)}`),
+  });
+  if (!result?.ogImage) return UnknownArtistArt;
+  return result.ogImage[0].url ?? UnknownArtistArt;
 };
