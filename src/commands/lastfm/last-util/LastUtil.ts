@@ -1,7 +1,8 @@
 import { Logger } from "../../../util/Logger.js";
 import { CommandError } from "../../../util/general.js";
 import { TimeSpan } from "./types/general.js";
-import ogs from "open-graph-scraper";
+import { parse } from "node-html-parser";
+import { request } from "undici";
 
 export const UnknownAlbumArt =
   "https://lastfm.freetls.fastly.net/i/u/c6f59c1e5e7240a4c0d427abd71f3dbb";
@@ -42,11 +43,24 @@ export const parseTimeSpan = (timespan: string | undefined) => {
 
 export const getLastArtistImage = async (artist: string) => {
   try {
-    const { result } = await ogs({
-      url: encodeURI(`https://www.last.fm/music/${encodeURIComponent(artist)}`),
+    const text = await (
+      await request(`https://www.last.fm/music/${encodeURIComponent(artist)}`)
+    ).body.text();
+
+    const html = parse(text, {
+      blockTextElements: {
+        script: true,
+        noscript: true,
+        style: true,
+        pre: true,
+      },
     });
-    if (!result?.ogImage) return UnknownArtistArt;
-    return result.ogImage[0].url ?? UnknownArtistArt;
+
+    const image = html
+      .querySelector("[property='og:image']")
+      ?.getAttribute("content");
+
+    return image ?? UnknownArtistArt;
   } catch (e) {
     Logger.error(e);
     return UnknownArtistArt;
