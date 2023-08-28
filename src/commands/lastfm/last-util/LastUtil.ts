@@ -1,4 +1,3 @@
-import cloudscraper from "cloudscraper";
 import { Logger } from "../../../util/Logger.js";
 import { CommandError } from "../../../util/general.js";
 import { TimeSpan } from "./types/general.js";
