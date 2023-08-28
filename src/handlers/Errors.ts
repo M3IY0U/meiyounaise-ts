@@ -1,5 +1,10 @@
 import { Logger } from "../util/Logger.js";
-import { CommandError, ResponseType, responseEmbed } from "../util/general.js";
+import {
+  CommandError,
+  ResponseType,
+  responseEmbed,
+  toHastebin,
+} from "../util/general.js";
 import {
   AutocompleteInteraction,
   CommandInteraction,
@@ -39,11 +44,16 @@ export async function handleError(
       Logger.error(e);
     }
 
+  let error = `\`\`\`${
+    e instanceof Error ? e.message : JSON.stringify(e)
+  }\`\`\``;
+
+  if (error.length > 2000) {
+    error = await toHastebin(error.replaceAll(/^`{3}|`{3}$/g, ""));
+  }
+
   await interaction.channel?.send({
-    embeds: responseEmbed(
-      ResponseType.Error,
-      `\`\`\`${e instanceof Error ? e.message : e}\`\`\``,
-    ),
+    embeds: responseEmbed(ResponseType.Error, error),
   });
 }
 
