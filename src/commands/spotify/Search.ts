@@ -23,13 +23,14 @@ import {
 import * as spotify from "spotify-info";
 
 @Discord()
-@SlashGroup("spotify")
+@SlashGroup({ name: "spotify", description: "Spotify related commands" })
 export class SpotifySearch extends LastCommand {
   //#region Command Handlers
   @Slash({
     name: "search",
     description: "Get spotify info",
   })
+  @SlashGroup("spotify")
   async slashSpotify(
     @SlashOption({
       name: "query",
