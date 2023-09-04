@@ -5,7 +5,7 @@ import {
   respond,
 } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
-import { UnknownAlbumArt } from "./last-util/LastUtil.js";
+import { UnknownAlbumArt, cleanLastUrl } from "./last-util/LastUtil.js";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
@@ -89,13 +89,18 @@ export class Recent extends LastCommand {
       .setThumbnail(recent.tracks[0].image || UnknownAlbumArt);
 
     for (const track of recent.tracks) {
-      embed.addFields({
+      const field = {
         name: `<t:${track.date}:R>`,
         value: `${maskedUrl(
           track.artist.name,
-          encodeURI(track.artist.url),
-        )} - ${maskedUrl(track.name, encodeURI(track.url))}`,
-      });
+          cleanLastUrl(track.artist.url),
+        )} - ${maskedUrl(track.name, cleanLastUrl(track.url))}`,
+      };
+
+      if (field.value.length > 1024)
+        field.value = `${track.artist.name} - ${track.name}`;
+
+      embed.addFields(field);
     }
 
     await respond(

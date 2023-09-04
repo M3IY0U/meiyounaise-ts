@@ -7,7 +7,11 @@ import {
   responseEmbed,
 } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
-import { UnknownAlbumArt, getLastArtistImage } from "./last-util/LastUtil.js";
+import {
+  UnknownAlbumArt,
+  cleanLastUrl,
+  getLastArtistImage,
+} from "./last-util/LastUtil.js";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
@@ -86,7 +90,7 @@ export class Streak extends LastCommand {
           new EmbedBuilder()
             .setAuthor({
               name: `Current listening streak for ${last}`,
-              url: encodeURI(`https://www.last.fm/user/${last}`),
+              url: `https://www.last.fm/user/${last}`,
               iconURL: user.displayAvatarURL() ?? UnknownAvatar,
             })
             .setDescription(streaks.description)
@@ -140,7 +144,7 @@ export class Streak extends LastCommand {
         : `Streak started <t:${current.date}:R>`
     }\n${
       trackCount !== 1
-        ? `**Track**: ${maskedUrl(first.name, encodeURI(first.url))} - ${
+        ? `**Track**: ${maskedUrl(first.name, cleanLastUrl(first.url))} - ${
             trackCount === -1 ? "1000+" : trackCount
           } Plays\n`
         : ""
@@ -148,14 +152,14 @@ export class Streak extends LastCommand {
       albumCount !== 1
         ? `**Album**: ${maskedUrl(
             first.album,
-            encodeURI(`${first.artist.url}/${first.album}`),
+            cleanLastUrl(`${first.artist.url}/${first.album}`),
           )} - ${albumCount === -1 ? "1000+" : albumCount} Plays\n`
         : ""
     }${
       artistCount !== 1
         ? `**Artist**: ${maskedUrl(
             first.artist.name,
-            encodeURI(first.artist.url),
+            cleanLastUrl(first.artist.url),
           )} - ${artistCount === -1 ? "1000+" : artistCount} Plays`
         : ""
     }`;

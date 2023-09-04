@@ -9,6 +9,7 @@ import {
   silently,
 } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
+import { cleanLastUrl } from "./last-util/LastUtil.js";
 import { CommandInteraction, EmbedBuilder, Message } from "discord.js";
 import {
   Discord,
@@ -63,8 +64,8 @@ export class Server extends LastCommand {
           `https://last.fm/user/${np.last}`,
         )} ${maskedUrl(
           np.track.artist.name,
-          encodeURI(np.track.artist.url),
-        )} - ${maskedUrl(np.track.name, encodeURI(np.track.url))}`,
+          cleanLastUrl(np.track.artist.url),
+        )} - ${maskedUrl(np.track.name, cleanLastUrl(np.track.url))}`,
       );
     });
 

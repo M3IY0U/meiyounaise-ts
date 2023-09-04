@@ -6,7 +6,7 @@ import {
   respond,
 } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
-import { UnknownAlbumArt } from "./last-util/LastUtil.js";
+import { UnknownAlbumArt, cleanLastUrl } from "./last-util/LastUtil.js";
 import { RecentTrack } from "./last-util/types/RecentResponse.js";
 import {
   ApplicationCommandOptionType,
@@ -96,6 +96,30 @@ export class NowPlaying extends LastCommand {
     total: number,
     avatar: string,
   ) {
+    const artistField = {
+      name: "Artist",
+      value: maskedUrl(
+        `**${track.artist.name}**`,
+        cleanLastUrl(track.artist.url),
+      ),
+      inline: true,
+    };
+
+    const albumField = {
+      name: "Album",
+      value: track.album
+        ? maskedUrl(
+            `**${track.album}**`,
+            cleanLastUrl(`${track.artist.url}/${track.album}`),
+          )
+        : "Unknown",
+      inline: true,
+    };
+
+    if (albumField.value.length > 1024) albumField.value = `**${track.album}**`;
+    if (artistField.value.length > 1024)
+      artistField.value = `**${track.artist.name}**`;
+
     return new EmbedBuilder()
       .setAuthor({
         name: `${last} - ${track.nowplaying ? "Now Playing" : "Last Track"}`,
@@ -104,30 +128,11 @@ export class NowPlaying extends LastCommand {
       })
       .setThumbnail(track.image || UnknownAlbumArt)
       .setDescription(
-        `**${maskedUrl(track.name, encodeURI(track.url))}**${
+        `**${maskedUrl(track.name, cleanLastUrl(track.url))}**${
           track.nowplaying ? "" : `\nScrobbled <t:${track.date}:R>`
         }`,
       )
-      .addFields([
-        {
-          name: "Artist",
-          value: maskedUrl(
-            `**${track.artist.name}**`,
-            encodeURI(track.artist.url),
-          ),
-          inline: true,
-        },
-        {
-          name: "Album",
-          value: track.album
-            ? maskedUrl(
-                `**${track.album}**`,
-                encodeURI(`${track.artist.url}/${track.album}`),
-              )
-            : "Unknown",
-          inline: true,
-        },
-      ])
+      .addFields([artistField, albumField])
       .setFooter({
         text: `${total} total Scrobbles on last.fm`,
       });

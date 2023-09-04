@@ -66,3 +66,12 @@ export const getLastArtistImage = async (artist: string) => {
     return UnknownArtistArt;
   }
 };
+
+export const cleanLastUrl = (url: string) =>
+  encodeURI(
+    url
+      .replace(/ /g, "+")
+      .replace(/&/g, "%26")
+      .replace(/\(/g, "%28")
+      .replace(/\)/g, "%29"),
+  );
