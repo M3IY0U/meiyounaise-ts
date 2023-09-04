@@ -60,12 +60,28 @@ export class SpotifyClient {
     if (!results) throw new Error("No results found");
 
     switch (type) {
-      case "track":
-        return results.tracks.items[0];
-      case "album":
-        return results.albums.items[0];
-      case "artist":
-        return results.artists.items[0];
+      case "track": {
+        const specific = results.tracks.items.find(
+          (t) => t.name.toLowerCase() === query.toLowerCase(),
+        );
+
+        return specific ? specific : results.tracks.items[0];
+      }
+      case "album": {
+        const specific = results.albums.items.find(
+          (t) => t.name.toLowerCase() === query.toLowerCase(),
+        );
+
+        return specific ? specific : results.albums.items[0];
+      }
+      case "artist": {
+        const specific = results.artists.items.find(
+          (t) => t.name.toLowerCase() === query.toLowerCase(),
+        );
+
+        return specific ? specific : results.artists.items[0];
+      }
+
       default:
         return results.tracks.items[0];
     }

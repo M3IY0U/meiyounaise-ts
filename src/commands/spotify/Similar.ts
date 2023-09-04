@@ -1,7 +1,10 @@
 import {
+  ResponseType,
   maskedUrl,
   paginateStrings,
   remainingArgs,
+  respond,
+  responseEmbed,
 } from "../../util/general.js";
 import { SpotifyClient } from "./SpotifyClient.js";
 import { Pagination, PaginationType } from "@discordx/pagination";
@@ -70,6 +73,17 @@ export class SpotifySimilar {
     interaction: CommandInteraction | Message,
   ) {
     const res = await this.sc.getRelatedArtists(artist);
+
+    if (res.related.length === 0)
+      return await respond(
+        {
+          embeds: responseEmbed(
+            ResponseType.Info,
+            `Spotify didn't return any related artists for \`${artist}\``,
+          ),
+        },
+        interaction,
+      );
 
     const chunks = paginateStrings(
       res.related.map(

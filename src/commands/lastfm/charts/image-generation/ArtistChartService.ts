@@ -37,7 +37,7 @@ export class ArtistChartService {
           image,
         };
       }),
-    ); 
+    );
 
     for (const la of loadedArtists) {
       const { artist, image } = la;
