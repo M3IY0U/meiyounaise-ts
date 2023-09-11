@@ -64,12 +64,6 @@ export class Weekly extends LastCommand {
   }
   //#endregion
 
-  getHumanReadableHoursMinutes(duration: number){
-    const hours = Math.round(duration/60);
-    const minutes = duration-60*hours;
-    return `${hours}:${("0" + minutes).slice(-2)} hours`
-  }
-
   async weekly(user: User, interaction: CommandInteraction | Message) {
     const last = await this.tryGetLast(user.id);
 
@@ -159,7 +153,9 @@ export class Weekly extends LastCommand {
         [...dayDurations.entries()]
           .map(
             ([day, duration]) =>
-              `\`${day}\` - ${Math.round(duration / 60)} minutes (${this.getHumanReadableHoursMinutes(Math.round(duration / 60))}) on ${
+              `\`${day}\` - ${Math.round(
+                duration / 60,
+              )} minutes (${this.getHours(Math.round(duration / 60))}) on ${
                 days.get(day)?.length
               } tracks`,
           )
@@ -183,7 +179,9 @@ export class Weekly extends LastCommand {
         },
         {
           name: "Daily Average",
-          value: `${Math.round(average / 60)} minutes (${this.getHumanReadableHoursMinutes(Math.round(average / 60))})`,
+          value: `${Math.round(average / 60)} minutes (${this.getHours(
+            Math.round(average / 60),
+          )})`,
           inline: true,
         },
         {
@@ -209,5 +207,11 @@ export class Weekly extends LastCommand {
       });
 
     await respond({ embeds: [embed] }, interaction);
+  }
+
+  getHours(duration: number) {
+    const hours = Math.round(duration / 60);
+    const minutes = duration - 60 * hours;
+    return `${hours}:${`0${minutes}`.slice(-2)} hours`;
   }
 }
