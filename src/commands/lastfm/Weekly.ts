@@ -83,6 +83,29 @@ export class Weekly extends LastCommand {
 
     const days = new Map<string, RecentTrack[]>();
 
+    // boundaries
+    const first = new Date(recent.tracks[0].date * 1000);
+    const lastDay = new Date(
+      recent.tracks[recent.tracks.length - 1].date * 1000,
+    );
+
+    // fill in days inbetween
+    const diff = Math.floor(
+      (lastDay.getTime() - first.getTime()) / (1000 * 60 * 60 * 24),
+    );
+    for (let i = diff; i < 0; i++) {
+      const date = new Date(first.getTime() + i * 1000 * 60 * 60 * 24);
+      const day = date.toLocaleDateString("en-GB", {
+        weekday: "short",
+        day: "2-digit",
+        month: "2-digit",
+      });
+      days.set(day, []);
+    }
+
+    days.delete(days.keys().next().value);
+
+    // add tracks to days
     for (const track of recent.tracks) {
       const date = new Date(track.date * 1000);
       const day = date.toLocaleDateString("en-GB", {
@@ -91,11 +114,8 @@ export class Weekly extends LastCommand {
         month: "2-digit",
       });
 
-      if (!days.has(day)) days.set(day, []);
-      days.get(day)?.push(track);
+      if (days.has(day)) days.get(day)?.push(track);
     }
-
-    days.delete(days.keys().next().value);
 
     const dayDurations = new Map<string, number>();
     for (const [day, tracks] of days) {
@@ -153,11 +173,13 @@ export class Weekly extends LastCommand {
         [...dayDurations.entries()]
           .map(
             ([day, duration]) =>
-              `\`${day}\` - ${Math.round(
-                duration / 60,
-              )} minutes (${this.getHours(Math.round(duration / 60))}) on ${
-                days.get(day)?.length
-              } tracks`,
+              `- \`${day}\` - ${
+                duration > 0
+                  ? `${Math.round(duration / 60)} minutes (${this.getHours(
+                      Math.round(duration / 60),
+                    )}) on ${days.get(day)?.length} tracks`
+                  : "0 minutes 😐"
+              }`,
           )
           .reverse()
           .join("\n"),
