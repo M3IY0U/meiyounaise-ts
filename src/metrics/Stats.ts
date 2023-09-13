@@ -1,5 +1,6 @@
 import { type GuildManager } from "discord.js";
 import { Client } from "discordx";
+import { statfs } from "fs";
 import os from "os";
 import client from "prom-client";
 
@@ -141,6 +142,21 @@ export class Stats {
           this.set(process.uptime());
         },
       }),
+      diskUsage: new client.Gauge({
+        name: "host_disk_usage_percent",
+        help: "Disk usage of the host in percent",
+        collect() {
+          const drive = os.platform() === "win32" ? "c:" : "/";
+          statfs(drive, (err, stats) => {
+            if (err) return;
+            const total = stats.blocks * stats.bsize;
+            const free = stats.bfree * stats.bsize;
+            const used = total - free;
+            const perc = (used / total) * 100;
+            this.set(perc);
+          });
+        },
+      }),
     };
   }
 
@@ -214,4 +230,5 @@ interface HostStats {
   usedMemory: client.Gauge;
   hostUptime: client.Gauge;
   processUptime: client.Gauge;
+  diskUsage: client.Gauge;
 }
