@@ -178,7 +178,7 @@ export class BoardHandlers {
           name: "Posted in",
           value:
             msg.channel.type === ChannelType.PublicThread
-              ? `<#${msg.channel.parent?.id} 🧵 <#${msg.channel.id}>`
+              ? `<#${msg.channel.parent?.id}> 🧵 <#${msg.channel.id}>`
               : `<#${msg.channel.id}>`,
           inline: true,
         },
