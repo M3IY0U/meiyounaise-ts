@@ -229,7 +229,7 @@ export class Meiyounaise {
       }
     });
 
-    // rome-ignore lint/style/noNonNullAssertion: can't be undefined
+    // biome-ignore lint/style/noNonNullAssertion: can't be undefined
     Container.set("simpleCommandConfig", this.Bot.simpleCommandConfig!);
 
     await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
