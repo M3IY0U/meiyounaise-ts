@@ -197,23 +197,14 @@ export class BoardHandlers {
         )) as TextBasedChannel
       ).messages.fetch(msg.reference.messageId);
 
-      embed.addFields([
-        {
-          name: "Replying to",
-          value: `${refMsg.author}`,
-          inline: false,
-        },
-      ]);
-
       if (refMsg.content.trim() !== "") {
-        let footer = `${refMsg.content.trim()}`;
-
-        if (footer.length > 128) footer = `${footer.slice(0, 128)} [...]`;
-
-        embed.setFooter({
-          text: footer,
-          iconURL: refMsg.author.displayAvatarURL() ?? undefined,
-        });
+        content.unshift(
+          `> ${refMsg.author}: ${
+            refMsg.content.length > 128
+              ? `${refMsg.content.slice(0, 128)} [...]`
+              : refMsg.content
+          }\n`,
+        );
       }
     }
 
