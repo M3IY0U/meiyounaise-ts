@@ -68,10 +68,7 @@ export const getLastArtistImage = async (artist: string) => {
 };
 
 export const cleanLastUrl = (url: string) =>
-  encodeURI(
-    url
-      .replace(/ /g, "+")
-      .replace(/&/g, "%26")
-      .replace(/\(/g, "%28")
-      .replace(/\)/g, "%29"),
-  );
+  encodeURI(url.replaceAll(/ /g, "+"))
+    .replaceAll(/&/g, "%26")
+    .replaceAll(/\(/g, "%28")
+    .replaceAll(/\)/g, "%29");
