@@ -36,6 +36,9 @@ export const stripText = (text: string) =>
     "",
   );
 
+export const sanitizeMarkdown = (text: string) =>
+  text.replace(/([`\*_~<>\[\]\(\)""@\&#:\|])/g, (_, g) => `\\${g}`);
+
 export const maskedUrl = (text: string, url: string, alt?: string) =>
   `[${text}](${url}${alt ? ` "${alt}"` : ""})`;
 

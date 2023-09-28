@@ -4,6 +4,7 @@ import {
   getUserColor,
   maskedUrl,
   respond,
+  sanitizeMarkdown,
 } from "../../util/general.js";
 import { LastCommand } from "./last-util/LastCommand.js";
 import { UnknownAlbumArt, cleanLastUrl } from "./last-util/LastUtil.js";
@@ -99,7 +100,7 @@ export class NowPlaying extends LastCommand {
     const artistField = {
       name: "Artist",
       value: maskedUrl(
-        `**${track.artist.name}**`,
+        `**${sanitizeMarkdown(track.artist.name)}**`,
         cleanLastUrl(track.artist.url),
       ),
       inline: true,
@@ -109,7 +110,7 @@ export class NowPlaying extends LastCommand {
       name: "Album",
       value: track.album
         ? maskedUrl(
-            `**${track.album}**`,
+            `**${sanitizeMarkdown(track.album)}**`,
             cleanLastUrl(`${track.artist.url}/${track.album}`),
           )
         : "Unknown",
@@ -128,9 +129,10 @@ export class NowPlaying extends LastCommand {
       })
       .setThumbnail(track.image || UnknownAlbumArt)
       .setDescription(
-        `**${maskedUrl(track.name, cleanLastUrl(track.url))}**${
-          track.nowplaying ? "" : `\nScrobbled <t:${track.date}:R>`
-        }`,
+        `**${maskedUrl(
+          sanitizeMarkdown(track.name),
+          cleanLastUrl(track.url),
+        )}**${track.nowplaying ? "" : `\nScrobbled <t:${track.date}:R>`}`,
       )
       .addFields([artistField, albumField])
       .setFooter({
