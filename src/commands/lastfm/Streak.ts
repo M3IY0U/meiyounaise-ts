@@ -104,7 +104,7 @@ export class Streak extends LastCommand {
   }
 
   private async getStreaks(last: string) {
-    // rome-ignore lint/style/useSingleVarDeclarator: <explanation>
+    // biome-ignore lint/style/useSingleVarDeclarator: <explanation>
     let cTrack = true,
       cAlbum = true,
       cArtist = true,
